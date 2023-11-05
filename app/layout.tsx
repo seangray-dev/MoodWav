@@ -13,7 +13,7 @@ export const metadata = {
 
 const MA = Montserrat_Alternates({
   subsets: ['latin'],
-  weight: ['400', '700'],
+  weight: ['400', '500', '700'],
 });
 
 export default function RootLayout({
@@ -23,6 +23,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang='en' className={MA.className}>
+      <head>
+        <link rel='icon' href='/favicon.ico' sizes='any' />
+      </head>
       <body className='bg-background text-foreground'>
         <main className='min-h-screen flex flex-col items-center w-full'>
           {children}
