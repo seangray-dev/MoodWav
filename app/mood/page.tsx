@@ -25,13 +25,18 @@ const Mood = () => {
         const recentlyPlayedTrackIDs = await getRecentlyPlayedTrackIds(
           accessToken
         );
-        const audioFeatures = await fetchAudioFeaturesForTracks(
-          recentlyPlayedTrackIDs,
-          accessToken
-        );
-        if (audioFeatures) {
-          const mood = determineUserMood(audioFeatures);
-          setMoodData(mood);
+
+        if (recentlyPlayedTrackIDs) {
+          const audioFeatures = await fetchAudioFeaturesForTracks(
+            recentlyPlayedTrackIDs,
+            accessToken
+          );
+          if (audioFeatures) {
+            const mood = determineUserMood(audioFeatures);
+            setMoodData(mood);
+          }
+        } else {
+          console.error('No recently played track IDs were found.');
         }
       } else {
         console.error('Access token not found in session storage.');
