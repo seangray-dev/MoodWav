@@ -37,13 +37,13 @@ export default function Index() {
 
   return (
     <>
-      <div className='flex-1 w-full flex flex-col items-center'>
-        <Header />
+      <div className='flex-1 w-full flex flex-col items-center moodring'>
         <div className='flex-1 flex flex-col place-content-center container'>
+          <Header />
           <SpotifyMoodPrompt />
         </div>
+        <Footer />
       </div>
-      <Footer />
     </>
   );
 }
