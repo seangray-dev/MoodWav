@@ -12,8 +12,15 @@ export default function Index() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session }, error }) => {
-      console.log(session);
       if (session) {
+        console.log(session);
+
+        const accessToken = session.provider_token;
+        const refreshToken = session.provider_refresh_token;
+
+        sessionStorage.setItem('spotifyAccessToken', accessToken);
+        sessionStorage.setItem('spotifyRefreshToken', refreshToken);
+
         router.push('/mood');
       }
     });

@@ -7,9 +7,20 @@ import { Button } from './ui/button';
 
 const SpotifyButton = () => {
   async function signInWithSpotify() {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'spotify',
-    });
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'spotify',
+        options: {
+          scopes: 'user-read-recently-played',
+        },
+      });
+
+      if (error) {
+        throw error;
+      }
+    } catch (error) {
+      console.error('Error logging in:', error);
+    }
   }
 
   return (
