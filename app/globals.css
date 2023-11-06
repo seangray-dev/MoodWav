@@ -125,10 +125,10 @@
     #ffd700
   );
   background-size: 1200% 1200%;
-  -webkit-animation: MoodRing 30s ease infinite;
-  -moz-animation: MoodRing 30s ease infinite;
-  -o-animation: MoodRing 30s ease infinite;
-  animation: MoodRing 30s ease infinite;
+  -webkit-animation: MoodRing 60s linear infinite;
+  -moz-animation: MoodRing 60s linear infinite;
+  -o-animation: MoodRing 60s linear infinite;
+  animation: MoodRing 60s linear infinite;
 }
 @-webkit-keyframes MoodRing {
   0% {
