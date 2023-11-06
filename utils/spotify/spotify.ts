@@ -60,7 +60,7 @@ interface SpotifyTrack {
   id: string;
   is_playable: boolean;
   linked_from?: object;
-  known;
+  known: any;
   restrictions?: {
     reason: string;
   };
