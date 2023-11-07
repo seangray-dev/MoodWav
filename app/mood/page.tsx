@@ -1,6 +1,5 @@
 'use client';
 
-import { Alert } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { determineUserMood } from '@/utils/mood_calculations/calculations';
@@ -9,8 +8,11 @@ import {
   fetchSpotifyUserID,
   getRecentlyPlayedTrackIds,
 } from '@/utils/spotify/spotify';
-import { AlertCircle, Loader2, ShareIcon } from 'lucide-react';
+import { ShareIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import ErrorAlert from './Error';
+import LoadingData from './LoadingData';
+import NoMoodData from './NoMoodData';
 
 const Mood = () => {
   const [spotifyUserID, setSpotifyUserID] = useState<string | undefined>(
@@ -93,54 +95,15 @@ const Mood = () => {
   };
 
   if (loading) {
-    return (
-      <div className='moodring flex flex-1 w-full justify-center place-content-center flex-col'>
-        <div className='mx-auto flex flex-col gap-4 font-medium'>
-          <Loader2 className='h-10 w-10 animate-spin mx-auto' />
-          <p>Loading mood data...</p>
-        </div>
-      </div>
-    );
+    return <LoadingData />;
   }
 
   if (error) {
-    return (
-      <div className='moodring flex flex-1 w-full justify-center place-content-center flex-col'>
-        <div className='mx-auto'>
-          <Alert
-            variant={'destructive'}
-            className='bg-destructive text-white font-medium'>
-            <div className='flex items-center gap-2'>
-              <AlertCircle stroke='white' />
-              <span>
-                Error: Please check your Spotify connection or try refreshing
-                the page.
-              </span>
-            </div>
-          </Alert>
-        </div>
-      </div>
-    );
+    return <ErrorAlert />;
   }
 
   if (!moodData) {
-    return (
-      <div className='moodring flex flex-1 w-full justify-center place-content-center flex-col'>
-        <div className='mx-auto px-2'>
-          <Alert
-            variant={'destructive'}
-            className='bg-destructive text-white font-medium'>
-            <div className='flex items-center gap-2'>
-              <AlertCircle stroke='white' />
-              <span>
-                Mood scores are currently not available. Ensure you have
-                listened to some tracks recently and try again.
-              </span>
-            </div>
-          </Alert>
-        </div>
-      </div>
-    );
+    return <NoMoodData />;
   }
 
   return (
