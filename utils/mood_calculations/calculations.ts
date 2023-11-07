@@ -99,7 +99,11 @@ const calculateReflectiveScore = (features: SpotifyAudioFeatures): number => {
 // Function to determine the user's mood
 export const determineUserMood = (
   audioFeatures: SpotifyAudioFeatures[]
-): { highestMood: string; allMoods: Record<string, number> } => {
+): {
+  highestMood: string;
+  highestScore: number;
+  allMoods: Record<string, number>;
+} => {
   const moodScores = audioFeatures.reduce(
     (scores, features) => {
       scores.joyful += calculateJoyfulScore(features);
@@ -120,12 +124,31 @@ export const determineUserMood = (
     }
   );
 
-  // Sort the moods by their score
-  const sortedMoods = Object.entries(moodScores).sort((a, b) => b[1] - a[1]);
+  // Calculate the total score for normalization
+  const totalScore = Object.values(moodScores).reduce(
+    (total, score) => total + score,
+    0
+  );
 
-  // Return the highest mood and all mood scores
+  // Normalize scores so that they sum up to 100%
+  const moodPercentages = Object.fromEntries(
+    Object.entries(moodScores).map(([mood, score]) => [
+      mood,
+      (score / totalScore) * 100,
+    ])
+  );
+
+  // Find the highest mood score
+  const highestMoodEntry = Object.entries(moodPercentages).reduce(
+    (highest, current) => {
+      return current[1] > highest[1] ? current : highest;
+    }
+  );
+
+  // Return the highest mood, its score, and all mood percentages
   return {
-    highestMood: sortedMoods[0][0],
-    allMoods: moodScores,
+    highestMood: highestMoodEntry[0],
+    highestScore: highestMoodEntry[1],
+    allMoods: moodPercentages,
   };
 };
