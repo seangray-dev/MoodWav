@@ -1,5 +1,6 @@
 'use client';
 
+import SpotifyLogo from '@/assets/images/Spotify_Icon_RGB_Green.png';
 import Footer from '@/components/layout/Footer';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -177,7 +178,7 @@ const Mood = () => {
                 <Card className='w-full flex items-center gap-6 bg-primary text-primary-foreground border-none'>
                   <img
                     className='w-1/4'
-                    src={track.coverArt}
+                    src={track.coverArt ? track.coverArt : SpotifyLogo.src}
                     alt={track.name}
                   />
                   <div className='flex flex-col gap-2 overflow-hidden'>
