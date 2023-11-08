@@ -1,23 +1,72 @@
 import SpotifyLogo from '@/assets/images/Spotify_Icon_RGB_Green.png';
 import { Card } from '@/components/ui/card';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { TrackDetail } from '@/utils/spotify/spotify';
+import { Filter } from 'lucide-react';
 import { useState } from 'react';
 
+// Types
 interface RecentlyPlayedProps {
   recentTracks: TrackDetail[];
 }
 
+interface MoodSelectItemProps {
+  mood: string;
+}
+
+// Subcomponents
+
+const MoodSelectItem: React.FC<MoodSelectItemProps> = ({ mood }) => (
+  <SelectItem value={mood.toLowerCase()}>{mood}</SelectItem>
+);
+
+// Main Component
 const RecentlyPlayed: React.FC<RecentlyPlayedProps> = ({ recentTracks }) => {
+  // Local State
   const [imageLoaded, setImageLoaded] = useState<Record<string, boolean>>({});
 
+  // Functions
   const handleImageLoaded = (imageId: string) => {
     setImageLoaded((prev) => ({ ...prev, [imageId]: true }));
   };
 
+  const moods = [
+    'Joyful',
+    'Relaxed',
+    'Sad',
+    'Energetic',
+    'Angry',
+    'Reflective',
+  ];
+
   return (
     <div className='mt-20 mb-10 flex flex-col'>
-      <h2 className='text-lg md:text-2xl mb-6 font-medium'>Recent Played</h2>
+      <div className='flex flex-col md:flex-row justify-between items-center'>
+        <h2 className='text-lg md:text-2xl mb-6 font-medium'>Recent Played</h2>
+        <div className='flex mb-8 items-center justify-end gap-4'>
+          <Filter />
+          <Select>
+            <SelectTrigger className='bg-transparent max-w-[180px]'>
+              <SelectValue placeholder='Filter by mood' />
+            </SelectTrigger>
+            <SelectContent className='bg-primary text-primary-foreground'>
+              <SelectGroup>
+                {moods.map((mood) => (
+                  <MoodSelectItem mood={mood} key={mood} />
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
       <ul className='flex flex-col gap-4 md:grid md:grid-cols-2 lg:grid-cols-3'>
         {recentTracks.map((track) => (
           <li
