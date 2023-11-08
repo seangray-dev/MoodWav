@@ -4,6 +4,7 @@ import SpotifyLogo from '@/assets/images/Spotify_Icon_RGB_Green.png';
 import Footer from '@/components/layout/Footer';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { determineUserMood } from '@/utils/mood_calculations/calculations';
 import {
   TrackDetail,
@@ -29,6 +30,7 @@ const Mood = () => {
     allMoods: Record<string, number>;
   } | null>(null);
   const [recentTracks, setRecentTracks] = useState<TrackDetail[]>([]);
+  const [imageLoaded, setImageLoaded] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -38,7 +40,7 @@ const Mood = () => {
         if (!accessToken) throw new Error('Access token not found.');
 
         const tracksDetails = await fetchRecentlyPlayedTracks(accessToken);
-        console.log(accessToken);
+
         if (!tracksDetails || tracksDetails.length === 0)
           throw new Error('No recently played tracks found.');
 
@@ -98,6 +100,10 @@ const Mood = () => {
     angry: 'bg-gradient-to-t from-red-500 to-red-300',
     energetic: 'bg-gradient-to-t from-orange-400 to-orange-300',
     reflective: 'bg-gradient-to-t from-indigo-400 to-indigo-300',
+  };
+
+  const handleImageLoaded = (imageId: string) => {
+    setImageLoaded((prev) => ({ ...prev, [imageId]: true }));
   };
 
   if (loading) {
@@ -176,10 +182,16 @@ const Mood = () => {
                 className='hover:scale-[105%] transition-all duration-300 w-full'
                 key={track.id}>
                 <Card className='w-full flex items-center gap-6 bg-primary text-primary-foreground border-none'>
+                  {!imageLoaded[track.id] && (
+                    <Skeleton className='w-1/4 h-[100px]' />
+                  )}
                   <img
-                    className='w-1/4'
+                    className={`w-1/4 ${
+                      imageLoaded[track.id] ? 'block' : 'hidden'
+                    }`}
                     src={track.coverArt ? track.coverArt : SpotifyLogo.src}
                     alt={track.name}
+                    onLoad={() => handleImageLoaded(track.id)}
                   />
                   <div className='flex flex-col gap-2 overflow-hidden'>
                     <p className='font-bold truncate'>{track.name}</p>
