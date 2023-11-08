@@ -96,6 +96,13 @@ interface SpotifyRecentlyPlayedResponse {
   items: SpotifyRecentlyPlayedItem[];
 }
 
+export interface TrackDetail {
+  id: string;
+  name: string;
+  artistName: string;
+  coverArt: string;
+}
+
 export const fetchSpotifyUserID = async (
   accessToken: string
 ): Promise<string | null> => {
@@ -121,10 +128,12 @@ export const fetchSpotifyUserID = async (
   }
 };
 
-export const fetchRecentlyPlayedTracks = async (accessToken: string) => {
+export const fetchRecentlyPlayedTracks = async (
+  accessToken: string
+): Promise<TrackDetail[] | null> => {
   const url = 'https://api.spotify.com/v1/me/player/recently-played?limit=50';
 
-  https: try {
+  try {
     const response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -139,24 +148,18 @@ export const fetchRecentlyPlayedTracks = async (accessToken: string) => {
       return null;
     }
 
-    const data = await response.json();
-    return data;
+    const { items }: SpotifyRecentlyPlayedResponse = await response.json();
+
+    return items.map((item) => ({
+      id: item.track.id,
+      name: item.track.name,
+      artistName: item.track.artists.map((artist) => artist.name).join(', '),
+      coverArt: item.track.album.images[0]?.url ?? '',
+    }));
   } catch (error) {
     console.error('Error fetching recently played tracks:', error);
     return null;
   }
-};
-
-export const getRecentlyPlayedTrackIds = async (
-  accessToken: string
-): Promise<string[] | null> => {
-  const recentlyPlayedResponse = await fetchRecentlyPlayedTracks(accessToken);
-  if (recentlyPlayedResponse && recentlyPlayedResponse.items) {
-    return recentlyPlayedResponse.items.map(
-      (item: SpotifyRecentlyPlayedItem) => item.track.id
-    );
-  }
-  return null;
 };
 
 export const fetchAudioFeaturesForTracks = async (

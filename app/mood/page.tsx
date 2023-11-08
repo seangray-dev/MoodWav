@@ -1,12 +1,14 @@
 'use client';
 
+import Footer from '@/components/layout/Footer';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { determineUserMood } from '@/utils/mood_calculations/calculations';
 import {
+  TrackDetail,
   fetchAudioFeaturesForTracks,
+  fetchRecentlyPlayedTracks,
   fetchSpotifyUserID,
-  getRecentlyPlayedTrackIds,
 } from '@/utils/spotify/spotify';
 import { ShareIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -25,6 +27,7 @@ const Mood = () => {
     highestScore: number;
     allMoods: Record<string, number>;
   } | null>(null);
+  const [recentTracks, setRecentTracks] = useState<TrackDetail[]>([]);
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -33,17 +36,19 @@ const Mood = () => {
         const accessToken = sessionStorage.getItem('spotifyAccessToken');
         if (!accessToken) throw new Error('Access token not found.');
 
-        const recentlyPlayedTrackIDs = await getRecentlyPlayedTrackIds(
-          accessToken
-        );
-        if (!recentlyPlayedTrackIDs || !recentlyPlayedTrackIDs.length)
+        const tracksDetails = await fetchRecentlyPlayedTracks(accessToken);
+        console.log(accessToken);
+        if (!tracksDetails || tracksDetails.length === 0)
           throw new Error('No recently played tracks found.');
 
+        setRecentTracks(tracksDetails);
+
+        const trackIds = tracksDetails.map((track) => track.id);
         const audioFeatures = await fetchAudioFeaturesForTracks(
-          recentlyPlayedTrackIDs,
+          trackIds,
           accessToken
         );
-        if (!audioFeatures.length)
+        if (!audioFeatures || audioFeatures.length === 0)
           throw new Error('Could not fetch audio features for tracks.');
 
         const mood = determineUserMood(audioFeatures);
@@ -108,8 +113,8 @@ const Mood = () => {
 
   return (
     <div className='flex flex-1 flex-col place-content-center moodring w-full'>
-      <div className='container'>
-        <Card className='border-none mx-auto flex flex-col gap-6 md:grid md:grid-cols-2 md:max-w-[736px] rounded-[32px]'>
+      <div className='container mt-20'>
+        <Card className='flex-1 border-none mx-auto flex flex-col gap-6 md:grid md:grid-cols-2 rounded-[32px] bg-primary'>
           <Card
             className={`md:flex md:flex-col md:place-content-center md:gap-0 md:justify-evenly border-none rounded-[32px] flex flex-col gap-4 pb-10 py-6 ${
               moodGradient[
@@ -136,7 +141,9 @@ const Mood = () => {
             </p>
           </Card>
           <div className='px-8 flex flex-col gap-4 pb-8 md:pb-[46px] md:gap-[28px]'>
-            <h2 className='font-medium md:text-2xl md:mt-[38px]'>Summary</h2>
+            <h2 className='text-white font-medium md:text-2xl md:mt-[38px]'>
+              Summary
+            </h2>
             <ul className='flex flex-col gap-4'>
               {Object.entries(moodData.allMoods).map(([mood, score]) => (
                 <li
@@ -151,13 +158,41 @@ const Mood = () => {
                 </li>
               ))}
             </ul>
-            <Button className='rounded-[288px] py-8 text-[18px] flex gap-3 items-center'>
+            <Button className='rounded-[288px] py-8 text-[18px] flex gap-3 items-center bg-primary-foreground text-card-foreground hover:text-white hover:bg-transparent border border-white transition-all duration-300'>
               <span>Share</span>
               <ShareIcon size={18} />
             </Button>
           </div>
         </Card>
+
+        <div className='mt-20 mb-10 flex flex-col'>
+          <h2 className='text-lg md:text-2xl mb-6 font-medium'>
+            Recent Played
+          </h2>
+          <ul className='flex flex-col gap-4 md:grid md:grid-cols-2 lg:grid-cols-3'>
+            {recentTracks.map((track) => (
+              <li
+                className='hover:scale-[105%] transition-all duration-300 w-full'
+                key={track.id}>
+                <Card className='w-full flex items-center gap-6 bg-primary text-primary-foreground border-none'>
+                  <img
+                    className='w-1/4'
+                    src={track.coverArt}
+                    alt={track.name}
+                  />
+                  <div className='flex flex-col gap-2 overflow-hidden'>
+                    <p className='font-bold truncate'>{track.name}</p>
+                    <p className='text-muted-foreground truncate'>
+                      {track.artistName}
+                    </p>
+                  </div>
+                </Card>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
+      <Footer />
     </div>
   );
 };
