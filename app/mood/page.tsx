@@ -123,11 +123,9 @@ const Mood = () => {
       <div className='container mt-20'>
         <Card className='flex-1 border-none mx-auto flex flex-col gap-6 md:grid md:grid-cols-2 rounded-[32px] bg-primary'>
           <Card
-            className={`md:flex md:flex-col md:place-content-center md:gap-0 md:justify-evenly border-none rounded-[32px] flex flex-col gap-4 pb-10 py-6 ${
-              moodGradient[
-                moodData.highestMood.toLowerCase() as keyof typeof moodGradient
-              ]
-            } `}>
+            className={`md:flex md:flex-col md:place-content-center md:gap-0 md:justify-evenly  md:rounded-none md:rounded-l-[32px] flex flex-col gap-4 pb-10 py-6  rounded-t-[32px] rounded-b-none
+            bg-primary border-transparent md:border-r md:border-r-muted-foreground border-b-muted-foreground md:border-b-0
+             `}>
             <p className='text-center font-medium text-lg text-muted md:text-2xl'>
               Your Mood
             </p>
