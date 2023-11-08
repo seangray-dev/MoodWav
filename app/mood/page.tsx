@@ -1,6 +1,7 @@
 'use client';
 
 import SpotifyLogo from '@/assets/images/Spotify_Icon_RGB_Green.png';
+import MoodWavLogo from '@/assets/images/moodwav-high-resolution-logo-transparent.png';
 import Footer from '@/components/layout/Footer';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -13,6 +14,7 @@ import {
   fetchSpotifyUserID,
 } from '@/utils/spotify/spotify';
 import { ShareIcon } from 'lucide-react';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import ErrorAlert from './Error';
 import LoadingData from './LoadingData';
@@ -120,11 +122,18 @@ const Mood = () => {
 
   return (
     <div className='flex flex-1 flex-col place-content-center moodring w-full'>
-      <div className='container mt-20'>
-        <Card className='flex-1 border-none mx-auto flex flex-col gap-6 md:grid md:grid-cols-2 rounded-[32px] bg-primary'>
+      <div className='md:container px-2 mt-20'>
+        <Image
+          className='mb-10 mx-auto'
+          src={MoodWavLogo}
+          alt='moodwav logo'
+          width={300}
+          height={200}
+        />
+        <Card className='flex-1 border-none mx-auto flex flex-col gap-6 md:grid md:grid-cols-2 rounded-[32px] bg-primary drop-shadow-2xl'>
           <Card
             className={`md:flex md:flex-col md:place-content-center md:gap-0 md:justify-evenly  md:rounded-none md:rounded-l-[32px] flex flex-col gap-4 pb-10 py-6  rounded-t-[32px] rounded-b-none
-            bg-primary border-transparent md:border-r md:border-r-muted-foreground border-b-muted-foreground md:border-b-0
+            bg-primary border-transparent md:border-r md:border-r-muted-foreground border-b-muted-foreground md:border-b-0 
              `}>
             <p className='text-center font-medium text-lg text-muted md:text-2xl'>
               Your Mood
@@ -179,7 +188,7 @@ const Mood = () => {
               <li
                 className='hover:scale-[105%] transition-all duration-300 w-full'
                 key={track.id}>
-                <Card className='w-full flex items-center gap-6 bg-primary text-primary-foreground border-none'>
+                <Card className='w-full flex items-center gap-6 bg-primary text-primary-foreground border-none drop-shadow-2xl'>
                   {!imageLoaded[track.id] && (
                     <Skeleton className='w-1/4 h-[100px]' />
                   )}
