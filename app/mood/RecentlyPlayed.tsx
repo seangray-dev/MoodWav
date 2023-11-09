@@ -87,9 +87,9 @@ const RecentlyPlayed: React.FC<RecentlyPlayedProps> = ({
         <div className='flex mb-8 items-center justify-end gap-4'>
           <Filter />
           <Select
+            value={selectedMood ? selectedMood : ''}
             onValueChange={(value) => {
               setSelectedMood(value === 'Reset' ? '' : value);
-              console.log(`Selected mood: ${value}`);
             }}>
             <SelectTrigger className='bg-transparent w-[180px]'>
               <SelectValue placeholder='Filter by mood' />

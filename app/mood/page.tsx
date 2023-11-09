@@ -87,7 +87,7 @@ const Mood = () => {
           width={300}
           height={200}
         />
-        <MoodScoreCard moodData={moodData} />
+        <MoodScoreCard moodData={moodData} setSelectedMood={setSelectedMood} />
         <RecentlyPlayed
           recentTracks={recentTracks}
           selectedMood={selectedMood}
