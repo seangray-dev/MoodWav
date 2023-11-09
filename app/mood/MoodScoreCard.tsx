@@ -1,5 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { ShareIcon } from 'lucide-react';
 
 interface MoodData {
@@ -10,9 +16,13 @@ interface MoodData {
 
 interface MoodScoreCardProps {
   moodData: MoodData;
+  setSelectedMood: (mood: string | null) => void;
 }
 
-const MoodScoreCard: React.FC<MoodScoreCardProps> = ({ moodData }) => {
+const MoodScoreCard: React.FC<MoodScoreCardProps> = ({
+  moodData,
+  setSelectedMood,
+}) => {
   const moodBG = {
     joyful: 'bg-yellow-200',
     relaxed: 'bg-green-300',
@@ -71,14 +81,25 @@ const MoodScoreCard: React.FC<MoodScoreCardProps> = ({ moodData }) => {
         </h2>
         <ul className='flex flex-col gap-4'>
           {Object.entries(moodData.allMoods).map(([mood, score]) => (
-            <li
-              className={`flex justify-between text-sm px-4 py-[18px] rounded-lg ${
-                moodBG[mood as keyof typeof moodBG]
-              } ${moodTextColor[mood as keyof typeof moodTextColor]}`}
-              key={mood}>
-              <span className='font-medium'>{mood.toLocaleUpperCase()}</span>
-              <span className='font-bold'>{score.toFixed(1)}%</span>
-            </li>
+            <TooltipProvider key={mood}>
+              <Tooltip>
+                <TooltipTrigger>
+                  <li
+                    className={`flex justify-between text-sm px-4 py-[18px] rounded-lg ${
+                      moodBG[mood as keyof typeof moodBG]
+                    } ${moodTextColor[mood as keyof typeof moodTextColor]}`}
+                    onClick={() => setSelectedMood(mood)}>
+                    <span className='font-medium'>
+                      {mood.toLocaleUpperCase()}
+                    </span>
+                    <span className='font-bold'>{score.toFixed(1)}%</span>
+                  </li>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Filter tracks by {mood}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           ))}
         </ul>
         <Button className='rounded-[288px] py-8 text-[18px] flex gap-3 items-center bg-primary-foreground text-card-foreground hover:text-white hover:bg-transparent border border-white transition-all duration-300'>

@@ -1,3 +1,5 @@
+import { determineUserMood } from '../mood_calculations/calculations';
+
 interface SpotifyExternalUrls {
   spotify: string;
 }
@@ -101,6 +103,7 @@ export interface TrackDetail {
   name: string;
   artistName: string;
   coverArt: string;
+  mood: string;
 }
 
 export const fetchSpotifyUserID = async (
@@ -149,13 +152,40 @@ export const fetchRecentlyPlayedTracks = async (
     }
 
     const { items }: SpotifyRecentlyPlayedResponse = await response.json();
+    const trackIds = items.map((item) => item.track.id);
+    const audioFeatures = await fetchAudioFeaturesForTracks(
+      trackIds,
+      accessToken
+    );
 
-    return items.map((item) => ({
-      id: item.track.id,
-      name: item.track.name,
-      artistName: item.track.artists.map((artist) => artist.name).join(', '),
-      coverArt: item.track.album.images[0]?.url ?? '',
-    }));
+    if (!audioFeatures) {
+      throw new Error('Failed to fetch audio features for tracks');
+    }
+
+    // Calculate the mood for each track
+    const tracksWithMoods = items.map((item, index) => {
+      const moodData = determineUserMood([audioFeatures[index]]);
+      const allMoods = moodData.allMoods;
+
+      // Sort the moods by their scores and select the top 1
+      const topMood = Object.entries(allMoods)
+        .sort(([, a], [, b]) => b - a)
+        .slice(0, 1)
+        .map(([key]) => key)[0];
+
+      // Log the mood for each track
+      console.log(`Track: ${item.track.name}, Mood: ${topMood}`);
+
+      return {
+        id: item.track.id,
+        name: item.track.name,
+        artistName: item.track.artists.map((artist) => artist.name).join(', '),
+        coverArt: item.track.album.images[0]?.url ?? '',
+        mood: topMood,
+      };
+    });
+
+    return tracksWithMoods;
   } catch (error) {
     console.error('Error fetching recently played tracks:', error);
     return null;
