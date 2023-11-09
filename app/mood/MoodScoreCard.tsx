@@ -85,7 +85,7 @@ const MoodScoreCard: React.FC<MoodScoreCardProps> = ({
               <Tooltip>
                 <TooltipTrigger>
                   <li
-                    className={`flex justify-between text-sm px-4 py-[18px] rounded-lg ${
+                    className={`flex hover:scale-105 duration-300 transition-all justify-between text-sm px-4 py-[18px] rounded-lg ${
                       moodBG[mood as keyof typeof moodBG]
                     } ${moodTextColor[mood as keyof typeof moodTextColor]}`}
                     onClick={() => setSelectedMood(mood)}>
