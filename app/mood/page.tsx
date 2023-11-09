@@ -29,6 +29,7 @@ const Mood = () => {
     allMoods: Record<string, number>;
   } | null>(null);
   const [recentTracks, setRecentTracks] = useState<TrackDetail[]>([]);
+  const [selectedMood, setSelectedMood] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -87,7 +88,13 @@ const Mood = () => {
           height={200}
         />
         <MoodScoreCard moodData={moodData} />
-        <RecentlyPlayed recentTracks={recentTracks} />
+        <RecentlyPlayed
+          recentTracks={recentTracks}
+          selectedMood={selectedMood}
+          setSelectedMood={(mood: string | null) =>
+            setSelectedMood(mood ?? null)
+          }
+        />
       </div>
       <Footer />
     </div>
