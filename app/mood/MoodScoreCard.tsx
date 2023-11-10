@@ -24,29 +24,29 @@ const MoodScoreCard: React.FC<MoodScoreCardProps> = ({
   setSelectedMood,
 }) => {
   const moodBG = {
-    joyful: 'bg-yellow-200',
-    relaxed: 'bg-green-300',
-    sad: 'bg-blue-300',
-    angry: 'bg-red-300',
-    energetic: 'bg-orange-300',
+    blissful: 'bg-yellow-200',
+    serenity: 'bg-green-300',
+    melancholic: 'bg-blue-300',
+    vibrant: 'bg-orange-300',
+    nostalgic: 'bg-red-300',
     reflective: 'bg-indigo-300',
   };
 
   const moodTextColor = {
-    joyful: 'text-yellow-900',
-    relaxed: 'text-green-900',
-    sad: 'text-blue-900',
-    angry: 'text-red-900',
-    energetic: 'text-orange-900',
+    blissful: 'text-yellow-900',
+    serenity: 'text-green-900',
+    melancholic: 'text-blue-900',
+    vibrant: 'text-orange-900',
+    nostalgic: 'text-red-900',
     reflective: 'text-indigo-900',
   };
 
   const moodGradient = {
-    joyful: 'bg-gradient-to-b from-yellow-400 to-yellow-300',
-    relaxed: 'bg-gradient-to-b from-green-400 to-green-300',
-    sad: 'bg-gradient-to-b from-blue-400 to-blue-300',
-    angry: 'bg-gradient-to-b from-red-500 to-red-300',
-    energetic: 'bg-gradient-to-b from-orange-400 to-orange-300',
+    blissful: 'bg-gradient-to-b from-yellow-400 to-yellow-300',
+    serenity: 'bg-gradient-to-b from-green-400 to-green-300',
+    melancholic: 'bg-gradient-to-b from-blue-400 to-blue-300',
+    vibrant: 'bg-gradient-to-b from-orange-400 to-orange-300',
+    nostalgic: 'bg-gradient-to-b from-red-500 to-red-300',
     reflective: 'bg-gradient-to-b from-indigo-400 to-indigo-300',
   };
 
@@ -85,7 +85,7 @@ const MoodScoreCard: React.FC<MoodScoreCardProps> = ({
               <Tooltip>
                 <TooltipTrigger>
                   <li
-                    className={`flex justify-between text-sm px-4 py-[18px] rounded-lg ${
+                    className={`flex hover:scale-105 duration-300 transition-all justify-between text-sm px-4 py-[18px] rounded-lg ${
                       moodBG[mood as keyof typeof moodBG]
                     } ${moodTextColor[mood as keyof typeof moodTextColor]}`}
                     onClick={() => setSelectedMood(mood)}>
