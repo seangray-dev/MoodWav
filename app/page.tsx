@@ -2,6 +2,7 @@
 
 import Footer from '@/components/layout/Footer';
 import Header from '@/components/layout/Header';
+import Nav from '@/components/layout/Nav';
 import SpotifyMoodPrompt from '@/components/layout/SpotifyMoodPrompt';
 import { supabase } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
@@ -38,6 +39,7 @@ export default function Index() {
   return (
     <>
       <div className='flex-1 w-full flex flex-col items-center moodring'>
+        <Nav />
         <div className='flex-1 flex flex-col place-content-center container'>
           <Header />
           <SpotifyMoodPrompt />
