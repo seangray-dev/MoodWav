@@ -72,11 +72,11 @@ const RecentlyPlayed: React.FC<RecentlyPlayedProps> = ({
   };
 
   const moods = [
-    'Joyful',
-    'Relaxed',
-    'Sad',
-    'Energetic',
-    'Angry',
+    'Blissful',
+    'Serenity',
+    'Melancholic',
+    'Vibrant',
+    'Nostalgic',
     'Reflective',
   ];
 

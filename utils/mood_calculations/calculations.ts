@@ -20,7 +20,7 @@ const MAX_TEMPO = 200; // Max tempo around 200 BPM for very fast songs
 const normalize = (value: number, min: number, max: number): number =>
   (value - min) / (max - min);
 
-const calculateJoyfulScore = (features: SpotifyAudioFeatures): number => {
+const calculateBlissfulScore = (features: SpotifyAudioFeatures) => {
   return (
     0.3 * features.valence +
     0.2 * features.energy +
@@ -32,7 +32,7 @@ const calculateJoyfulScore = (features: SpotifyAudioFeatures): number => {
   );
 };
 
-const calculateRelaxedScore = (features: SpotifyAudioFeatures): number => {
+const calculateSerenityScore = (features: SpotifyAudioFeatures) => {
   return (
     0.3 * features.acousticness +
     0.25 * (1 - features.energy) +
@@ -43,7 +43,7 @@ const calculateRelaxedScore = (features: SpotifyAudioFeatures): number => {
   );
 };
 
-const calculateSadScore = (features: SpotifyAudioFeatures): number => {
+const calculateMelancholicScore = (features: SpotifyAudioFeatures) => {
   return (
     0.25 * (1 - features.valence) +
     0.2 * (features.mode === 0 ? 1 : 0) + // Minor mode
@@ -56,7 +56,7 @@ const calculateSadScore = (features: SpotifyAudioFeatures): number => {
   );
 };
 
-const calculateEnergeticScore = (features: SpotifyAudioFeatures): number => {
+const calculateVibrantScore = (features: SpotifyAudioFeatures) => {
   return (
     0.25 * features.energy +
     0.2 * normalize(features.tempo, MIN_TEMPO, MAX_TEMPO) +
@@ -69,21 +69,18 @@ const calculateEnergeticScore = (features: SpotifyAudioFeatures): number => {
   );
 };
 
-const calculateAngryScore = (features: SpotifyAudioFeatures): number => {
+const calculateNostalgicScore = (features: SpotifyAudioFeatures) => {
   return (
-    0.25 * features.energy +
-    0.2 * normalize(features.loudness, MIN_LOUDNESS, MAX_LOUDNESS) +
-    0.15 * (1 - features.valence) +
-    0.15 * normalize(features.tempo, MIN_TEMPO, MAX_TEMPO) +
-    0.1 * features.speechiness +
-    0.05 * (features.mode === 0 ? 1 : 0) + // Minor mode
-    0.05 * (1 - features.acousticness) +
-    0.05 * features.danceability +
-    0.05 * features.liveness
+    0.3 * features.acousticness +
+    0.25 * (1 - features.energy) +
+    0.2 * (1 - normalize(features.tempo, MIN_TEMPO, MAX_TEMPO)) +
+    0.1 * (1 - features.danceability) +
+    0.1 * features.valence +
+    0.05 * (1 - features.speechiness)
   );
 };
 
-const calculateReflectiveScore = (features: SpotifyAudioFeatures): number => {
+const calculateReflectiveScore = (features: SpotifyAudioFeatures) => {
   return (
     0.3 * features.instrumentalness +
     0.2 * features.acousticness +
@@ -106,20 +103,20 @@ export const determineUserMood = (
 } => {
   const moodScores = audioFeatures.reduce(
     (scores, features) => {
-      scores.joyful += calculateJoyfulScore(features);
-      scores.relaxed += calculateRelaxedScore(features);
-      scores.sad += calculateSadScore(features);
-      scores.energetic += calculateEnergeticScore(features);
-      scores.angry += calculateAngryScore(features);
+      scores.blissful += calculateBlissfulScore(features);
+      scores.serenity += calculateSerenityScore(features);
+      scores.melancholic += calculateMelancholicScore(features);
+      scores.vibrant += calculateVibrantScore(features);
+      scores.nostalgic += calculateNostalgicScore(features);
       scores.reflective += calculateReflectiveScore(features);
       return scores;
     },
     {
-      joyful: 0,
-      relaxed: 0,
-      sad: 0,
-      energetic: 0,
-      angry: 0,
+      blissful: 0,
+      serenity: 0,
+      melancholic: 0,
+      vibrant: 0,
+      nostalgic: 0,
       reflective: 0,
     }
   );
