@@ -77,11 +77,23 @@ const Mood = () => {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
 
-      // Clearing the session storage or any other client-side storage where the token is saved
       sessionStorage.clear();
 
       // Redirect to login or home page after successful sign out
       router.push('/');
+
+      // Log the user out spotify account
+      const url = 'https://accounts.spotify.com/en/logout';
+      const spotifyLogoutWindow = window.open(
+        url,
+        'Spotify Logout',
+        'width=700,height=500,top=40,left=40'
+      );
+      setTimeout(() => {
+        if (spotifyLogoutWindow) {
+          spotifyLogoutWindow.close();
+        }
+      }, 2000);
     } catch (error) {
       console.error('Error during sign out:', error);
     }
