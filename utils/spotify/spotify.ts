@@ -106,9 +106,14 @@ export interface TrackDetail {
   mood: string;
 }
 
-export const fetchSpotifyUserID = async (
+export interface SpotifyUserProfile {
+  display_name: string;
+  images: SpotifyImage[];
+}
+
+export const fetchSpotifyUserProfile = async (
   accessToken: string
-): Promise<string | null> => {
+): Promise<SpotifyUserProfile | null> => {
   try {
     const response = await fetch('https://api.spotify.com/v1/me', {
       headers: {
@@ -118,15 +123,16 @@ export const fetchSpotifyUserID = async (
 
     if (!response.ok) {
       // Handle non-200 responses here
-      console.error(`Error fetching Spotify profile: ${response.statusText}`);
+      console.error(
+        `Error fetching Spotify user profile: ${response.statusText}`
+      );
       return null;
     }
 
-    const spotifyProfile = await response.json();
-
-    return spotifyProfile.id;
+    const userProfile: SpotifyUserProfile = await response.json();
+    return userProfile;
   } catch (error) {
-    console.error('Error fetching Spotify user ID:', error);
+    console.error('Error fetching Spotify user profile:', error);
     return null;
   }
 };
