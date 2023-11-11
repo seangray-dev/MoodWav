@@ -118,7 +118,7 @@ const HowItWorks = () => {
       <main className='container my-10' role='main'>
         <h1 className='text-3xl sm:text-4xl font-bold mb-6'>How It Works</h1>
         <Separator />
-        <section className='my-6' aria-labelledby='disclaimer-section'>
+        <section className='my-8' aria-labelledby='disclaimer-section'>
           <h2 id='disclaimer-section' className='text-xl sm:text-2xl font-bold'>
             Disclaimer
           </h2>
@@ -131,13 +131,13 @@ const HowItWorks = () => {
         </section>
         <Separator />
 
-        <section className='my-6' aria-labelledby='audio-features-section'>
+        <section className='my-8' aria-labelledby='audio-features-section'>
           <h2
             id='audio-features-section'
             className='text-xl sm:text-2xl font-bold'>
             The Audio Features
           </h2>
-          <p className='mb-3'>
+          <p className='mb-6'>
             Each track's mood is determined based on several key audio features
             provided by Spotify:
           </p>
@@ -207,18 +207,47 @@ const HowItWorks = () => {
           </ul>
         </section>
         <Separator />
-        <section className='my-6' aria-labelledby='mood-calculation-section'>
+
+        <section
+          className='my-8'
+          aria-labelledby='user-mood-determination-section'>
+          <h2
+            id='user-mood-determination-section'
+            className='text-xl sm:text-2xl font-bold'>
+            Determining Your Mood
+          </h2>
+          <p className='mb-6'>
+            The mood that best matches your current state is determined by
+            analyzing your recently played tracks on Spotify.
+          </p>
+          <p className='font-medium mb-2'>Here's how it works:</p>
+          <p className='flex flex-col gap-1'>
+            <span>
+              - We calculate scores for each mood based on the audio features of
+              your recently played tracks.
+            </span>
+            <span>
+              - These scores are then normalized to identify the most prominent
+              mood.
+            </span>
+            <span>
+              - The mood with the highest score is considered your current mood.
+            </span>
+          </p>
+        </section>
+        <Separator />
+        <section className='my-8' aria-labelledby='mood-calculation-section'>
           <h2
             id='mood-calculation-section'
             className='text-xl sm:text-2xl font-bold'>
             Mood Calculation Explained
           </h2>
-          <p className='mb-3'>
+          <p className='mb-6'>
             Here's how we calculate different moods for each track, and the
             weighting for each audio feature:
           </p>
           <ul
-            className='text-left flex flex-col gap-2 md:grid md:grid-cols-2 md:grid-auto-rows: minmax(100px, auto)'
+            className='text-left flex flex-col gap-2 md:grid md:grid-cols-2'
             aria-label='List of Mood Calculations'>
             {moods.map((mood, index) => (
               <li key={index} className='md:col-span-1 flex flex-col flex-grow'>
