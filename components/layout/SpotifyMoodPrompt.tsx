@@ -7,7 +7,8 @@ const SpotifyMoodPrompt = () => {
         Discover Your Mood
       </h2>
       <p className='text-center mb-6'>
-        Connect with Spotify to analyze the mood of your music.
+        Connect with Spotify to analyze your mood based on recently played
+        songs.
       </p>
       <SpotifyButton />
     </>
