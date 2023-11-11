@@ -1,3 +1,5 @@
+import MoodWavLogo from '@/assets/images/moodwav-high-resolution-logo-transparent.png';
+import MoodWavIcon from '@/assets/images/moodwav-icon-only-white.png';
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -5,9 +7,9 @@ import {
   NavigationMenuList,
 } from '@/components/ui/navigation-menu';
 import { supabase } from '@/utils/supabase/client';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Button } from '../ui/button';
 
 const Nav = () => {
   const router = useRouter();
@@ -40,27 +42,47 @@ const Nav = () => {
   };
 
   return (
-    <div className='flex justify-end container mt-6'>
-      <NavigationMenu>
-        <NavigationMenuList className='flex gap-4'>
-          <NavigationMenuItem>
-            <Link href='/how-it-works' legacyBehavior passHref>
-              <NavigationMenuLink className='hover:underline '>
-                How It Works
-              </NavigationMenuLink>
-            </Link>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <button
-              onClick={async () => {
-                await signOut();
-              }}
-              className='hover:underline'>
-              Sign out
-            </button>
-          </NavigationMenuItem>
-        </NavigationMenuList>
-      </NavigationMenu>
+    <div className='container mt-6'>
+      <div className='flex justify-between items-center'>
+        <Link href='/' className='hidden md:block'>
+          <Image
+            className='hidden md:block'
+            src={MoodWavLogo}
+            alt='MoodWav Logo'
+            width={150}
+            height={150}
+          />
+        </Link>
+        <Link href='/' className='md:hidden'>
+          <Image
+            className='md:hidden'
+            src={MoodWavIcon}
+            alt='MoodWav Logo'
+            width={50}
+            height={150}
+          />
+        </Link>
+        <NavigationMenu>
+          <NavigationMenuList className='flex gap-4 justify-between'>
+            <NavigationMenuItem>
+              <Link href='/how-it-works' legacyBehavior passHref>
+                <NavigationMenuLink className='hover:underline '>
+                  How It Works
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <button
+                onClick={async () => {
+                  await signOut();
+                }}
+                className='hover:underline'>
+                Sign out
+              </button>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
+      </div>
     </div>
   );
 };
