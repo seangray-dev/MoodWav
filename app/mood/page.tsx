@@ -8,7 +8,6 @@ import {
   TrackDetail,
   fetchAudioFeaturesForTracks,
   fetchRecentlyPlayedTracks,
-  fetchSpotifyUserID,
 } from '@/utils/spotify/spotify';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
@@ -20,9 +19,6 @@ import RecentlyPlayed from './RecentlyPlayed';
 
 const Mood = () => {
   // Local State
-  const [spotifyUserID, setSpotifyUserID] = useState<string | undefined>(
-    undefined
-  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [moodData, setMoodData] = useState<{
