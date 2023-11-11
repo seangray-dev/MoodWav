@@ -2,17 +2,14 @@
 
 import MoodWavLogo from '@/assets/images/moodwav-high-resolution-logo-transparent.png';
 import Footer from '@/components/layout/Footer';
-import { Button } from '@/components/ui/button';
+import Nav from '@/components/layout/Nav';
 import { determineUserMood } from '@/utils/mood_calculations/calculations';
 import {
   TrackDetail,
   fetchAudioFeaturesForTracks,
   fetchRecentlyPlayedTracks,
-  fetchSpotifyUserID,
 } from '@/utils/spotify/spotify';
-import { supabase } from '@/utils/supabase/client';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import ErrorAlert from './Error';
 import LoadingData from './LoadingData';
@@ -22,10 +19,6 @@ import RecentlyPlayed from './RecentlyPlayed';
 
 const Mood = () => {
   // Local State
-  const router = useRouter();
-  const [spotifyUserID, setSpotifyUserID] = useState<string | undefined>(
-    undefined
-  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [moodData, setMoodData] = useState<{
@@ -72,33 +65,6 @@ const Mood = () => {
     fetchProfileData();
   }, []);
 
-  const signOut = async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-
-      sessionStorage.clear();
-
-      // Redirect to login or home page after successful sign out
-      router.push('/');
-
-      // Log the user out spotify account
-      const url = 'https://accounts.spotify.com/en/logout';
-      const spotifyLogoutWindow = window.open(
-        url,
-        'Spotify Logout',
-        'width=700,height=500,top=40,left=40'
-      );
-      setTimeout(() => {
-        if (spotifyLogoutWindow) {
-          spotifyLogoutWindow.close();
-        }
-      }, 2000);
-    } catch (error) {
-      console.error('Error during sign out:', error);
-    }
-  };
-
   if (loading) {
     return <LoadingData />;
   }
@@ -113,16 +79,7 @@ const Mood = () => {
 
   return (
     <div className='flex flex-1 flex-col place-content-center moodring w-full'>
-      <div className='flex justify-end container'>
-        <Button
-          onClick={async () => {
-            await signOut();
-          }}
-          variant={'ghost'}
-          className='flex-end hover:bg-transparent hover:text-white hover:underline transition-all duration-300 pt-6'>
-          Sign out
-        </Button>
-      </div>
+      <Nav />
       <div className='md:container px-2 mt-20'>
         <Image
           className='mb-10 mx-auto'
