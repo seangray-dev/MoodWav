@@ -1,4 +1,3 @@
-import MoodWavLogo from '@/assets/images/moodwav-high-resolution-logo-transparent.png';
 import MoodWavIcon from '@/assets/images/moodwav-icon-only-white.png';
 import {
   Menubar,
@@ -6,29 +5,45 @@ import {
   MenubarItem,
   MenubarMenu,
   MenubarSeparator,
-  MenubarShortcut,
   MenubarTrigger,
 } from '@/components/ui/menubar';
 import {
   NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuIndicator,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
-  NavigationMenuViewport,
 } from '@/components/ui/navigation-menu';
-
-import { MenuIcon } from 'lucide-react';
-
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import {
+  SpotifyUserProfile,
+  fetchSpotifyUserProfile,
+} from '@/utils/spotify/spotify';
 import { supabase } from '@/utils/supabase/client';
+import { MenuIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 const Nav = () => {
   const router = useRouter();
+  const [userProfile, setUserProfile] = useState<SpotifyUserProfile | null>(
+    null
+  );
+
+  useEffect(() => {
+    const accessToken = sessionStorage.getItem('spotifyAccessToken');
+    if (accessToken) {
+      fetchSpotifyUserProfile(accessToken).then((profile) => {
+        setUserProfile(profile);
+      });
+    }
+  }, []);
 
   const signOut = async () => {
     try {
@@ -76,15 +91,19 @@ const Nav = () => {
                   How It Works
                 </Link>
               </MenubarItem>
-              <MenubarSeparator />
-              <MenubarItem className='hover:underline'>
-                <button
-                  onClick={async () => {
-                    await signOut();
-                  }}>
-                  Sign out
-                </button>
-              </MenubarItem>
+              {userProfile && (
+                <>
+                  <MenubarSeparator />
+                  <MenubarItem className='hover:underline'>
+                    <button
+                      onClick={async () => {
+                        await signOut();
+                      }}>
+                      Sign out
+                    </button>
+                  </MenubarItem>
+                </>
+              )}
             </MenubarContent>
           </MenubarMenu>
         </Menubar>
@@ -99,15 +118,39 @@ const Nav = () => {
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
-            <NavigationMenuItem>
-              <button
-                onClick={async () => {
-                  await signOut();
-                }}
-                className='hover:underline'>
-                Sign out
-              </button>
-            </NavigationMenuItem>
+            {userProfile && (
+              <>
+                <NavigationMenuItem className='text-right'>
+                  <button
+                    onClick={async () => {
+                      await signOut();
+                    }}
+                    className='hover:underline'>
+                    Sign out
+                  </button>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <TooltipProvider>
+                    {userProfile.images.length > 0 && (
+                      <>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <img
+                              src={userProfile.images[0].url}
+                              alt={`${userProfile.display_name}'s Profile Picture`}
+                              className='rounded-full h-10 w-10'
+                            />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <span>{userProfile.display_name}</span>
+                          </TooltipContent>
+                        </Tooltip>
+                      </>
+                    )}
+                  </TooltipProvider>
+                </NavigationMenuItem>
+              </>
+            )}
           </NavigationMenuList>
         </NavigationMenu>
       </div>
