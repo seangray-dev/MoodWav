@@ -1,11 +1,27 @@
 import MoodWavLogo from '@/assets/images/moodwav-high-resolution-logo-transparent.png';
 import MoodWavIcon from '@/assets/images/moodwav-icon-only-white.png';
 import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarTrigger,
+} from '@/components/ui/menubar';
+import {
   NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuIndicator,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
+  NavigationMenuTrigger,
+  NavigationMenuViewport,
 } from '@/components/ui/navigation-menu';
+
+import { MenuIcon } from 'lucide-react';
+
 import { supabase } from '@/utils/supabase/client';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -44,26 +60,38 @@ const Nav = () => {
   return (
     <div className='container mt-6'>
       <div className='flex justify-between items-center'>
-        <Link href='/' className='hidden md:block'>
-          <Image
-            className='hidden md:block'
-            src={MoodWavLogo}
-            alt='MoodWav Logo'
-            width={150}
-            height={150}
-          />
+        <Link href='/'>
+          <Image src={MoodWavIcon} alt='MoodWav Logo' width={50} height={50} />
         </Link>
-        <Link href='/' className='md:hidden'>
-          <Image
-            className='md:hidden'
-            src={MoodWavIcon}
-            alt='MoodWav Logo'
-            width={50}
-            height={150}
-          />
-        </Link>
-        <NavigationMenu>
-          <NavigationMenuList className='flex gap-4 justify-between'>
+
+        {/* Mobile Menu */}
+        <Menubar className='bg-transparent border-none md:hidden'>
+          <MenubarMenu>
+            <MenubarTrigger>
+              <MenuIcon></MenuIcon>
+            </MenubarTrigger>
+            <MenubarContent className='bg-secondary-foreground text-white md:hidden'>
+              <MenubarItem className='hover:underline'>
+                <Link href='/how-it-works' legacyBehavior passHref>
+                  How It Works
+                </Link>
+              </MenubarItem>
+              <MenubarSeparator />
+              <MenubarItem className='hover:underline'>
+                <button
+                  onClick={async () => {
+                    await signOut();
+                  }}>
+                  Sign out
+                </button>
+              </MenubarItem>
+            </MenubarContent>
+          </MenubarMenu>
+        </Menubar>
+
+        {/* Desktop Menu */}
+        <NavigationMenu className='hidden md:block'>
+          <NavigationMenuList className='md:flex gap-4 justify-between hidden'>
             <NavigationMenuItem>
               <Link href='/how-it-works' legacyBehavior passHref>
                 <NavigationMenuLink className='hover:underline '>
