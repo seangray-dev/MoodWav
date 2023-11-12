@@ -40,7 +40,6 @@ const RecentlyPlayed: React.FC<RecentlyPlayedProps> = ({
       value={mood.toLowerCase()}
       onClick={() => {
         const newMood = mood.toLowerCase();
-        console.log(`Selected mood: ${newMood}`);
         setSelectedMood(newMood);
       }}>
       {mood}

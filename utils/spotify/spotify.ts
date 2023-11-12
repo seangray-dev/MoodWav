@@ -179,9 +179,6 @@ export const fetchRecentlyPlayedTracks = async (
         .slice(0, 1)
         .map(([key]) => key)[0];
 
-      // Log the mood for each track
-      console.log(`Track: ${item.track.name}, Mood: ${topMood}`);
-
       return {
         id: item.track.id,
         name: item.track.name,
