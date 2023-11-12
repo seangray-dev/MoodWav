@@ -12,28 +12,20 @@ export default function Index() {
   const router = useRouter();
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session }, error }) => {
-      if (error) {
-        console.error('Error fetching session:', error);
-      } else if (session) {
-        const accessToken = session.provider_token;
-        const refreshToken = session.provider_refresh_token;
-
-        if (typeof accessToken === 'string') {
-          sessionStorage.setItem('spotifyAccessToken', accessToken);
-        } else {
-          console.error('Access token is not available.');
-        }
-
-        if (typeof refreshToken === 'string') {
-          sessionStorage.setItem('spotifyRefreshToken', refreshToken);
-        } else {
-          console.error('Refresh token is not available.');
-        }
-
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) {
         router.push('/mood');
+      } else if (event === 'SIGNED_OUT') {
+        // Handle the sign out event if needed
       }
     });
+
+    // Clean up the listener when the component is unmounted
+    return () => {
+      subscription.unsubscribe();
+    };
   }, [router]);
 
   return (
