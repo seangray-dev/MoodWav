@@ -9,6 +9,7 @@ import {
   fetchAudioFeaturesForTracks,
   fetchRecentlyPlayedTracks,
 } from '@/utils/spotify/spotify';
+import { supabase } from '@/utils/supabase/client';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import ErrorAlert from './Error';
@@ -35,27 +36,40 @@ const Mood = () => {
     const fetchProfileData = async () => {
       try {
         setLoading(true);
-        const accessToken = sessionStorage.getItem('spotifyAccessToken');
-        if (!accessToken) throw new Error('Access token not found.');
 
-        const tracksDetails = await fetchRecentlyPlayedTracks(accessToken);
+        // Use supabase.auth.getSession() to retrieve the current session
+        const { data: session, error } = await supabase.auth.getSession();
 
-        if (!tracksDetails || tracksDetails.length === 0)
-          throw new Error('No recently played tracks found.');
+        if (error || !session.session?.provider_token) {
+          throw new Error('Error retrieving user session');
+        }
 
-        setRecentTracks(tracksDetails);
+        if (session) {
+          const accessToken = session.session?.provider_token;
+          const tracksDetails = await fetchRecentlyPlayedTracks(accessToken);
 
-        const trackIds = tracksDetails.map((track) => track.id);
-        const audioFeatures = await fetchAudioFeaturesForTracks(
-          trackIds,
-          accessToken
-        );
-        if (!audioFeatures || audioFeatures.length === 0)
-          throw new Error('Could not fetch audio features for tracks.');
+          if (!tracksDetails || tracksDetails.length === 0) {
+            throw new Error('No recently played tracks found.');
+          }
 
-        const mood = determineUserMood(audioFeatures);
-        setMoodData(mood);
-      } catch (e: unknown) {
+          setRecentTracks(tracksDetails);
+
+          const trackIds = tracksDetails.map((track) => track.id);
+          const audioFeatures = await fetchAudioFeaturesForTracks(
+            trackIds,
+            accessToken
+          );
+
+          if (!audioFeatures || audioFeatures.length === 0) {
+            throw new Error('Could not fetch audio features for tracks.');
+          }
+
+          const mood = determineUserMood(audioFeatures);
+          setMoodData(mood);
+        } else {
+          throw new Error('User not authenticated.');
+        }
+      } catch (e) {
         setError(e instanceof Error ? e.message : 'An unknown error occurred.');
       } finally {
         setLoading(false);
