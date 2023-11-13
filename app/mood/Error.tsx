@@ -1,10 +1,12 @@
+import Nav from '@/components/layout/Nav';
 import { Alert } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 
 const ErrorAlert = () => {
   return (
-    <div className='moodring flex flex-1 w-full justify-center place-content-center flex-col'>
-      <div className='mx-auto'>
+    <div className='flex flex-1 flex-col moodring w-full'>
+      <Nav />
+      <div className='mx-auto flex flex-1 flex-col justify-center'>
         <Alert
           variant={'destructive'}
           className='bg-destructive text-white font-medium'>
