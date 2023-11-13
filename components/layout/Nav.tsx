@@ -32,17 +32,58 @@ import { useEffect, useState } from 'react';
 
 const Nav = () => {
   const router = useRouter();
+
+  // Local State
   const [userProfile, setUserProfile] = useState<SpotifyUserProfile | null>(
     null
   );
 
+  // Functions
   useEffect(() => {
-    const accessToken = sessionStorage.getItem('spotifyAccessToken');
-    if (accessToken) {
-      fetchSpotifyUserProfile(accessToken).then((profile) => {
+    const fetchProfileData = async () => {
+      // Retrieve the current session
+      const { data: session, error } = await supabase.auth.getSession();
+
+      if (error) {
+        console.error('Error retrieving user session:', error);
+        return;
+      }
+
+      if (!session.session?.provider_token) {
+        console.error('No provider token available in session');
+        return;
+      }
+
+      const accessToken = session.session?.provider_token;
+      try {
+        const profile = await fetchSpotifyUserProfile(accessToken);
         setUserProfile(profile);
-      });
-    }
+      } catch (error) {
+        console.error('Error fetching Spotify user profile:', error);
+      }
+    };
+
+    fetchProfileData();
+  }, []);
+
+  useEffect(() => {
+    const { data: subscription } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (event === 'SIGNED_OUT') {
+          setUserProfile(null);
+        } else if (event === 'SIGNED_IN' && session) {
+          const accessToken = session.provider_token;
+          if (accessToken) {
+            const profile = await fetchSpotifyUserProfile(accessToken);
+            setUserProfile(profile);
+          }
+        }
+      }
+    );
+
+    return () => {
+      subscription.subscription.unsubscribe();
+    };
   }, []);
 
   const signOut = async () => {
@@ -50,10 +91,7 @@ const Nav = () => {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
 
-      sessionStorage.clear();
-
-      // Redirect to login or home page after successful sign out
-      router.push('/');
+      setUserProfile(null);
 
       // Log the user out spotify account
       const url = 'https://accounts.spotify.com/en/logout';
