@@ -27,7 +27,7 @@ export default function RootLayout({
         <link rel='icon' href='/favicon.ico' sizes='any' />
       </head>
       <body className='bg-background text-foreground'>
-        <main className='min-h-screen flex flex-col items-center w-full'>
+        <main className='min-h-screen flex flex-col items-center w-full text-white'>
           {children}
         </main>
       </body>
