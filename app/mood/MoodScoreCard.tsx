@@ -102,10 +102,10 @@ const MoodScoreCard: React.FC<MoodScoreCardProps> = ({
             </TooltipProvider>
           ))}
         </ul>
-        <Button className='rounded-[288px] py-8 text-[18px] flex gap-3 items-center bg-primary-foreground text-card-foreground hover:text-white hover:bg-transparent border border-white transition-all duration-300'>
+        {/* <Button className='rounded-[288px] py-8 text-[18px] flex gap-3 items-center bg-primary-foreground text-card-foreground hover:text-white hover:bg-transparent border border-white transition-all duration-300'>
           <span>Share</span>
           <ShareIcon size={18} />
-        </Button>
+        </Button> */}
       </div>
     </Card>
   );
