@@ -110,7 +110,7 @@ const RecentlyPlayed: React.FC<RecentlyPlayedProps> = ({
         {filteredTracks.length > 0 ? (
           filteredTracks.map((track: TrackDetail, index) => (
             <li
-              className='hover:scale-[105%] transition-all duration-300 w-full'
+              className='md:hover:scale-[105%] transition-all duration-300 w-full'
               key={`${track.id}-${index}`}>
               <Card className='w-full flex items-center gap-6 bg-primary text-primary-foreground border-none drop-shadow-2xl'>
                 {!imageLoaded[track.id] && (
