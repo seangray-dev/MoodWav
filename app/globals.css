@@ -157,3 +157,51 @@
     background-position: 0% 50%;
   }
 }
+
+.blissful {
+  background: linear-gradient(
+    to bottom,
+    #b45309 0%,
+    #fde047 100%
+  ); /* from amber-900 to amber-200 */
+}
+
+.serenity {
+  background: linear-gradient(
+    to bottom,
+    #065f46 0%,
+    #86efac 100%
+  ); /* from green-900 to green-200 */
+}
+
+.melancholic {
+  background: linear-gradient(
+    to bottom,
+    #1e40af 0%,
+    #bfdbfe 100%
+  ); /* from blue-900 to blue-200 */
+}
+
+.vibrant {
+  background: linear-gradient(
+    to bottom,
+    #7c2d12 0%,
+    #fed7aa 100%
+  ); /* from orange-900 to orange-200 */
+}
+
+.nostalgic {
+  background: linear-gradient(
+    to bottom,
+    #7f1d1d 0%,
+    #fecaca 100%
+  ); /* from red-900 to red-200 */
+}
+
+.reflective {
+  background: linear-gradient(
+    to bottom,
+    #3730a3 0%,
+    #c7d2fe 100%
+  ); /* from indigo-900 to indigo-200 */
+}

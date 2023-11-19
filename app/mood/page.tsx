@@ -79,6 +79,22 @@ const Mood = () => {
     fetchProfileData();
   }, []);
 
+  const getMoodClass = (mood) => {
+    const moodClasses = {
+      blissful: 'blissful',
+      serenity: 'serenity',
+      melancholic: 'melancholic',
+      vibrant: 'vibrant',
+      nostalgic: 'nostalgic',
+      reflective: 'reflective',
+    };
+    return moodClasses[mood] || 'default-mood-class';
+  };
+
+  const moodClass = moodData
+    ? getMoodClass(moodData.highestMood)
+    : 'default-mood-class';
+
   if (loading) {
     return <LoadingData />;
   }
@@ -92,9 +108,11 @@ const Mood = () => {
   }
 
   return (
-    <div className='flex flex-1 flex-col place-content-center moodring w-full'>
+    <div
+      // className={`flex flex-1 flex-col place-content-center w-full ${moodClass}`}>
+      className={`flex flex-1 flex-col place-content-center w-full blissful`}>
       <Nav />
-      <div className='md:container px-2 mt-20'>
+      <div className='md:container px-2 mt-20 flex-1'>
         <Image
           className='mb-10 mx-auto'
           src={MoodWavLogo}
