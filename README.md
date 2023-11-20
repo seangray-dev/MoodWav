@@ -18,7 +18,6 @@
 ## Features
 
 - **Mood Analysis:** Leverages Spotify's Web API to assess users' current moods based on their recent listening history.
-- **Dynamic Mood Profiles:** Generates personalized mood profiles, offering a deeper understanding of how music influences emotions.
 - **Seamless Spotify Integration:** Connects effortlessly with Spotify, allowing users to link their accounts for a customized experience.
 - **Interactive Mood Visualization:** Utilizes vibrant visuals to represent mood data, enhancing user engagement.
 - **Accessible Request Access:** Offers a streamlined process for new users to request access, ensuring a user-friendly experience.
