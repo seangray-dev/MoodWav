@@ -6,6 +6,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@formspark/use-formspark": "^0.1.39",
     "@hookform/resolvers": "^3.3.2",
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-menubar": "^1.0.4",
