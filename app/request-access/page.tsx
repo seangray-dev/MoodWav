@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -98,7 +97,7 @@ const RequestAccess = () => {
                 name='email'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>Spotify Login Email</FormLabel>
                     <FormControl>
                       <Input
                         className='bg-transparent placeholder:text-white/75'
