@@ -22,7 +22,7 @@ const SpotifyMoodPrompt = () => {
         Currently access to MoodWav is by invitation only due to Spotify API
         restrictions.
       </div>
-      <div className='flex justify-center gap-2'>
+      <div className='flex flex-col md:flex-row justify-center gap-2'>
         <SpotifyButton />
         <Button onClick={handleRequestAccess} variant={'secondary'}>
           Request Access
