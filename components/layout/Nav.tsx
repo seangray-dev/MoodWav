@@ -27,12 +27,9 @@ import { supabase } from '@/utils/supabase/client';
 import { MenuIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const Nav = () => {
-  const router = useRouter();
-
   // Local State
   const [userProfile, setUserProfile] = useState<SpotifyUserProfile | null>(
     null
@@ -111,7 +108,7 @@ const Nav = () => {
   };
 
   return (
-    <div className='container mt-6'>
+    <nav className='container py-2 border-b'>
       <div className='flex justify-between items-center'>
         <Link href='/'>
           <Image src={MoodWavIcon} alt='MoodWav Logo' width={50} height={50} />
@@ -192,7 +189,7 @@ const Nav = () => {
           </NavigationMenuList>
         </NavigationMenu>
       </div>
-    </div>
+    </nav>
   );
 };
 
