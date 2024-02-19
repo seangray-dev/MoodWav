@@ -65,56 +65,53 @@ const RequestAccess = () => {
   };
 
   return (
-    <div className='flex-1 w-full flex flex-col items-center moodring'>
-      <Nav />
-      <div className='flex-1 flex flex-col place-content-center container'>
-        <Header />
-        <h1 className='text-center font-medium text-2xl mb-12 md:text-3xl'>
-          Request Access
-        </h1>
-        <div className='md:w-1/2 mx-auto w-full'>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
-              <FormField
-                control={form.control}
-                name='name'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <Input
-                        className='bg-transparent placeholder:text-white/75'
-                        placeholder='First & Last Name'
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name='email'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Spotify Login Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        className='bg-transparent placeholder:text-white/75'
-                        placeholder='example@gmail.com'
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type='submit' disabled={submitting}>
-                Submit
-              </Button>
-            </form>
-          </Form>
-        </div>
+    <div className='flex-1 flex flex-col place-content-center container'>
+      <Header />
+      <h1 className='text-center font-medium text-2xl mb-12 md:text-3xl'>
+        Request Access
+      </h1>
+      <div className='md:w-1/2 mx-auto w-full'>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
+            <FormField
+              control={form.control}
+              name='name'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      className='bg-transparent placeholder:text-white/75'
+                      placeholder='First & Last Name'
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='email'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Spotify Login Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      className='bg-transparent placeholder:text-white/75'
+                      placeholder='example@gmail.com'
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type='submit' disabled={submitting}>
+              Submit
+            </Button>
+          </form>
+        </Form>
       </div>
     </div>
   );
