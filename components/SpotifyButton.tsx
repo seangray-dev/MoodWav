@@ -11,7 +11,7 @@ const SpotifyButton = () => {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'spotify',
         options: {
-          scopes: 'user-read-recently-played',
+          scopes: 'user-read-recently-played user-top-read',
         },
       });
 
