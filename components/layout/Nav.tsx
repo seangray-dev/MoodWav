@@ -1,3 +1,5 @@
+'use client';
+
 import MoodWavIcon from '@/assets/images/moodwav-icon-only-white.png';
 import {
   Menubar,

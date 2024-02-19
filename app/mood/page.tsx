@@ -92,8 +92,7 @@ const Mood = () => {
   }
 
   return (
-    <div className='flex flex-1 flex-col place-content-center moodring w-full'>
-      <Nav />
+    <div className='flex flex-1 flex-col place-content-center w-full'>
       <div className='md:container px-2 mt-20'>
         <Image
           className='mb-10 mx-auto'
@@ -111,7 +110,6 @@ const Mood = () => {
           }
         />
       </div>
-      <Footer />
     </div>
   );
 };

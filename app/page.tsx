@@ -29,15 +29,9 @@ export default function Index() {
   }, [router]);
 
   return (
-    <>
-      <div className='flex-1 w-full flex flex-col items-center moodring'>
-        <Nav />
-        <div className='flex-1 flex flex-col place-content-center container'>
-          <Header />
-          <SpotifyMoodPrompt />
-        </div>
-        <Footer />
-      </div>
-    </>
+    <div className='w-full h-full flex flex-col justify-center items-center place-content-center'>
+      <Header />
+      <SpotifyMoodPrompt />
+    </div>
   );
 }
