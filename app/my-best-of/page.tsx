@@ -7,7 +7,7 @@ import {
   fetchUsersTopTracks,
 } from '@/utils/spotify/spotify';
 import { supabase } from '@/utils/supabase/client';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 export default function BestOfPage() {
   const [topArtists, setTopArtists] = useState<any>(null);
@@ -15,12 +15,19 @@ export default function BestOfPage() {
     useState<string>('medium_term');
   const [topTracks, setTopTracks] = useState<any>(null);
   const [timeFrameTracks, setTimeFrameTracks] = useState<string>('medium_term');
+  const [accessToken, setAccessToken] = useState<string | null>(null); // State variable for accessToken
+
+  useEffect(() => {
+    const getAccessToken = async () => {
+      const { data: session } = await supabase.auth.getSession();
+      setAccessToken(session?.session?.provider_token || null);
+    };
+
+    getAccessToken();
+  }, []);
 
   useEffect(() => {
     const getTopArtists = async () => {
-      const { data: session } = await supabase.auth.getSession();
-      const accessToken = session?.session?.provider_token;
-
       if (accessToken) {
         try {
           const topArtistsData = await fetchUsersTopArtists(
@@ -35,13 +42,10 @@ export default function BestOfPage() {
     };
 
     getTopArtists();
-  }, [timeFrameArtists]);
+  }, [accessToken, timeFrameArtists]);
 
   useEffect(() => {
     const getTopTracks = async () => {
-      const { data: session } = await supabase.auth.getSession();
-      const accessToken = session?.session?.provider_token;
-
       if (accessToken) {
         try {
           const topTracksData = await fetchUsersTopTracks(
@@ -56,7 +60,7 @@ export default function BestOfPage() {
     };
 
     getTopTracks();
-  }, [timeFrameTracks]);
+  }, [accessToken, timeFrameTracks]);
 
   return (
     <div className='w-full py-10'>
@@ -64,10 +68,13 @@ export default function BestOfPage() {
         My Best Of Spotify
       </h1>
       <div className='flex flex-col gap-20'>
-        <TopArtists
-          topArtists={topArtists}
-          setTimeFrame={setTimeFrameArtists}
-        />
+        {accessToken && (
+          <TopArtists
+            accessToken={accessToken}
+            topArtists={topArtists}
+            setTimeFrame={setTimeFrameArtists}
+          />
+        )}
         <TopTracks topTracks={topTracks} setTimeFrame={setTimeFrameTracks} />
       </div>
     </div>
