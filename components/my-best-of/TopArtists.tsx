@@ -5,21 +5,47 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { isUserFollowingArtist } from '@/utils/spotify/spotify';
 import { ExternalLinkIcon } from 'lucide-react';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 import { NumericFormat } from 'react-number-format';
+import { Badge } from '../ui/badge';
 import { Card, CardContent } from '../ui/card';
 
 export default function TopArtists({
   topArtists,
   setTimeFrame,
+  accessToken,
 }: {
   topArtists: any;
   setTimeFrame: (timeFrame: string) => void;
+  accessToken: string;
 }) {
   const handleTimeFrameChange = (selectedTimeFrame: string) => {
     setTimeFrame(selectedTimeFrame);
   };
+
+  const [artistsWithFollowingInfo, setArtistsWithFollowingInfo] = useState([]);
+
+  useEffect(() => {
+    const checkFollowingStatus = async () => {
+      const artistIds = topArtists.map((artist) => artist.id).join(',');
+      const followingStatuses =
+        (await isUserFollowingArtist(accessToken, artistIds)) || [];
+
+      const updatedArtists = topArtists.map((artist, index) => ({
+        ...artist,
+        isFollowing: followingStatuses[index],
+      }));
+
+      setArtistsWithFollowingInfo(updatedArtists);
+    };
+
+    if (topArtists && topArtists.length > 0) {
+      checkFollowingStatus();
+    }
+  }, [topArtists, accessToken]);
 
   return (
     <section>
@@ -37,14 +63,14 @@ export default function TopArtists({
         </Select>
       </div>
       <div className='flex flex-col gap-3 md:grid md:grid-cols-2 2xl:grid-cols-3'>
-        {topArtists ? (
-          topArtists.map((artist: any) => (
+        {artistsWithFollowingInfo ? (
+          artistsWithFollowingInfo.map((artist: any) => (
             <Card
               key={artist.id}
               className='p-0 border-none flex items-center gap-4'>
               <div className='flex-shrink-0'>
                 <Image
-                  className='w-20 h-20 2xl:w-36 2xl:h-36 object-cover'
+                  className='w-24 h-24 2xl:w-36 2xl:h-36 object-cover'
                   alt='artist image'
                   width={100}
                   height={100}
@@ -77,6 +103,13 @@ export default function TopArtists({
                     />
                   </p>
                 </div>
+                {artist.isFollowing ? (
+                  <Badge className='w-fit'>Following</Badge>
+                ) : (
+                  <Badge variant={'destructive'} className='w-fit'>
+                    Not Following
+                  </Badge>
+                )}
               </CardContent>
             </Card>
           ))
