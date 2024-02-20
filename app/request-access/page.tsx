@@ -1,6 +1,6 @@
 'use client';
 
-import Header from '@/components/layout/Header';
+import Header from '@/components/home/Header';
 import Nav from '@/components/layout/Nav';
 import { Button } from '@/components/ui/button';
 import {
@@ -81,7 +81,7 @@ const RequestAccess = () => {
                   <FormLabel>Name</FormLabel>
                   <FormControl>
                     <Input
-                      className='bg-transparent placeholder:text-white/75'
+                      className='bg-transparent border-white placeholder:text-white/75'
                       placeholder='First & Last Name'
                       {...field}
                     />
@@ -98,7 +98,7 @@ const RequestAccess = () => {
                   <FormLabel>Spotify Login Email</FormLabel>
                   <FormControl>
                     <Input
-                      className='bg-transparent placeholder:text-white/75'
+                      className='bg-transparent border-white placeholder:text-white/75'
                       placeholder='example@gmail.com'
                       {...field}
                     />
@@ -107,7 +107,7 @@ const RequestAccess = () => {
                 </FormItem>
               )}
             />
-            <Button type='submit' disabled={submitting}>
+            <Button className='text-white' type='submit' disabled={submitting}>
               Submit
             </Button>
           </form>
