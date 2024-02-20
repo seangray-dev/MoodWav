@@ -37,6 +37,7 @@ const RecentlyPlayed: React.FC<RecentlyPlayedProps> = ({
   // Subcomponents
   const MoodSelectItem: React.FC<MoodSelectItemProps> = ({ mood }) => (
     <SelectItem
+      className='text-card-foreground'
       value={mood.toLowerCase()}
       onClick={() => {
         const newMood = mood.toLowerCase();
@@ -93,12 +94,14 @@ const RecentlyPlayed: React.FC<RecentlyPlayedProps> = ({
             <SelectTrigger className='bg-transparent w-[180px]'>
               <SelectValue placeholder='Filter by mood' />
             </SelectTrigger>
-            <SelectContent className='bg-primary text-primary-foreground'>
+            <SelectContent className='bg-card text-primary-foreground'>
               <SelectGroup>
                 {moods.map((mood) => (
                   <MoodSelectItem mood={mood} key={mood} />
                 ))}
-                <SelectItem className='border-t' value='Reset'>
+                <SelectItem
+                  className='border-t border-t-card-foreground rounded-none text-card-foreground'
+                  value='Reset'>
                   Reset
                 </SelectItem>
               </SelectGroup>
@@ -112,7 +115,7 @@ const RecentlyPlayed: React.FC<RecentlyPlayedProps> = ({
             <li
               className='hover:scale-[105%] transition-all duration-300 w-full'
               key={`${track.id}-${index}`}>
-              <Card className='w-full flex items-center gap-6 bg-primary text-primary-foreground border-none drop-shadow-2xl'>
+              <Card className='w-full flex items-center gap-6 bg-card text-card-foreground border-none drop-shadow-2xl'>
                 {!imageLoaded[track.id] && (
                   <Skeleton className='w-1/4 h-[100px]' />
                 )}

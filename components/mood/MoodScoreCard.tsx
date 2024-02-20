@@ -51,12 +51,12 @@ const MoodScoreCard: React.FC<MoodScoreCardProps> = ({
   };
 
   return (
-    <Card className='flex-1 border-none mx-auto flex flex-col gap-6 md:grid md:grid-cols-2 rounded-[32px] bg-primary drop-shadow-2xl'>
+    <Card className='flex-1 border-none mx-auto flex flex-col gap-6 md:grid md:grid-cols-2 rounded-[32px] bg-card drop-shadow-2xl'>
       <Card
-        className={`md:flex md:flex-col md:place-content-center md:gap-0 md:justify-evenly  md:rounded-none md:rounded-l-[32px] flex flex-col gap-4 pb-10 py-6  rounded-t-[32px] rounded-b-none
-            bg-primary border-transparent md:border-r md:border-r-muted-foreground border-b-muted-foreground md:border-b-0 
+        className={`md:flex md:flex-col md:place-content-center md:gap-0 md:justify-evenly md:rounded-none md:rounded-l-[32px] flex flex-col gap-4 pb-10 py-6  rounded-t-[32px] rounded-b-none
+             border-transparent md:border-r md:border-r-muted-foreground border-b-muted-foreground md:border-b-0 
              `}>
-        <p className='text-center font-medium text-lg text-muted md:text-2xl'>
+        <p className='text-center font-medium text-lg md:text-2xl text-card-foreground'>
           Your Mood
         </p>
         <div className='flex justify-center'>
@@ -71,12 +71,12 @@ const MoodScoreCard: React.FC<MoodScoreCardProps> = ({
             </span>
           </div>
         </div>
-        <p className='text-center text-white text-2xl font-bold md:text-[32px]'>
+        <p className='text-center text-card-foreground text-2xl font-bold md:text-[32px]'>
           {moodData.highestMood.toLocaleUpperCase()}
         </p>
       </Card>
       <div className='px-8 flex flex-col gap-4 pb-8 md:pb-[46px] md:gap-[28px]'>
-        <h2 className='text-white font-medium md:text-2xl md:mt-[38px]'>
+        <h2 className='text-card-foreground font-medium md:text-2xl md:mt-[38px]'>
           Summary
         </h2>
         <ul className='flex flex-col gap-4'>
