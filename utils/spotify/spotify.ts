@@ -262,11 +262,92 @@ export const fetchUsersTopTracks = async (
     }
 
     const data = await response.json();
-    console.log(data);
-    
+
     return data;
   } catch (error) {
     console.error('Error fetching top tracks:', error);
     return null;
   }
+};
+
+export const isUserFollowingArtist = async (
+  accessToken: string,
+  ids: string
+) => {
+  const url = `https://api.spotify.com/v1/me/following/contains?type=artist&ids=${ids}`;
+
+  try {
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error fetching top trackss: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    console.error('Error fetching top tracks:', error);
+    return null;
+  }
+};
+
+export const fetchRandomRecommendationPair = async (accessToken: string) => {
+  // Fetch users top artists and tracks
+  const topArtistsData = await fetchUsersTopArtists(accessToken, 'medium_term');
+  const topTracksData = await fetchUsersTopTracks(accessToken, 'medium_term');
+
+  // Extract seed IDs (using up to 5 seeds in total)
+  const seedArtists = topArtistsData.items
+    .slice(0, 2)
+    .map((artist) => artist.id)
+    .join(',');
+  const seedTracks = topTracksData.items
+    .slice(0, 3)
+    .map((track) => track.id)
+    .join(',');
+
+  // Fetch recommendations based on seed artists and tracks
+  const recommendationsUrl = `https://api.spotify.com/v1/recommendations?limit=10&seed_artists=${seedArtists}&seed_tracks=${seedTracks}`;
+  const recommendationsResponse = await fetch(recommendationsUrl, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  if (!recommendationsResponse.ok) {
+    throw new Error(
+      `Error fetching recommendations: ${recommendationsResponse.statusText}`
+    );
+  }
+
+  const recommendationsData = await recommendationsResponse.json();
+
+  // Filter tracks to include only those with a preview_url
+  const tracksWithPreview = recommendationsData.tracks.filter(
+    (track) => track.preview_url
+  );
+
+  // Ensure there are at least 2 tracks with preview URLs
+  if (tracksWithPreview.length < 2) {
+    throw new Error('Not enough tracks with preview URLs for selection');
+  }
+
+  //Randomly select two tracks from the filtered recommendations
+  const randomIndices = [];
+  while (randomIndices.length < 2) {
+    const randomIndex = Math.floor(Math.random() * tracksWithPreview.length);
+    if (!randomIndices.includes(randomIndex)) {
+      randomIndices.push(randomIndex);
+    }
+  }
+
+  return [
+    tracksWithPreview[randomIndices[0]],
+    tracksWithPreview[randomIndices[1]],
+  ];
 };
