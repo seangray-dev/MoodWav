@@ -175,9 +175,12 @@ const Nav = () => {
               </Link>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <Link href='/how-it-works' legacyBehavior passHref>
-                <NavigationMenuLink className='hover:underline '>
-                  How It Works
+              <Link href='/song-duels' legacyBehavior passHref>
+                <NavigationMenuLink className='hover:underline relative'>
+                  <Badge className='rotate-[15deg] hover:bg-card bg-card p-1 text-[10px] absolute -top-5 -right-7 dark:text-foreground text-black'>
+                    New!
+                  </Badge>
+                  Song Duels
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
