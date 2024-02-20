@@ -30,6 +30,7 @@ import { MenuIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { ModeToggle } from '../ui/mode-toggle';
 
 const Nav = () => {
   // Local State
@@ -124,6 +125,12 @@ const Nav = () => {
             </MenubarTrigger>
             <MenubarContent className='bg-secondary-foreground text-white md:hidden'>
               <MenubarItem className='hover:underline'>
+                <Link href='/my-best-of' legacyBehavior passHref>
+                  My Best Of
+                </Link>
+              </MenubarItem>
+              <MenubarSeparator />
+              <MenubarItem className='hover:underline'>
                 <Link href='/how-it-works' legacyBehavior passHref>
                   How It Works
                 </Link>
@@ -149,11 +156,21 @@ const Nav = () => {
         <NavigationMenu className='hidden md:block'>
           <NavigationMenuList className='md:flex gap-4 justify-between hidden'>
             <NavigationMenuItem>
+              <Link href='/my-best-of' legacyBehavior passHref>
+                <NavigationMenuLink className='hover:underline '>
+                  My Best Of
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
               <Link href='/how-it-works' legacyBehavior passHref>
                 <NavigationMenuLink className='hover:underline '>
                   How It Works
                 </NavigationMenuLink>
               </Link>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <ModeToggle />
             </NavigationMenuItem>
             {userProfile && (
               <>
