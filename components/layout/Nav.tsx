@@ -1,6 +1,7 @@
 'use client';
 
 import MoodWavIcon from '@/assets/images/moodwav-icon-only-white.png';
+import { badgeVariants } from '@/components/ui/badge';
 import {
   Menubar,
   MenubarContent,
@@ -30,6 +31,7 @@ import { MenuIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { Badge } from '../ui/badge';
 import { ModeToggle } from '../ui/mode-toggle';
 
 const Nav = () => {
@@ -111,7 +113,7 @@ const Nav = () => {
   };
 
   return (
-    <nav className='container py-2 border-b'>
+    <nav className='container py-4 border-b'>
       <div className='flex justify-between items-center'>
         <Link href='/'>
           <Image src={MoodWavIcon} alt='MoodWav Logo' width={50} height={50} />
@@ -154,11 +156,21 @@ const Nav = () => {
 
         {/* Desktop Menu */}
         <NavigationMenu className='hidden md:block'>
-          <NavigationMenuList className='md:flex gap-4 justify-between hidden'>
+          <NavigationMenuList className='md:flex gap-7 justify-between hidden'>
+            <NavigationMenuItem>
+              <Link href='/mood' legacyBehavior passHref>
+                <NavigationMenuLink className='hover:underline '>
+                  Mood Calculator
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
             <NavigationMenuItem>
               <Link href='/my-best-of' legacyBehavior passHref>
-                <NavigationMenuLink className='hover:underline '>
+                <NavigationMenuLink className='hover:underline relative'>
                   My Best Of
+                  <Badge className='rotate-[15deg] hover:bg-card bg-card p-1 text-[10px] absolute -top-5 -right-7 dark:text-foreground text-black'>
+                    New!
+                  </Badge>
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
