@@ -220,3 +220,53 @@ export const fetchAudioFeaturesForTracks = async (
     return null;
   }
 };
+
+export const fetchUsersTopArtists = async (
+  accessToken: string,
+  time_range: string
+) => {
+  const url = `https://api.spotify.com/v1/me/top/artists?time_range=${time_range}`;
+  try {
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error fetching top artists: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching top artists:', error);
+    return null;
+  }
+};
+
+export const fetchUsersTopTracks = async (
+  accessToken: string,
+  time_range: string
+) => {
+  const url = `https://api.spotify.com/v1/me/top/tracks?time_range=${time_range}`;
+  try {
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error fetching top trackss: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    console.log(data);
+    
+    return data;
+  } catch (error) {
+    console.error('Error fetching top tracks:', error);
+    return null;
+  }
+};
