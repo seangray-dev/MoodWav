@@ -1,5 +1,6 @@
 import Footer from '@/components/layout/Footer';
 import Nav from '@/components/layout/Nav';
+import { ThemeProvider } from '@/components/ui/theme-provider';
 import { Toaster } from '@/components/ui/toaster';
 import { Montserrat_Alternates } from '@next/font/google';
 import './globals.css';
@@ -30,12 +31,14 @@ export default function RootLayout({
         <link rel='icon' href='/favicon.ico' sizes='any' />
       </head>
       <body className='text-foreground min-h-screen flex flex-col items-center w-full text-white moodring'>
-        <Nav />
-        <main className='flex-1 justify-center items-center flex flex-col container'>
-          {children}
-        </main>
-        <Toaster />
-        <Footer />
+        <ThemeProvider attribute='class' defaultTheme='system'>
+          <Nav />
+          <main className='flex-1 justify-center items-center flex flex-col container'>
+            {children}
+          </main>
+          <Toaster />
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );
