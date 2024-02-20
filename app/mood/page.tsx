@@ -1,8 +1,6 @@
 'use client';
 
 import MoodWavLogo from '@/assets/images/moodwav-high-resolution-logo-transparent.png';
-import Footer from '@/components/layout/Footer';
-import Nav from '@/components/layout/Nav';
 import { determineUserMood } from '@/utils/mood_calculations/calculations';
 import {
   TrackDetail,
@@ -11,6 +9,7 @@ import {
 } from '@/utils/spotify/spotify';
 import { supabase } from '@/utils/supabase/client';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import ErrorAlert from './Error';
 import LoadingData from './LoadingData';
@@ -93,6 +92,9 @@ const Mood = () => {
 
   return (
     <div className='flex flex-1 flex-col place-content-center w-full'>
+      <Link className='mt-4 underline w-fit' href={'/mood/how-it-works'}>
+        How it works
+      </Link>
       <div className='md:container px-2 mt-20'>
         <Image
           className='mb-10 mx-auto'
