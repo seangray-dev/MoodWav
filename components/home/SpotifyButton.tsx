@@ -2,8 +2,8 @@
 
 import { supabase } from '@/utils/supabase/client';
 import Image from 'next/image';
-import SpotifyLogo from '../assets/images/Spotify_Icon_RGB_Green.png';
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
+import SpotifyLogo from '/assets/images/Spotify_Icon_RGB_Green.png';
 
 const SpotifyButton = () => {
   async function signInWithSpotify() {
@@ -27,7 +27,7 @@ const SpotifyButton = () => {
   return (
     <Button
       onClick={signInWithSpotify}
-      className='flex gap-2 items-center hover:bg-white hover:text-black duration-300 transition-all'>
+      className='bg-background text-foreground flex gap-2 items-center hover:bg-white hover:text-black duration-300 transition-all'>
       <Image alt='spotify logo' width={20} height={20} src={SpotifyLogo} />
       <div className='font-medium'>Login with Spotify</div>
     </Button>

@@ -30,7 +30,7 @@ export default function RootLayout({
       <head>
         <link rel='icon' href='/favicon.ico' sizes='any' />
       </head>
-      <body className='text-foreground min-h-screen flex flex-col items-center w-full text-white moodring'>
+      <body className='antialiased text-foreground min-h-screen flex flex-col items-center w-full text-white moodring'>
         <ThemeProvider attribute='class' defaultTheme='system'>
           <Nav />
           <main className='flex-1 justify-center items-center flex flex-col container'>

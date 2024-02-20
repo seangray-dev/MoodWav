@@ -1,9 +1,9 @@
 'use client';
 
+import Header from '@/components/home/Header';
+import SpotifyMoodPrompt from '@/components/home/SpotifyMoodPrompt';
 import Footer from '@/components/layout/Footer';
-import Header from '@/components/layout/Header';
 import Nav from '@/components/layout/Nav';
-import SpotifyMoodPrompt from '@/components/layout/SpotifyMoodPrompt';
 import { supabase } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
