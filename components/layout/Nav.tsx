@@ -22,10 +22,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import {
-  SpotifyUserProfile,
-  fetchSpotifyUserProfile,
-} from '@/utils/spotify/spotify';
+import { fetchSpotifyUserProfile } from '@/utils/spotify/spotify';
+import { SpotifyUserProfile } from '@/utils/spotify/constants';
 import { supabase } from '@/utils/supabase/client';
 import { MenuIcon } from 'lucide-react';
 import Image from 'next/image';

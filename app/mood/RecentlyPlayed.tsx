@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
-import { TrackDetail } from '@/utils/spotify/spotify';
+import { TrackDetail } from '@/utils/spotify/constants';
 import { Filter } from 'lucide-react';
 import { useEffect, useState } from 'react';
 

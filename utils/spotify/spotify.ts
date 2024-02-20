@@ -1,115 +1,9 @@
 import { determineUserMood } from '../mood_calculations/calculations';
-
-interface SpotifyExternalUrls {
-  spotify: string;
-}
-
-interface SpotifyImage {
-  url: string;
-  height: number;
-  width: number;
-}
-
-interface SpotifyArtist {
-  external_urls: SpotifyExternalUrls;
-  followers?: {
-    href: string | null;
-    total: number;
-  };
-  genres: string[];
-  href: string;
-  id: string;
-  images: SpotifyImage[];
-  name: string;
-  popularity: number;
-  type: 'artist';
-  uri: string;
-}
-
-interface SpotifyAlbum {
-  album_type: string;
-  total_tracks: number;
-  available_markets: string[];
-  external_urls: SpotifyExternalUrls;
-  href: string;
-  id: string;
-  images: SpotifyImage[];
-  name: string;
-  release_date: string;
-  release_date_precision: string;
-  restrictions?: {
-    reason: string;
-  };
-  type: 'album';
-  uri: string;
-  artists: SpotifyArtist[];
-}
-
-interface SpotifyTrack {
-  album: SpotifyAlbum;
-  artists: SpotifyArtist[];
-  available_markets: string[];
-  disc_number: number;
-  duration_ms: number;
-  explicit: boolean;
-  external_ids: {
-    isrc: string;
-    ean?: string;
-    upc?: string;
-  };
-  external_urls: SpotifyExternalUrls;
-  href: string;
-  id: string;
-  is_playable: boolean;
-  linked_from?: object;
-  known: any;
-  restrictions?: {
-    reason: string;
-  };
-  name: string;
-  popularity: number;
-  preview_url: string;
-  track_number: number;
-  type: 'track';
-  uri: string;
-  is_local: boolean;
-}
-
-interface SpotifyRecentlyPlayedItem {
-  track: SpotifyTrack;
-  played_at: string;
-  context?: {
-    type: string;
-    href: string;
-    external_urls: SpotifyExternalUrls;
-    uri: string;
-  };
-}
-
-interface SpotifyRecentlyPlayedResponse {
-  href: string;
-  limit: number;
-  next: string | null;
-  cursors: {
-    after: string | null;
-    before: string | null;
-  };
-  total: number;
-  items: SpotifyRecentlyPlayedItem[];
-}
-
-export interface TrackDetail {
-  id: string;
-  name: string;
-  artistName: string;
-  coverArt: string;
-  mood: string;
-}
-
-export interface SpotifyUserProfile {
-  display_name: string;
-  images: SpotifyImage[];
-}
+import {
+  SpotifyRecentlyPlayedResponse,
+  SpotifyUserProfile,
+  TrackDetail,
+} from './constants';
 
 export const fetchSpotifyUserProfile = async (
   accessToken: string
@@ -304,11 +198,11 @@ export const fetchRandomRecommendationPair = async (accessToken: string) => {
   // Extract seed IDs (using up to 5 seeds in total)
   const seedArtists = topArtistsData.items
     .slice(0, 2)
-    .map((artist) => artist.id)
+    .map((artist: { id: string; }) => artist.id)
     .join(',');
   const seedTracks = topTracksData.items
     .slice(0, 3)
-    .map((track) => track.id)
+    .map((track: { id: string; }) => track.id)
     .join(',');
 
   // Fetch recommendations based on seed artists and tracks
@@ -329,7 +223,7 @@ export const fetchRandomRecommendationPair = async (accessToken: string) => {
 
   // Filter tracks to include only those with a preview_url
   const tracksWithPreview = recommendationsData.tracks.filter(
-    (track) => track.preview_url
+    (track: { preview_url: any; }) => track.preview_url
   );
 
   // Ensure there are at least 2 tracks with preview URLs
@@ -338,7 +232,7 @@ export const fetchRandomRecommendationPair = async (accessToken: string) => {
   }
 
   //Randomly select two tracks from the filtered recommendations
-  const randomIndices = [];
+  const randomIndices: (string | number)[] = [];
   while (randomIndices.length < 2) {
     const randomIndex = Math.floor(Math.random() * tracksWithPreview.length);
     if (!randomIndices.includes(randomIndex)) {

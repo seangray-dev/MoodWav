@@ -2,8 +2,8 @@
 
 import MoodWavLogo from '@/assets/images/moodwav-high-resolution-logo-transparent.png';
 import { determineUserMood } from '@/utils/mood_calculations/calculations';
+import { TrackDetail } from '@/utils/spotify/constants';
 import {
-  TrackDetail,
   fetchAudioFeaturesForTracks,
   fetchRecentlyPlayedTracks,
 } from '@/utils/spotify/spotify';

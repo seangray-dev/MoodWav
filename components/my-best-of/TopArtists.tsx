@@ -5,6 +5,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { SpotifyArtist } from '@/utils/spotify/constants';
 import { isUserFollowingArtist } from '@/utils/spotify/spotify';
 import { ExternalLinkIcon } from 'lucide-react';
 import Image from 'next/image';
@@ -18,7 +19,7 @@ export default function TopArtists({
   setTimeFrame,
   accessToken,
 }: {
-  topArtists: any;
+  topArtists: SpotifyArtist[];
   setTimeFrame: (timeFrame: string) => void;
   accessToken: string;
 }) {
@@ -26,7 +27,9 @@ export default function TopArtists({
     setTimeFrame(selectedTimeFrame);
   };
 
-  const [artistsWithFollowingInfo, setArtistsWithFollowingInfo] = useState([]);
+  const [artistsWithFollowingInfo, setArtistsWithFollowingInfo] = useState<
+    SpotifyArtist[]
+  >([]);
 
   useEffect(() => {
     const checkFollowingStatus = async () => {
