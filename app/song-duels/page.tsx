@@ -1,4 +1,5 @@
-import SongCards from '@/components/song-duels/song-cards';
+// import SongCards from '@/components/song-duels/song-cards';
+import SongCards from '@/components/song-duels/song-cards-copy';
 
 export default function SongDuelsPage() {
   return (

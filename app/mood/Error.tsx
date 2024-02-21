@@ -1,4 +1,5 @@
-import Nav from '@/components/layout/Nav';
+'use client';
+
 import { Alert } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 

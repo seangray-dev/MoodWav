@@ -11,11 +11,11 @@ import { supabase } from '@/utils/supabase/client';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import ErrorAlert from './Error';
+import MoodScoreCard from '../../components/mood/MoodScoreCard';
+import RecentlyPlayed from '../../components/mood/RecentlyPlayed';
 import LoadingData from './LoadingData';
-import MoodScoreCard from './MoodScoreCard';
 import NoMoodData from './NoMoodData';
-import RecentlyPlayed from './RecentlyPlayed';
+import ErrorAlert from './error';
 
 const Mood = () => {
   // Local State

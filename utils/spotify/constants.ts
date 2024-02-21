@@ -108,3 +108,18 @@ export interface SpotifyUserProfile {
   display_name: string;
   images: SpotifyImage[];
 }
+
+export type Song = {
+  id: string;
+  name: string;
+  preview_url: string | null;
+  vote_count?: number;
+  album: {
+    images: Array<{
+      url: string;
+    }>;
+  };
+  artists: Array<{
+    name: string;
+  }>;
+};

@@ -191,6 +191,7 @@ export const isUserFollowingArtist = async (
 };
 
 export const fetchRandomRecommendationPair = async (accessToken: string) => {
+  console.log('fetchRandom', accessToken);
   // Fetch users top artists and tracks
   const topArtistsData = await fetchUsersTopArtists(accessToken, 'medium_term');
   const topTracksData = await fetchUsersTopTracks(accessToken, 'medium_term');
@@ -198,15 +199,15 @@ export const fetchRandomRecommendationPair = async (accessToken: string) => {
   // Extract seed IDs (using up to 5 seeds in total)
   const seedArtists = topArtistsData.items
     .slice(0, 2)
-    .map((artist: { id: string; }) => artist.id)
+    .map((artist: { id: string }) => artist.id)
     .join(',');
   const seedTracks = topTracksData.items
     .slice(0, 3)
-    .map((track: { id: string; }) => track.id)
+    .map((track: { id: string }) => track.id)
     .join(',');
 
   // Fetch recommendations based on seed artists and tracks
-  const recommendationsUrl = `https://api.spotify.com/v1/recommendations?limit=10&seed_artists=${seedArtists}&seed_tracks=${seedTracks}`;
+  const recommendationsUrl = `https://api.spotify.com/v1/recommendations?limit=100&seed_artists=${seedArtists}&seed_tracks=${seedTracks}`;
   const recommendationsResponse = await fetch(recommendationsUrl, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -223,7 +224,7 @@ export const fetchRandomRecommendationPair = async (accessToken: string) => {
 
   // Filter tracks to include only those with a preview_url
   const tracksWithPreview = recommendationsData.tracks.filter(
-    (track: { preview_url: any; }) => track.preview_url
+    (track: { preview_url: any }) => track.preview_url
   );
 
   // Ensure there are at least 2 tracks with preview URLs
