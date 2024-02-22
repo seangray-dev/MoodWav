@@ -1,7 +1,6 @@
 'use client';
 
 import MoodWavIcon from '@/assets/images/moodwav-icon-only-white.png';
-import { badgeVariants } from '@/components/ui/badge';
 import {
   Menubar,
   MenubarContent,
@@ -22,17 +21,20 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { fetchSpotifyUserProfile } from '@/utils/spotify/spotify';
+import { navItems } from '@/data/navigation';
 import { SpotifyUserProfile } from '@/utils/spotify/constants';
+import { fetchSpotifyUserProfile } from '@/utils/spotify/spotify';
 import { supabase } from '@/utils/supabase/client';
-import { MenuIcon } from 'lucide-react';
+import { LogOutIcon, MenuIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Badge } from '../ui/badge';
 import { ModeToggle } from '../ui/mode-toggle';
 
 const Nav = () => {
+  const router = useRouter();
   // Local State
   const [userProfile, setUserProfile] = useState<SpotifyUserProfile | null>(
     null
@@ -71,6 +73,7 @@ const Nav = () => {
       async (event, session) => {
         if (event === 'SIGNED_OUT') {
           setUserProfile(null);
+          router.push('/');
         } else if (event === 'SIGNED_IN' && session) {
           const accessToken = session.provider_token;
           if (accessToken) {
@@ -118,70 +121,64 @@ const Nav = () => {
         </Link>
 
         {/* Mobile Menu */}
-        <Menubar className='bg-transparent border-none md:hidden'>
-          <MenubarMenu>
-            <MenubarTrigger>
-              <MenuIcon></MenuIcon>
-            </MenubarTrigger>
-            <MenubarContent className='bg-secondary-foreground text-white md:hidden'>
-              <MenubarItem className='hover:underline'>
-                <Link href='/my-best-of' legacyBehavior passHref>
-                  My Best Of
-                </Link>
-              </MenubarItem>
-              <MenubarSeparator />
-              <MenubarItem className='hover:underline'>
-                <Link href='/how-it-works' legacyBehavior passHref>
-                  How It Works
-                </Link>
-              </MenubarItem>
-              {userProfile && (
-                <>
-                  <MenubarSeparator />
-                  <MenubarItem className='hover:underline'>
-                    <button
-                      onClick={async () => {
-                        await signOut();
-                      }}>
-                      Sign out
-                    </button>
+        <div className='flex items-center md:hidden'>
+          <ModeToggle />
+          <Menubar className='bg-transparent border-none'>
+            <MenubarMenu>
+              <MenubarTrigger>
+                <MenuIcon></MenuIcon>
+              </MenubarTrigger>
+              <MenubarContent className='bg-card text-card-foreground md:hidden'>
+                {navItems.map((item) => (
+                  <MenubarItem key={item.path} className='hover:underline'>
+                    <Link href={item.path} legacyBehavior passHref>
+                      <a className='relative flex items-center gap-2'>
+                        {item.title}
+                        {item.isNew && (
+                          <Badge className='hover:bg-card bg-card p-1 text-[10px] dark:text-foreground text-black'>
+                            New!
+                          </Badge>
+                        )}
+                      </a>
+                    </Link>
                   </MenubarItem>
-                </>
-              )}
-            </MenubarContent>
-          </MenubarMenu>
-        </Menubar>
+                ))}
+                {userProfile && (
+                  <>
+                    <MenubarSeparator />
+                    <MenubarItem className='hover:underline flex gap-2 items-center'>
+                      <button
+                        onClick={async () => {
+                          await signOut();
+                        }}>
+                        Sign out
+                      </button>
+                      <LogOutIcon size={16} className='text-card-foreground' />
+                    </MenubarItem>
+                  </>
+                )}
+              </MenubarContent>
+            </MenubarMenu>
+          </Menubar>
+        </div>
 
         {/* Desktop Menu */}
         <NavigationMenu className='hidden md:block'>
           <NavigationMenuList className='md:flex gap-7 justify-between hidden'>
-            <NavigationMenuItem>
-              <Link href='/mood' legacyBehavior passHref>
-                <NavigationMenuLink className='hover:underline '>
-                  Mood Calculator
-                </NavigationMenuLink>
-              </Link>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <Link href='/my-best-of' legacyBehavior passHref>
-                <NavigationMenuLink className='hover:underline relative'>
-                  My Best Of
-                  <Badge className='rotate-[15deg] hover:bg-card bg-card p-1 text-[10px] absolute -top-5 -right-7 dark:text-foreground text-black'>
-                    New!
-                  </Badge>
-                </NavigationMenuLink>
-              </Link>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <Link href='/song-duels' legacyBehavior passHref>
-                <NavigationMenuLink className='hover:underline relative'>
-                  <Badge className='rotate-[15deg] hover:bg-card bg-card p-1 text-[10px] absolute -top-5 -right-7 dark:text-foreground text-black'>
-                    New!
-                  </Badge>
-                  Song Duels
-                </NavigationMenuLink>
-              </Link>
-            </NavigationMenuItem>
+            {navItems.map((item) => (
+              <NavigationMenuItem key={item.path}>
+                <Link href={item.path} legacyBehavior passHref>
+                  <NavigationMenuLink className='hover:underline relative'>
+                    {item.title}
+                    {item.isNew && (
+                      <Badge className='rotate-[15deg] hover:bg-card bg-card p-1 text-[10px] absolute -top-5 -right-7 dark:text-foreground text-black'>
+                        New!
+                      </Badge>
+                    )}
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+            ))}
             <NavigationMenuItem>
               <ModeToggle />
             </NavigationMenuItem>
