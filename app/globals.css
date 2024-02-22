@@ -158,30 +158,45 @@
 }
 
 /* audio controls */
+.rhap_stacked {
+  @apply !flex !flex-col-reverse !gap-4;
+}
 
 .rhap_container {
-  background-color: transparent !important;
-  padding: 0 0.5rem !important;
+  @apply !bg-transparent;
+  @apply !px-2;
 }
 
 .rhap_play-pause-button svg path {
-  fill: hsl(var(--primary)) !important;
-}
-
-.rhap_volume-button svg path {
-  fill: hsl(var(--secondary-foreground)) !important;
+  @apply !fill-primary;
 }
 
 .rhap_volume-indicator {
-  background-color: hsl(var(--secondary-foreground)) !important;
+  @apply !bg-secondary-foreground;
 }
 
 .rhap_progress-indicator {
-  background-color: hsl(var(--primary)) !important;
+  @apply !bg-primary;
 }
 
 .rhap_total-time,
 .rhap_current-time {
-  color: hsl(var(--secondary-foreground)) !important;
-  margin: 0 0.5rem !important;
+  @apply !text-secondary-foreground;
+  @apply !mx-2;
+}
+
+.rhap_volume-controls {
+  @apply !absolute !hidden;
+}
+
+.rhap_additional-controls {
+  @apply !absolute !hidden;
+}
+
+.rhap_controls-section {
+  @apply !flex-1 !justify-center !items-center !mt-0;
+}
+
+.rhap_container {
+  @apply !shadow-none;
 }
