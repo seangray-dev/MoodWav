@@ -3,7 +3,7 @@ import Nav from '@/components/layout/Nav';
 import { Toaster } from '@/components/ui/toaster';
 import ReactQueryProvider from '@/providers/react-query';
 import { ThemeProvider } from '@/providers/theme-provider';
-import { Montserrat_Alternates } from '@next/font/google';
+import { Montserrat } from '@next/font/google';
 import './globals.css';
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -16,7 +16,7 @@ export const metadata = {
     'Providing personalized mood profiles based on recent Spotify listening history.',
 };
 
-const MA = Montserrat_Alternates({
+const MA = Montserrat({
   subsets: ['latin'],
   weight: ['400', '500', '700'],
 });

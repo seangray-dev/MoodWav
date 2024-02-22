@@ -1,12 +1,10 @@
-import { Button } from '@/components/ui/button';
+'use client';
+
 import { Card } from '@/components/ui/card';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { ShareIcon } from 'lucide-react';
+import { fetchUserMoodData } from '@/server/actions';
+import { fetchAccessToken } from '@/utils/supabase/fecthAccessToken';
+import { useQuery } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 
 interface MoodData {
   highestMood: string;
@@ -14,15 +12,25 @@ interface MoodData {
   allMoods: Record<string, number>;
 }
 
-interface MoodScoreCardProps {
-  moodData: MoodData;
-  setSelectedMood: (mood: string | null) => void;
-}
+const MoodScoreCard = () => {
+  const [moodData, setMoodData] = useState<MoodData | undefined>();
+  const { data, error, isFetched } = useQuery({
+    queryKey: ['mood-data'],
+    queryFn: async () => {
+      const accessToken = await fetchAccessToken();
+      return fetchUserMoodData(accessToken);
+    },
+  });
 
-const MoodScoreCard: React.FC<MoodScoreCardProps> = ({
-  moodData,
-  setSelectedMood,
-}) => {
+  useEffect(() => {
+    if (data) {
+      setMoodData(data);
+    }
+  }, [data]);
+
+  // Safeguard to ensure moodData and allMoods are defined
+  const allMoods = moodData?.allMoods || {};
+
   const moodBG = {
     blissful: 'bg-yellow-200',
     serenity: 'bg-green-300',
@@ -54,7 +62,7 @@ const MoodScoreCard: React.FC<MoodScoreCardProps> = ({
     <Card className='flex-1 border-none mx-auto flex flex-col gap-6 md:grid md:grid-cols-2 rounded-[32px] bg-card drop-shadow-2xl'>
       <Card
         className={`md:flex md:flex-col md:place-content-center md:gap-0 md:justify-evenly md:rounded-none md:rounded-l-[32px] flex flex-col gap-4 pb-10 py-6  rounded-t-[32px] rounded-b-none
-             border-transparent md:border-r md:border-r-muted-foreground border-b-muted-foreground md:border-b-0 
+             border-transparent md:border-r md:border-r-muted-foreground border-b-muted-foreground md:border-b-0
              `}>
         <p className='text-center font-medium text-lg md:text-2xl text-card-foreground'>
           Your Mood
@@ -63,16 +71,16 @@ const MoodScoreCard: React.FC<MoodScoreCardProps> = ({
           <div
             className={`flex flex-col justify-center items-center rounded-full w-[140px] h-[140px] md:w-[200px] md:h-[200px] ${
               moodGradient[
-                moodData.highestMood.toLowerCase() as keyof typeof moodGradient
+                moodData?.highestMood.toLowerCase() as keyof typeof moodGradient
               ]
             } `}>
             <span className='text-[56px] md:text-[72px] text-white font-bold'>
-              {moodData.highestScore.toFixed(1)}
+              {moodData?.highestScore.toFixed(1)}
             </span>
           </div>
         </div>
         <p className='text-center text-card-foreground text-2xl font-bold md:text-[32px]'>
-          {moodData.highestMood.toLocaleUpperCase()}
+          {moodData?.highestMood.toLocaleUpperCase()}
         </p>
       </Card>
       <div className='px-8 flex flex-col gap-4 pb-8 md:pb-[46px] md:gap-[28px]'>
@@ -80,32 +88,17 @@ const MoodScoreCard: React.FC<MoodScoreCardProps> = ({
           Summary
         </h2>
         <ul className='flex flex-col gap-4'>
-          {Object.entries(moodData.allMoods).map(([mood, score]) => (
-            <TooltipProvider key={mood}>
-              <Tooltip>
-                <TooltipTrigger>
-                  <li
-                    className={`flex hover:scale-105 duration-300 transition-all justify-between text-sm px-4 py-[18px] rounded-lg ${
-                      moodBG[mood as keyof typeof moodBG]
-                    } ${moodTextColor[mood as keyof typeof moodTextColor]}`}
-                    onClick={() => setSelectedMood(mood)}>
-                    <span className='font-medium'>
-                      {mood.toLocaleUpperCase()}
-                    </span>
-                    <span className='font-bold'>{score.toFixed(1)}%</span>
-                  </li>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Filter tracks by {mood}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+          {Object.entries(allMoods).map(([mood, score]) => (
+            <li
+              key={mood}
+              className={`flex justify-between text-sm px-4 py-[18px] rounded-lg ${
+                moodBG[mood as keyof typeof moodBG]
+              } ${moodTextColor[mood as keyof typeof moodTextColor]}`}>
+              <span className='font-medium'>{mood.toLocaleUpperCase()}</span>
+              <span className='font-bold'>{score.toFixed(1)}%</span>
+            </li>
           ))}
         </ul>
-        {/* <Button className='rounded-[288px] py-8 text-[18px] flex gap-3 items-center bg-primary-foreground text-card-foreground hover:text-white hover:bg-transparent border border-white transition-all duration-300'>
-          <span>Share</span>
-          <ShareIcon size={18} />
-        </Button> */}
       </div>
     </Card>
   );

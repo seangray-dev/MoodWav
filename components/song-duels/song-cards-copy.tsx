@@ -1,181 +1,61 @@
 'use client';
 
 import { Card, CardHeader } from '@/components/ui/card';
+import useRealtimeVotes from '@/hooks/useRealTimeVotes';
+import useRecommendations from '@/hooks/useRecommendations';
 import { Song } from '@/utils/spotify/constants';
-import { fetchRecommendations } from '@/utils/spotify/spotify';
 import { supabase } from '@/utils/supabase/client';
+import { insertSongsToDb } from '@/utils/supabase/db';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
 import Loader from '../layout/Loader';
 import { Button } from '../ui/button';
-import { data } from './data';
 
 export default function SongCards() {
-  const [recommendations, setRecommendations] = useState<Song[]>([]);
   const [songPair, setSongPair] = useState<Song[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [currentPairIndex, setCurrentPairIndex] = useState(0);
   const [currentPlaying, setCurrentPlaying] = useState<string | null>(null);
   const audioPlayersRef = useRef<{ [key: string]: AudioPlayer | null }>({});
-  const [voteCounts, setVoteCounts] = useState<Record<string, number>>({});
   const [voteCast, setVoteCast] = useState<boolean>(false);
+  const voteCounts = useRealtimeVotes();
+  const { recommendations, loading, fetchMore } = useRecommendations();
 
-  // use this function for production
-  // const fetchAndSetRecommendations = async () => {
-  //   try {
-  //     const { data: session } = await supabase.auth.getSession();
-  //     const accessToken = session?.session?.provider_token;
-
-  //     if (accessToken) {
-  //       setLoading(true);
-  //       const fetchedRecommendations = await fetchRecommendations(accessToken);
-  //       console.log('Fetched Recommendations:', fetchedRecommendations);
-  //       setRecommendations(fetchedRecommendations);
-  //       setLoading(false);
-  //     } else {
-  //       console.log('No access token available.');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching recommendations:', error);
-  //     setLoading(false);
-  //   }
-  // };
-
-  // use this function for testing with mock data from data.js
-  const fetchAndSetRecommendations = async () => {
-    try {
-      setLoading(true);
-      const recommendations = data;
-      setRecommendations(recommendations);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching recommendations:', error);
-      setLoading(false);
-    }
-  };
+  console.log(recommendations);
 
   useEffect(() => {
-    fetchAndSetRecommendations();
-  }, []);
+    const newPair = recommendations.slice(
+      currentPairIndex,
+      currentPairIndex + 2
+    );
+    setSongPair(newPair);
+    insertSongsToDb(newPair);
+  }, [recommendations, currentPairIndex]);
 
   useEffect(() => {
-    const subscribeToChanges = async () => {
-      const subscription = supabase
-        .channel('realtime:public:tracks')
-        .on(
-          'postgres_changes',
-          { event: '*', schema: 'public', table: 'tracks' },
-          (payload) => {
-            console.log('Change received!', payload);
-            if (payload.new && payload.new.spotify_track_id) {
-              setVoteCounts((prev) => ({
-                ...prev,
-                [payload.new.spotify_track_id]: payload.new.vote_count,
-              }));
-            }
-          }
-        )
-        .subscribe();
-
-      if (subscription.error) {
-        console.error('Subscription error:', subscription.error);
-      }
-
-      return () => {
-        supabase.removeChannel(subscription);
-      };
-    };
-
-    subscribeToChanges();
-  }, []);
-
-  useEffect(() => {
-    // Ensure that recommendations.tracks is defined before filtering
-    if (recommendations.tracks) {
-      const filteredData = recommendations.tracks.filter(
-        (track) => track.preview_url
-      );
-      setRecommendations(filteredData.slice(2)); // Set remaining tracks for future use
-      setSongPair(filteredData.slice(0, 2)); // Initialize with the first two tracks
-      insertSongsToDb(filteredData.slice(0, 2)); // Insert initial songs into the database if needed
+    // Check if we're nearing the end of the recommendations list
+    if (currentPairIndex >= recommendations.length - 4) {
+      fetchMore();
     }
-  }, [recommendations]);
+  }, [currentPairIndex, recommendations]);
 
-  const insertSongsToDb = async (songs: Song[]) => {
-    for (const song of songs) {
-      const { data, error } = await supabase
-        .from('tracks')
-        .select('id')
-        .eq('spotify_track_id', song.id)
-        .maybeSingle();
+  const serveNextPair = () => {
+    const newIndex = currentPairIndex + 2;
 
-      if (error) {
-        console.error('Error checking song existence:', error);
-        continue;
-      }
-
-      if (data) {
-        console.log('song exists:', data);
-      }
-
-      const artists = song.artists
-        .map((artist: { name: string }) => artist.name)
-        .join(', ');
-
-      if (!data) {
-        const { error: insertError } = await supabase.from('tracks').insert([
-          {
-            spotify_track_id: song.id,
-            vote_count: 0,
-            song: song.name,
-            artist: artists,
-            modified_at: new Date(),
-          },
-        ]);
-
-        if (insertError) {
-          console.error('Error inserting song:', insertError);
-        } else {
-          console.log(`Song inserted: ${song.name}`);
-        }
-      }
-    }
-  };
-
-  const serveNextPair = async () => {
-    setLoading(true);
-    if (recommendations.length >= 2) {
-      const nextPair = recommendations.slice(0, 2);
-      setSongPair(nextPair);
-      setRecommendations(recommendations.slice(2));
-      await insertSongsToDb(nextPair);
-      setLoading(false);
-      setVoteCast(false);
+    if (newIndex < recommendations.length) {
+      setCurrentPairIndex(newIndex);
     } else {
-      console.log('Fetching more recommendations...');
-      await fetchAndSetRecommendations();
+      // Handle the case when you're at the end of the recommendations list
+      // This might involve fetching more recommendations or looping back to the start
+      console.log("You've reached the end of the recommendations.");
+      setCurrentPairIndex(0);
     }
   };
 
-  const handleVote = async (song: Song) => {
-    console.log(`Voting for song with ID: ${song.id}`);
+  const handleVote = async (songId: string) => {
     setVoteCast(true);
-
-    const { data, error } = await supabase.rpc('increment_vote', {
-      song_id: song.id,
-    });
-
-    if (error) {
-      console.error('Error voting for song:', error);
-    } else {
-      console.log('Vote response:', data);
-      const newVoteCount = await fetchVoteCount(song.id);
-      setVoteCounts((prev) => ({
-        ...prev,
-        [song.id]: newVoteCount,
-      }));
-    }
+    // Implement the vote logic here, utilizing the backend or a context/provider if necessary
 
     setTimeout(() => {
       setVoteCast(false);
@@ -198,19 +78,6 @@ export default function SongCards() {
     return data?.vote_count || 0; // Return the vote count or 0 if not found
   };
 
-  const updateVoteCounts = async () => {
-    const counts: Record<string, number> = {};
-    for (const song of songPair) {
-      const count = await fetchVoteCount(song.id);
-      counts[song.id] = count;
-    }
-    setVoteCounts(counts);
-  };
-
-  useEffect(() => {
-    updateVoteCounts();
-  }, [songPair]);
-
   const handlePlay = (songId) => {
     // If there's a song currently playing and it's not the one that was just played, pause it
     if (currentPlaying && currentPlaying !== songId) {
@@ -222,10 +89,6 @@ export default function SongCards() {
   if (loading) {
     return <Loader message={'Loading songs...'} />;
   }
-
-  // if (!songPair || songPair.length === 0) {
-  //   return <div>No more songs to display.</div>;
-  // }
 
   return (
     <div className='grid md:grid-cols-2 gap-10 max-w-3xl mx-auto'>
@@ -275,12 +138,15 @@ export default function SongCards() {
             </div>
             <Button
               className='justify-center w-full text-white'
-              onClick={() => handleVote(song)}>
+              onClick={() => handleVote(song.id)}>
               Vote
             </Button>
           </div>
         </Card>
       ))}
+      <div>
+        {currentPairIndex} / {recommendations.length}
+      </div>
     </div>
   );
 }

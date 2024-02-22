@@ -2,8 +2,6 @@
 
 import Header from '@/components/home/Header';
 import SpotifyMoodPrompt from '@/components/home/SpotifyMoodPrompt';
-import Footer from '@/components/layout/Footer';
-import Nav from '@/components/layout/Nav';
 import { supabase } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -29,7 +27,7 @@ export default function Index() {
   }, [router]);
 
   return (
-    <div className='w-full h-full flex flex-col justify-center items-center place-content-center'>
+    <div className='w-full h-full flex flex-col justify-center items-center place-content-center font-'>
       <Header />
       <SpotifyMoodPrompt />
     </div>

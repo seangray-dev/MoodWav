@@ -1,93 +1,37 @@
-'use client';
-
 import MoodWavLogo from '@/assets/images/moodwav-high-resolution-logo-transparent.png';
-import { determineUserMood } from '@/utils/mood_calculations/calculations';
-import { TrackDetail } from '@/utils/spotify/constants';
+import AlertMessage from '@/components/ui/AlertMessage';
+import { fetchRecentlyPlayedTracks, fetchUserMoodData } from '@/server/actions';
+import readUserSession from '@/server/read-user-session';
+import { fetchAccessToken } from '@/utils/supabase/fecthAccessToken';
 import {
-  fetchAudioFeaturesForTracks,
-  fetchRecentlyPlayedTracks,
-} from '@/utils/spotify/spotify';
-import { supabase } from '@/utils/supabase/client';
+  HydrationBoundary,
+  QueryClient,
+  dehydrate,
+} from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
 import MoodScoreCard from '../../components/mood/MoodScoreCard';
 import RecentlyPlayed from '../../components/mood/RecentlyPlayed';
-import LoadingData from './LoadingData';
-import NoMoodData from './NoMoodData';
-import ErrorAlert from './error';
 
-const Mood = () => {
-  // Local State
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [moodData, setMoodData] = useState<{
-    highestMood: string;
-    highestScore: number;
-    allMoods: Record<string, number>;
-  } | null>(null);
-  const [recentTracks, setRecentTracks] = useState<TrackDetail[]>([]);
-  const [selectedMood, setSelectedMood] = useState<string | null>(null);
+export default async function MoodPage() {
+  const queryClient = new QueryClient();
+  await queryClient.prefetchQuery({
+    queryKey: ['recently-played', 'mood-data'],
+    queryFn: async () => {
+      const accessToken = await fetchAccessToken();
+      return [
+        fetchRecentlyPlayedTracks(accessToken),
+        fetchUserMoodData(accessToken),
+      ];
+    },
+  });
 
-  // Functions
-
-  useEffect(() => {
-    const fetchProfileData = async () => {
-      try {
-        setLoading(true);
-
-        // Use supabase.auth.getSession() to retrieve the current session
-        const { data: session, error } = await supabase.auth.getSession();
-
-        if (error || !session.session?.provider_token) {
-          throw new Error('Error retrieving user session');
-        }
-
-        if (session) {
-          const accessToken = session.session?.provider_token;
-          const tracksDetails = await fetchRecentlyPlayedTracks(accessToken);
-
-          if (!tracksDetails || tracksDetails.length === 0) {
-            throw new Error('No recently played tracks found.');
-          }
-
-          setRecentTracks(tracksDetails);
-
-          const trackIds = tracksDetails.map((track) => track.id);
-          const audioFeatures = await fetchAudioFeaturesForTracks(
-            trackIds,
-            accessToken
-          );
-
-          if (!audioFeatures || audioFeatures.length === 0) {
-            throw new Error('Could not fetch audio features for tracks.');
-          }
-
-          const mood = determineUserMood(audioFeatures);
-          setMoodData(mood);
-        } else {
-          throw new Error('User not authenticated.');
-        }
-      } catch (e) {
-        setError(e instanceof Error ? e.message : 'An unknown error occurred.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProfileData();
-  }, []);
-
-  if (loading) {
-    return <LoadingData />;
-  }
-
-  if (error) {
-    return <ErrorAlert />;
-  }
-
-  if (!moodData) {
-    return <NoMoodData />;
+  // check to see if user is logged in
+  const { data } = await readUserSession();
+  if (!data.session) {
+    return (
+      <AlertMessage message='You must be logged in to use this feature.' />
+    );
   }
 
   return (
@@ -95,7 +39,7 @@ const Mood = () => {
       <Link className='mt-4 underline w-fit' href={'/mood/how-it-works'}>
         How it works
       </Link>
-      <div className='md:container px-2 mt-20'>
+      <div className=' px-2 mt-20'>
         <Image
           className='mb-10 mx-auto'
           src={MoodWavLogo}
@@ -103,17 +47,11 @@ const Mood = () => {
           width={300}
           height={200}
         />
-        <MoodScoreCard moodData={moodData} setSelectedMood={setSelectedMood} />
-        <RecentlyPlayed
-          recentTracks={recentTracks}
-          selectedMood={selectedMood}
-          setSelectedMood={(mood: string | null) =>
-            setSelectedMood(mood ?? null)
-          }
-        />
+        <HydrationBoundary state={dehydrate(queryClient)}>
+          <MoodScoreCard />
+          <RecentlyPlayed />
+        </HydrationBoundary>
       </div>
     </div>
   );
-};
-
-export default Mood;
+}

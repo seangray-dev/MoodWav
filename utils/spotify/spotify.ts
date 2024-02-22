@@ -31,64 +31,6 @@ export const fetchSpotifyUserProfile = async (
   }
 };
 
-export const fetchRecentlyPlayedTracks = async (
-  accessToken: string
-): Promise<TrackDetail[] | null> => {
-  const url = 'https://api.spotify.com/v1/me/player/recently-played?limit=50';
-
-  try {
-    const response = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    if (!response.ok) {
-      console.error(
-        'Error fetching recently played tracks:',
-        response.statusText
-      );
-      return null;
-    }
-
-    const { items }: SpotifyRecentlyPlayedResponse = await response.json();
-    const trackIds = items.map((item) => item.track.id);
-    const audioFeatures = await fetchAudioFeaturesForTracks(
-      trackIds,
-      accessToken
-    );
-
-    if (!audioFeatures) {
-      throw new Error('Failed to fetch audio features for tracks');
-    }
-
-    // Calculate the mood for each track
-    const tracksWithMoods = items.map((item, index) => {
-      const moodData = determineUserMood([audioFeatures[index]]);
-      const allMoods = moodData.allMoods;
-
-      // Sort the moods by their scores and select the top 1
-      const topMood = Object.entries(allMoods)
-        .sort(([, a], [, b]) => b - a)
-        .slice(0, 1)
-        .map(([key]) => key)[0];
-
-      return {
-        id: item.track.id,
-        name: item.track.name,
-        artistName: item.track.artists.map((artist) => artist.name).join(', '),
-        coverArt: item.track.album.images[0]?.url ?? '',
-        mood: topMood,
-      };
-    });
-
-    return tracksWithMoods;
-  } catch (error) {
-    console.error('Error fetching recently played tracks:', error);
-    return null;
-  }
-};
-
 export const fetchAudioFeaturesForTracks = async (
   trackIds: string[],
   accessToken: string
@@ -206,7 +148,6 @@ export const fetchRecommendations = async (accessToken: string) => {
     .slice(0, 3)
     .map((track: { id: string }) => track.id)
     .join(',');
-
 
   // Fetch recommendations based on seed artists and tracks
   const recommendationsUrl = `https://api.spotify.com/v1/recommendations?limit=100&seed_artists=${seedArtists}&seed_tracks=${seedTracks}`;

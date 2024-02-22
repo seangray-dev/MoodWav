@@ -15,7 +15,7 @@ export default function BestOfPage() {
     useState<string>('medium_term');
   const [topTracks, setTopTracks] = useState<any>(null);
   const [timeFrameTracks, setTimeFrameTracks] = useState<string>('medium_term');
-  const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [accessToken, setAccessToken] = useState<string | null>(null); // State variable for accessToken
 
   useEffect(() => {
     const getAccessToken = async () => {

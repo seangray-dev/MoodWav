@@ -10,7 +10,6 @@ export default function Header() {
           alt={'mood wav logo'}
           width={300}
           height={300}
-          layout='responsive'
         />
       </div>
       <h1 className='sr-only'>MoodWav</h1>

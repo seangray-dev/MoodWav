@@ -1,3 +1,5 @@
+'use client';
+
 import SpotifyIcon from '@/assets/images/Spotify_Icon_RGB_Green.png';
 import { Card } from '@/components/ui/card';
 import {
@@ -8,68 +10,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Skeleton } from '@/components/ui/skeleton';
-import { TrackDetail } from '@/utils/spotify/constants';
+import { fetchRecentlyPlayedTracks } from '@/server/actions';
+import { fetchAccessToken } from '@/utils/supabase/fecthAccessToken';
+import { useQuery } from '@tanstack/react-query';
 import { Filter } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { RecentTracksSkeleton } from './Skeletons';
 
-// Types
-interface RecentlyPlayedProps {
-  recentTracks: TrackDetail[];
-  selectedMood: string | null;
-  setSelectedMood: (mood: string | null) => void;
-}
+export default function RecentlyPlayed() {
+  const { data: recentTracks, isLoading } = useQuery({
+    queryKey: ['recently-played'],
+    queryFn: async () => {
+      const accessToken = await fetchAccessToken();
+      return fetchRecentlyPlayedTracks(accessToken);
+    },
+  });
 
-interface MoodSelectItemProps {
-  mood: string;
-}
-
-// Main Component
-const RecentlyPlayed: React.FC<RecentlyPlayedProps> = ({
-  recentTracks,
-  selectedMood,
-  setSelectedMood,
-}) => {
-  // Local State
-  const [imageLoaded, setImageLoaded] = useState<Record<string, boolean>>({});
-  const [filteredTracks, setFilteredTracks] = useState<TrackDetail[]>([]);
-
-  // Subcomponents
-  const MoodSelectItem: React.FC<MoodSelectItemProps> = ({ mood }) => (
-    <SelectItem
-      className='text-card-foreground'
-      value={mood.toLowerCase()}
-      onClick={() => {
-        const newMood = mood.toLowerCase();
-        setSelectedMood(newMood);
-      }}>
-      {mood}
-    </SelectItem>
-  );
-  // Functions
-  useEffect(() => {
-    const filterTracksByMood = () => {
-      if (!selectedMood) {
-        setFilteredTracks(recentTracks);
-        return;
-      }
-
-      const selectedMoodLower = selectedMood.toLowerCase();
-
-      const newFilteredTracks = recentTracks.filter((track) => {
-        // Check if the track's mood is the selected mood
-        return track.mood.toLocaleLowerCase() === selectedMoodLower;
-      });
-
-      setFilteredTracks(newFilteredTracks);
-    };
-
-    filterTracksByMood();
-  }, [recentTracks, selectedMood]);
-
-  const handleImageLoaded = (imageId: string) => {
-    setImageLoaded((prev) => ({ ...prev, [imageId]: true }));
-  };
+  const [selectedMood, setSelectedMood] = useState<string | null>(null);
 
   const moods = [
     'Blissful',
@@ -80,52 +37,53 @@ const RecentlyPlayed: React.FC<RecentlyPlayedProps> = ({
     'Reflective',
   ];
 
+  const filteredTracks = selectedMood
+    ? recentTracks?.filter(
+        (track) => track.mood.toLowerCase() === selectedMood.toLowerCase()
+      )
+    : recentTracks;
+
   return (
     <div className='mt-20 mb-10 flex flex-col'>
       <div className='flex flex-col md:flex-row justify-between items-center'>
-        <h2 className='text-lg md:text-2xl mb-6 font-medium'>Recent Played</h2>
+        <h2 className='text-lg md:text-2xl mb-6 font-medium'>
+          Recently Played
+        </h2>
         <div className='flex mb-8 items-center justify-end gap-4'>
           <Filter />
           <Select
-            value={selectedMood ? selectedMood : ''}
-            onValueChange={(value) => {
-              setSelectedMood(value === 'Reset' ? '' : value);
-            }}>
-            <SelectTrigger className='bg-transparent w-[180px]'>
+            disabled={isLoading}
+            value={selectedMood || 'all'}
+            onValueChange={(value) =>
+              setSelectedMood(value === 'all' ? null : value)
+            }>
+            <SelectTrigger className='bg-transparent border-white w-[180px]'>
               <SelectValue placeholder='Filter by mood' />
             </SelectTrigger>
-            <SelectContent className='bg-card text-primary-foreground'>
+            <SelectContent className='bg-card text-card-foreground'>
               <SelectGroup>
+                <SelectItem value='all'>All Moods</SelectItem>
                 {moods.map((mood) => (
-                  <MoodSelectItem mood={mood} key={mood} />
+                  <SelectItem key={mood} value={mood.toLowerCase()}>
+                    {mood}
+                  </SelectItem>
                 ))}
-                <SelectItem
-                  className='border-t border-t-card-foreground rounded-none text-card-foreground'
-                  value='Reset'>
-                  Reset
-                </SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
         </div>
       </div>
       <ul className='flex flex-col gap-4 md:grid md:grid-cols-2 lg:grid-cols-3'>
-        {filteredTracks.length > 0 ? (
-          filteredTracks.map((track: TrackDetail, index) => (
-            <li
-              className='hover:scale-[105%] transition-all duration-300 w-full'
-              key={`${track.id}-${index}`}>
+        {isLoading ? (
+          <RecentTracksSkeleton />
+        ) : filteredTracks && filteredTracks.length > 0 ? (
+          filteredTracks.map((track, idx) => (
+            <li key={idx} className='w-full'>
               <Card className='w-full flex items-center gap-6 bg-card text-card-foreground border-none drop-shadow-2xl'>
-                {!imageLoaded[track.id] && (
-                  <Skeleton className='w-1/4 h-[100px]' />
-                )}
                 <img
-                  className={`w-1/4 ${
-                    imageLoaded[track.id] ? 'block' : 'hidden'
-                  }`}
-                  src={track.coverArt ? track.coverArt : SpotifyIcon.src}
+                  className='w-1/4'
+                  src={track.coverArt || SpotifyIcon.src}
                   alt={track.name}
-                  onLoad={() => handleImageLoaded(track.id)}
                 />
                 <div className='flex flex-col gap-2 overflow-hidden'>
                   <p className='font-bold truncate'>{track.name}</p>
@@ -137,11 +95,9 @@ const RecentlyPlayed: React.FC<RecentlyPlayedProps> = ({
             </li>
           ))
         ) : (
-          <p>No tracks match the selected mood filter.</p>
+          <p className='text-white'>No tracks match the selected mood.</p>
         )}
       </ul>
     </div>
   );
-};
-
-export default RecentlyPlayed;
+}
