@@ -1,15 +1,4 @@
-'use client';
-
-import Footer from '@/components/layout/Footer';
-import Nav from '@/components/layout/Nav';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 
 const moods = [
@@ -92,12 +81,12 @@ interface MoodCardProps {
 }
 
 const MoodCard = ({ title, features }: MoodCardProps) => (
-  <Card className='bg-secondary-foreground flex-grow'>
+  <Card className='bg-card flex-grow'>
     <CardHeader>
-      <CardTitle className='text-white'>{title}</CardTitle>
+      <CardTitle>{title}</CardTitle>
     </CardHeader>
     <CardContent>
-      <ul className='text-white text-sm'>
+      <ul className='text-sm'>
         {features.map((feature, index) => (
           <li className='text-xs sm:text-sm md:text-base' key={index}>
             <div className='flex'>
@@ -115,7 +104,7 @@ const HowItWorks = () => {
   return (
     <div className='my-10'>
       <h1 className='text-3xl sm:text-4xl font-bold mb-6'>How It Works</h1>
-      <Separator />
+      <Separator className='bg-white' />
       <section className='my-8' aria-labelledby='disclaimer-section'>
         <h2 id='disclaimer-section' className='text-xl sm:text-2xl font-bold'>
           Disclaimer
@@ -127,7 +116,7 @@ const HowItWorks = () => {
           mood of tracks based on their audio features.
         </p>
       </section>
-      <Separator />
+      <Separator className='bg-white' />
 
       <section className='my-8' aria-labelledby='audio-features-section'>
         <h2
@@ -204,7 +193,7 @@ const HowItWorks = () => {
           </li>
         </ul>
       </section>
-      <Separator />
+      <Separator className='bg-white' />
 
       <section
         className='my-8'
@@ -233,7 +222,7 @@ const HowItWorks = () => {
           </span>
         </p>
       </section>
-      <Separator />
+      <Separator className='bg-white' />
       <section className='my-8' aria-labelledby='mood-calculation-section'>
         <h2
           id='mood-calculation-section'
