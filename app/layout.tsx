@@ -1,7 +1,7 @@
 import Footer from '@/components/layout/Footer';
 import Nav from '@/components/layout/Nav';
-import { ThemeProvider } from '@/components/ui/theme-provider';
 import { Toaster } from '@/components/ui/toaster';
+import Providers from '@/providers/Providers';
 import { Montserrat_Alternates } from '@next/font/google';
 import './globals.css';
 const defaultUrl = process.env.VERCEL_URL
@@ -31,14 +31,12 @@ export default function RootLayout({
         <link rel='icon' href='/favicon.ico' sizes='any' />
       </head>
       <body className='antialiased text-foreground min-h-screen flex flex-col items-center w-full text-white moodring'>
-        <ThemeProvider attribute='class' defaultTheme='system'>
-          <Nav />
-          <main className='flex-1 justify-center items-center flex flex-col container'>
-            {children}
-          </main>
-          <Toaster />
-          <Footer />
-        </ThemeProvider>
+        <Nav />
+        <main className='flex-1 justify-center items-center flex flex-col container'>
+          <Providers>{children}</Providers>
+        </main>
+        <Toaster />
+        <Footer />
       </body>
     </html>
   );
