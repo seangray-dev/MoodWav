@@ -18,6 +18,8 @@
     "@radix-ui/react-toast": "^1.1.5",
     "@radix-ui/react-tooltip": "^1.0.7",
     "@supabase/ssr": "latest",
+    "@tanstack/react-query": "^5.22.2",
+    "@tanstack/react-query-devtools": "^5.24.0",
     "autoprefixer": "10.4.15",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
@@ -31,7 +33,6 @@
     "react-h5-audio-player": "^3.9.1",
     "react-hook-form": "^7.48.2",
     "react-number-format": "^5.3.1",
-    "react-query": "^3.39.3",
     "tailwind-merge": "^2.0.0",
     "tailwindcss": "3.3.3",
     "tailwindcss-animate": "^1.0.7",
@@ -39,6 +40,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@tanstack/eslint-plugin-query": "^5.20.1",
     "@types/node": "20.3.1",
     "@types/react": "18.2.8",
     "@types/react-dom": "18.2.5",
