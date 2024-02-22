@@ -3,7 +3,7 @@ import SongCards from '@/components/song-duels/song-cards-copy';
 
 export default function SongDuelsPage() {
   return (
-    <div className='my-10 w-full'>
+    <div className='my-10 w-full flex-1 flex flex-col justify-between'>
       <div className='mb-10 flex flex-col gap-2'>
         <h1 className='text-2xl 2xl:text-6xl md:text-4xl font-bold'>
           Song Duels
@@ -14,7 +14,9 @@ export default function SongDuelsPage() {
           one hits the right note for you.
         </p>
       </div>
-      <SongCards />
+      <div className='flex-1'>
+        <SongCards />
+      </div>
     </div>
   );
 }
