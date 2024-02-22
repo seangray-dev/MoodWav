@@ -8,10 +8,12 @@ import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
+import Loader from '../layout/Loader';
 import { Button } from '../ui/button';
+import { data } from './data';
 
 export default function SongCards() {
-  const [recommendations, setRecommendations] = useState([]);
+  const [recommendations, setRecommendations] = useState<Song[]>([]);
   const [songPair, setSongPair] = useState<Song[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPlaying, setCurrentPlaying] = useState<string | null>(null);
@@ -19,20 +21,34 @@ export default function SongCards() {
   const [voteCounts, setVoteCounts] = useState<Record<string, number>>({});
   const [voteCast, setVoteCast] = useState<boolean>(false);
 
+  // use this function for production
+  // const fetchAndSetRecommendations = async () => {
+  //   try {
+  //     const { data: session } = await supabase.auth.getSession();
+  //     const accessToken = session?.session?.provider_token;
+
+  //     if (accessToken) {
+  //       setLoading(true);
+  //       const fetchedRecommendations = await fetchRecommendations(accessToken);
+  //       console.log('Fetched Recommendations:', fetchedRecommendations);
+  //       setRecommendations(fetchedRecommendations);
+  //       setLoading(false);
+  //     } else {
+  //       console.log('No access token available.');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching recommendations:', error);
+  //     setLoading(false);
+  //   }
+  // };
+
+  // use this function for testing with mock data from data.js
   const fetchAndSetRecommendations = async () => {
     try {
-      const { data: session } = await supabase.auth.getSession();
-      const accessToken = session?.session?.provider_token;
-
-      if (accessToken) {
-        setLoading(true);
-        const fetchedRecommendations = await fetchRecommendations(accessToken);
-        console.log('Fetched Recommendations:', fetchedRecommendations);
-        setRecommendations(fetchedRecommendations);
-        setLoading(false);
-      } else {
-        console.log('No access token available.');
-      }
+      setLoading(true);
+      const recommendations = data;
+      setRecommendations(recommendations);
+      setLoading(false);
     } catch (error) {
       console.error('Error fetching recommendations:', error);
       setLoading(false);
@@ -82,11 +98,11 @@ export default function SongCards() {
       );
       setRecommendations(filteredData.slice(2)); // Set remaining tracks for future use
       setSongPair(filteredData.slice(0, 2)); // Initialize with the first two tracks
-      insertSongsIfNeeded(filteredData.slice(0, 2)); // Insert initial songs into the database if needed
+      insertSongsToDb(filteredData.slice(0, 2)); // Insert initial songs into the database if needed
     }
   }, [recommendations]);
 
-  const insertSongsIfNeeded = async (songs) => {
+  const insertSongsToDb = async (songs: Song[]) => {
     for (const song of songs) {
       const { data, error } = await supabase
         .from('tracks')
@@ -99,13 +115,21 @@ export default function SongCards() {
         continue;
       }
 
+      if (data) {
+        console.log('song exists:', data);
+      }
+
+      const artists = song.artists
+        .map((artist: { name: string }) => artist.name)
+        .join(', ');
+
       if (!data) {
         const { error: insertError } = await supabase.from('tracks').insert([
           {
             spotify_track_id: song.id,
             vote_count: 0,
             song: song.name,
-            artist: song.artists.map((artist) => artist.name).join(', '),
+            artist: artists,
             modified_at: new Date(),
           },
         ]);
@@ -120,11 +144,12 @@ export default function SongCards() {
   };
 
   const serveNextPair = async () => {
+    setLoading(true);
     if (recommendations.length >= 2) {
       const nextPair = recommendations.slice(0, 2);
       setSongPair(nextPair);
       setRecommendations(recommendations.slice(2));
-      await insertSongsIfNeeded(nextPair);
+      await insertSongsToDb(nextPair);
       setLoading(false);
       setVoteCast(false);
     } else {
@@ -169,7 +194,7 @@ export default function SongCards() {
       console.error('Error fetching vote count:', error);
       return 0; // Return 0 as default vote count in case of an error
     }
-
+    setCurrentPlaying(null);
     return data?.vote_count || 0; // Return the vote count or 0 if not found
   };
 
@@ -195,7 +220,7 @@ export default function SongCards() {
   };
 
   if (loading) {
-    return <div>Loading songs...</div>;
+    return <Loader message={'Loading songs...'} />;
   }
 
   // if (!songPair || songPair.length === 0) {
@@ -207,20 +232,20 @@ export default function SongCards() {
       {songPair.map((song) => (
         <Card
           key={song.id}
-          className='text-sm md:text-base pb-4 border-none flex flex-col max-w-xs mx-auto items-center rounded-t-none'>
+          className='text-sm md:text-base p-0 pb-4 border-none flex flex-col max-w-[300px] mx-auto items-center rounded-t-none'>
           <CardHeader className='p-0 w-full h-full'>
             <Image
-              width={600}
-              height={600}
+              width={300}
+              height={300}
               className='w-full h-full object-cover'
               src={song.album.images[0]?.url || ''}
               alt={`Cover art for ${song.name}`}
             />
           </CardHeader>
-          <div className='p-4 flex flex-col gap-3'>
+          <div className='p-2 flex flex-col gap-3'>
             <div>
-              <h2 className='font-bold'>{song.name}</h2>
-              <p className='text-muted-foreground'>
+              <h2 className='font-bold text-sm'>{song.name}</h2>
+              <p className='text-muted-foreground text-sm'>
                 {song.artists
                   .map((artist: { name: string }) => artist.name)
                   .join(', ')}
