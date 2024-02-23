@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Select,
   SelectContent,
@@ -5,20 +7,34 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { fetchUsersTopTracks } from '@/utils/spotify/spotify';
+import { fetchAccessToken } from '@/utils/supabase/fecthAccessToken';
+import { useQuery } from '@tanstack/react-query';
 import { ExternalLinkIcon } from 'lucide-react';
 import Image from 'next/image';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent } from '../ui/card';
+import { TopTracksSkeleton } from './Skeletons';
 
-export default function TopTracks({
-  topTracks,
-  setTimeFrame,
-}: {
-  topTracks: any;
-  setTimeFrame: (timeFrame: string) => void;
-}) {
-  const handleTimeFrameChange = (selectedTimeFrame: string) => {
-    setTimeFrame(selectedTimeFrame);
+export default function TopTracks() {
+  const [topTracks, setTopTracks] = useState([]);
+  const [timeRange, setTimeRange] = useState('medium_term');
+  const { data, isLoading } = useQuery({
+    queryKey: ['top-tracks', timeRange],
+    queryFn: async () => {
+      const accessToken = await fetchAccessToken();
+      return fetchUsersTopTracks(accessToken, timeRange);
+    },
+  });
+
+  useEffect(() => {
+    if (data) {
+      setTopTracks(data.items);
+    }
+  }, [data]);
+
+  const handleTimeRangeChange = (value: string) => {
+    setTimeRange(value);
   };
 
   const truncateText = (text: string, maxLength: number) => {
@@ -32,7 +48,7 @@ export default function TopTracks({
     <section>
       <div className='flex justify-between items-center mb-6'>
         <h2 className='text-xl md:text-2xl 2xl:text-3xl'>Top Tracks</h2>
-        <Select onValueChange={handleTimeFrameChange}>
+        <Select onValueChange={handleTimeRangeChange}>
           <SelectTrigger className='w-[180px] bg-transparent'>
             <SelectValue placeholder='Time Range' />
           </SelectTrigger>
@@ -44,7 +60,9 @@ export default function TopTracks({
         </Select>
       </div>
       <div className='flex flex-col gap-3 md:grid md:grid-cols-2 2xl:grid-cols-3'>
-        {topTracks ? (
+        {isLoading ? (
+          <TopTracksSkeleton />
+        ) : (
           topTracks.map((tracks: any) => (
             <Card
               key={tracks.id}
@@ -66,7 +84,6 @@ export default function TopTracks({
                     href={tracks.external_urls.spotify}>
                     <span className='truncate'>
                       {truncateText(tracks.name, 25)}{' '}
-                      {/* Adjust maxLength as needed */}
                     </span>
                     <ExternalLinkIcon
                       size={16}
@@ -87,8 +104,6 @@ export default function TopTracks({
               </CardContent>
             </Card>
           ))
-        ) : (
-          <div>Loading...</div>
         )}
       </div>
     </section>

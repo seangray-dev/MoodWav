@@ -42,8 +42,8 @@ export default async function BestOfPage() {
       <div className='flex flex-col gap-20'>
         <HydrationBoundary state={dehydrate(queryClient)}>
           <TopArtists />
+          <TopTracks />
         </HydrationBoundary>
-        {/* <TopTracks topTracks={topTracks} setTimeFrame={setTimeFrameTracks} /> */}
       </div>
     </div>
   );
