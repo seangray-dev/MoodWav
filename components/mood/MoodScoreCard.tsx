@@ -5,6 +5,7 @@ import { fetchUserMoodData } from '@/server/actions';
 import { fetchAccessToken } from '@/utils/supabase/fecthAccessToken';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
+import { MoodScoreCardSkeleton } from './Skeletons';
 
 interface MoodData {
   highestMood: string;
@@ -14,7 +15,7 @@ interface MoodData {
 
 const MoodScoreCard = () => {
   const [moodData, setMoodData] = useState<MoodData | undefined>();
-  const { data, error, isFetched } = useQuery({
+  const { data, error, isFetched, isLoading } = useQuery({
     queryKey: ['mood-data'],
     queryFn: async () => {
       const accessToken = await fetchAccessToken();
@@ -57,6 +58,10 @@ const MoodScoreCard = () => {
     nostalgic: 'bg-gradient-to-b from-red-500 to-red-300',
     reflective: 'bg-gradient-to-b from-indigo-400 to-indigo-300',
   };
+
+  if (isLoading) {
+    return <MoodScoreCardSkeleton />;
+  }
 
   return (
     <Card className='flex-1 border-none mx-auto flex flex-col gap-6 md:grid md:grid-cols-2 rounded-[32px] bg-card drop-shadow-2xl'>
