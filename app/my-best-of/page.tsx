@@ -7,7 +7,11 @@ import {
   fetchUsersTopTracks,
 } from '@/utils/spotify/spotify';
 import { fetchAccessToken } from '@/utils/supabase/fecthAccessToken';
-import { QueryClient } from '@tanstack/react-query';
+import {
+  HydrationBoundary,
+  QueryClient,
+  dehydrate,
+} from '@tanstack/react-query';
 
 export default async function BestOfPage() {
   // check to see if user is logged in
@@ -36,7 +40,9 @@ export default async function BestOfPage() {
         My Best Of Spotify
       </h1>
       <div className='flex flex-col gap-20'>
-        <TopArtists />
+        <HydrationBoundary state={dehydrate(queryClient)}>
+          <TopArtists />
+        </HydrationBoundary>
         {/* <TopTracks topTracks={topTracks} setTimeFrame={setTimeFrameTracks} /> */}
       </div>
     </div>
