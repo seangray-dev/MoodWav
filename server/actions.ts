@@ -94,7 +94,6 @@ export const fetchUserMoodData = async (accessToken: string) => {
     const moodData = determineUserMood(audioFeatures);
 
     // Returns the highestMood, highestScore, and allMoods
-    console.log('server', moodData);
     return moodData;
   } catch (error) {
     console.error('Error in fetchUserMoodData:', error);
