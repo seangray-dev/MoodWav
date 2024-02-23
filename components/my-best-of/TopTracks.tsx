@@ -14,6 +14,7 @@ import { ExternalLinkIcon } from 'lucide-react';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent } from '../ui/card';
+import { Label } from '../ui/label';
 import { TopTracksSkeleton } from './Skeletons';
 
 export default function TopTracks() {
@@ -48,16 +49,22 @@ export default function TopTracks() {
     <section>
       <div className='flex justify-between items-center mb-6'>
         <h2 className='text-xl md:text-2xl 2xl:text-3xl'>Top Tracks</h2>
-        <Select onValueChange={handleTimeRangeChange}>
-          <SelectTrigger className='w-[180px] bg-transparent'>
-            <SelectValue placeholder='Time Range' />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value='short_term'>Short</SelectItem>
-            <SelectItem value='medium_term'>Medium</SelectItem>
-            <SelectItem value='long_term'>Long</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className='justify-end flex flex-col md:flex-row items-center gap-2'>
+          <Label htmlFor='time-range'>Time Range</Label>
+          <Select name='time-range' onValueChange={handleTimeRangeChange}>
+            <SelectTrigger className='max-w-[180px] bg-transparent border-white'>
+              <SelectValue
+                defaultValue={'medium_term'}
+                placeholder='Last 6 months'
+              />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value='short_term'>Last 4 weeks</SelectItem>
+              <SelectItem value='medium_term'>Last 6 months</SelectItem>
+              <SelectItem value='long_term'>Several Years</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
       <div className='flex flex-col gap-3 md:grid md:grid-cols-2 2xl:grid-cols-3'>
         {isLoading ? (
