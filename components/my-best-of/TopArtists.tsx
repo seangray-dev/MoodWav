@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Select,
   SelectContent,
@@ -6,34 +8,48 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { SpotifyArtist } from '@/utils/spotify/constants';
-import { isUserFollowingArtist } from '@/utils/spotify/spotify';
+import {
+  fetchUsersTopArtists,
+  isUserFollowingArtist,
+} from '@/utils/spotify/spotify';
+import { fetchAccessToken } from '@/utils/supabase/fecthAccessToken';
+import { useQuery } from '@tanstack/react-query';
 import { ExternalLinkIcon } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { NumericFormat } from 'react-number-format';
 import { Badge } from '../ui/badge';
 import { Card, CardContent } from '../ui/card';
+import { TopArtistsSkeleton } from './Skeletons';
 
-export default function TopArtists({
-  topArtists,
-  setTimeFrame,
-  accessToken,
-}: {
-  topArtists: SpotifyArtist[];
-  setTimeFrame: (timeFrame: string) => void;
-  accessToken: string;
-}) {
-  const handleTimeFrameChange = (selectedTimeFrame: string) => {
-    setTimeFrame(selectedTimeFrame);
-  };
+interface ArtistWithFollowingInfo extends SpotifyArtist {
+  isFollowing: boolean;
+}
 
+export default function TopArtists() {
+  const [topArtists, setTopArtists] = useState<SpotifyArtist[]>([]);
   const [artistsWithFollowingInfo, setArtistsWithFollowingInfo] = useState<
-    SpotifyArtist[]
+    ArtistWithFollowingInfo[]
   >([]);
+  const [timeRange, setTimeRange] = useState('medium_term');
+  const { data, isLoading } = useQuery({
+    queryKey: ['top-artists', timeRange],
+    queryFn: async () => {
+      const accessToken = await fetchAccessToken();
+      return fetchUsersTopArtists(accessToken, timeRange);
+    },
+  });
+
+  useEffect(() => {
+    if (data) {
+      setTopArtists(data.items);
+    }
+  }, [data]);
 
   useEffect(() => {
     const checkFollowingStatus = async () => {
       const artistIds = topArtists.map((artist) => artist.id).join(',');
+      const accessToken = await fetchAccessToken();
       const followingStatuses =
         (await isUserFollowingArtist(accessToken, artistIds)) || [];
 
@@ -48,25 +64,34 @@ export default function TopArtists({
     if (topArtists && topArtists.length > 0) {
       checkFollowingStatus();
     }
-  }, [topArtists, accessToken]);
+  }, [topArtists]);
+
+  const handleTimeRangeChange = (value: string) => {
+    setTimeRange(value);
+  };
 
   return (
     <section>
       <div className='flex justify-between items-center mb-6'>
         <h2 className='text-xl md:text-2xl 2xl:text-3xl'>Top Artists</h2>
-        <Select onValueChange={handleTimeFrameChange}>
+        <Select onValueChange={handleTimeRangeChange}>
           <SelectTrigger className='w-[180px] bg-transparent'>
-            <SelectValue placeholder='Time Range' />
+            <SelectValue
+              defaultValue={'medium_term'}
+              placeholder='Last 6 months'
+            />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value='short_term'>Short</SelectItem>
-            <SelectItem value='medium_term'>Medium</SelectItem>
-            <SelectItem value='long_term'>Long</SelectItem>
+            <SelectItem value='short_term'>Last 4 weeks</SelectItem>
+            <SelectItem value='medium_term'>Last 6 months</SelectItem>
+            <SelectItem value='long_term'>Several Years</SelectItem>
           </SelectContent>
         </Select>
       </div>
       <div className='flex flex-col gap-3 md:grid md:grid-cols-2 2xl:grid-cols-3'>
-        {artistsWithFollowingInfo ? (
+        {isLoading ? (
+          <TopArtistsSkeleton />
+        ) : (
           artistsWithFollowingInfo.map((artist: any) => (
             <Card
               key={artist.id}
@@ -116,8 +141,6 @@ export default function TopArtists({
               </CardContent>
             </Card>
           ))
-        ) : (
-          <div>Loading...</div>
         )}
       </div>
     </section>

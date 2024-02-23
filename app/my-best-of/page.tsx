@@ -1,66 +1,34 @@
-'use client';
-
 import TopArtists from '@/components/my-best-of/TopArtists';
 import TopTracks from '@/components/my-best-of/TopTracks';
+import AlertMessage from '@/components/ui/AlertMessage';
+import readUserSession from '@/server/read-user-session';
 import {
   fetchUsersTopArtists,
   fetchUsersTopTracks,
 } from '@/utils/spotify/spotify';
-import { supabase } from '@/utils/supabase/client';
-import React, { useEffect, useState } from 'react';
+import { fetchAccessToken } from '@/utils/supabase/fecthAccessToken';
+import { QueryClient } from '@tanstack/react-query';
 
-export default function BestOfPage() {
-  const [topArtists, setTopArtists] = useState<any>(null);
-  const [timeFrameArtists, setTimeFrameArtists] =
-    useState<string>('medium_term');
-  const [topTracks, setTopTracks] = useState<any>(null);
-  const [timeFrameTracks, setTimeFrameTracks] = useState<string>('medium_term');
-  const [accessToken, setAccessToken] = useState<string | null>(null);
+export default async function BestOfPage() {
+  // check to see if user is logged in
+  const { data } = await readUserSession();
+  if (!data.session) {
+    return (
+      <AlertMessage message='You must be logged in to use this feature.' />
+    );
+  }
 
-  useEffect(() => {
-    const getAccessToken = async () => {
-      const { data: session } = await supabase.auth.getSession();
-      setAccessToken(session?.session?.provider_token || null);
-    };
-
-    getAccessToken();
-  }, []);
-
-  useEffect(() => {
-    const getTopArtists = async () => {
-      if (accessToken) {
-        try {
-          const topArtistsData = await fetchUsersTopArtists(
-            accessToken,
-            timeFrameArtists
-          );
-          setTopArtists(topArtistsData.items);
-        } catch (error) {
-          console.error('Error fetching top artists:', error);
-        }
-      }
-    };
-
-    getTopArtists();
-  }, [accessToken, timeFrameArtists]);
-
-  useEffect(() => {
-    const getTopTracks = async () => {
-      if (accessToken) {
-        try {
-          const topTracksData = await fetchUsersTopTracks(
-            accessToken,
-            timeFrameTracks
-          );
-          setTopTracks(topTracksData.items);
-        } catch (error) {
-          console.error('Error fetching top tracks:', error);
-        }
-      }
-    };
-
-    getTopTracks();
-  }, [accessToken, timeFrameTracks]);
+  const queryClient = new QueryClient();
+  await queryClient.prefetchQuery({
+    queryKey: ['top-artists', 'top-tracks'],
+    queryFn: async () => {
+      const accessToken = await fetchAccessToken();
+      return [
+        fetchUsersTopArtists(accessToken),
+        fetchUsersTopTracks(accessToken),
+      ];
+    },
+  });
 
   return (
     <div className='w-full py-10'>
@@ -68,14 +36,8 @@ export default function BestOfPage() {
         My Best Of Spotify
       </h1>
       <div className='flex flex-col gap-20'>
-        {accessToken && (
-          <TopArtists
-            accessToken={accessToken}
-            topArtists={topArtists}
-            setTimeFrame={setTimeFrameArtists}
-          />
-        )}
-        <TopTracks topTracks={topTracks} setTimeFrame={setTimeFrameTracks} />
+        <TopArtists />
+        {/* <TopTracks topTracks={topTracks} setTimeFrame={setTimeFrameTracks} /> */}
       </div>
     </div>
   );

@@ -59,7 +59,7 @@ export const fetchAudioFeaturesForTracks = async (
 
 export const fetchUsersTopArtists = async (
   accessToken: string,
-  time_range: string
+  time_range = 'medium_term'
 ) => {
   const url = `https://api.spotify.com/v1/me/top/artists?time_range=${time_range}`;
   try {
@@ -83,7 +83,7 @@ export const fetchUsersTopArtists = async (
 
 export const fetchUsersTopTracks = async (
   accessToken: string,
-  time_range: string
+  time_range = 'medium_term'
 ) => {
   const url = `https://api.spotify.com/v1/me/top/tracks?time_range=${time_range}`;
   try {
