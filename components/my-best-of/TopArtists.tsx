@@ -20,6 +20,7 @@ import { useEffect, useState } from 'react';
 import { NumericFormat } from 'react-number-format';
 import { Badge } from '../ui/badge';
 import { Card, CardContent } from '../ui/card';
+import { Label } from '../ui/label';
 import { TopArtistsSkeleton } from './Skeletons';
 
 interface ArtistWithFollowingInfo extends SpotifyArtist {
@@ -74,19 +75,22 @@ export default function TopArtists() {
     <section>
       <div className='flex justify-between items-center mb-6'>
         <h2 className='text-xl md:text-2xl 2xl:text-3xl'>Top Artists</h2>
-        <Select onValueChange={handleTimeRangeChange}>
-          <SelectTrigger className='w-[180px] bg-transparent'>
-            <SelectValue
-              defaultValue={'medium_term'}
-              placeholder='Last 6 months'
-            />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value='short_term'>Last 4 weeks</SelectItem>
-            <SelectItem value='medium_term'>Last 6 months</SelectItem>
-            <SelectItem value='long_term'>Several Years</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className='justify-end flex flex-col md:flex-row items-center gap-2'>
+          <Label htmlFor='time-range'>Time Range</Label>
+          <Select name='time-range' onValueChange={handleTimeRangeChange}>
+            <SelectTrigger className='max-w-[180px] bg-transparent border-white'>
+              <SelectValue
+                defaultValue={'medium_term'}
+                placeholder='Last 6 months'
+              />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value='short_term'>Last 4 weeks</SelectItem>
+              <SelectItem value='medium_term'>Last 6 months</SelectItem>
+              <SelectItem value='long_term'>Several Years</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
       <div className='flex flex-col gap-3 md:grid md:grid-cols-2 2xl:grid-cols-3'>
         {isLoading ? (
