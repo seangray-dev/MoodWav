@@ -4,7 +4,14 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useState } from "react";
+import {
+  checkIfTrackIsSaved,
+  removeTrackForCurrentUser,
+  saveTrackForCurrentUser,
+} from "@/utils/spotify/spotify";
+import { addedToLibraryCount } from "@/utils/supabase/db";
+import { fetchAccessToken } from "@/utils/supabase/fecthAccessToken";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { useToast } from "../ui/use-toast";
 
@@ -46,20 +53,54 @@ const Outline = () => {
   );
 };
 
-export default function LikeButton() {
+const LikeButton = ({ song }: any) => {
   const [isLiked, setIsLiked] = useState(false);
   const { toast } = useToast();
 
-  const toggleLike = () => {
-    setIsLiked(!isLiked);
-    if (!isLiked) {
-      toast({
-        title: "Added to Liked Songs",
-      });
-    } else {
-      toast({
-        title: "Removed from Liked Songs",
-      });
+  useEffect(() => {
+    const checkSavedStatus = async () => {
+      const accessToken = await fetchAccessToken();
+      const isSaved = await checkIfTrackIsSaved(accessToken, song.id);
+      setIsLiked(isSaved);
+    };
+
+    checkSavedStatus();
+  }, [song.id]);
+
+  // Extract artist names
+  const artistNames = song.artists.map((artist: any) => artist.name).join(", ");
+
+  const toggleLike = async () => {
+    try {
+      const accessToken = await fetchAccessToken();
+
+      if (!isLiked) {
+        // Save track to Spotify library
+        await saveTrackForCurrentUser(accessToken, song.id);
+        await addedToLibraryCount(song.id);
+        toast({
+          title: "Added to Liked Songs:",
+          description: `${song.name} by ${artistNames}`,
+        });
+      } else {
+        // Remove track from Spotify library
+        await removeTrackForCurrentUser(accessToken, song.id);
+        toast({
+          title: "Removed from Liked Songs:",
+          description: `${song.name} by ${artistNames}`,
+        });
+      }
+
+      setIsLiked(!isLiked);
+    } catch (error) {
+      console.error("Error toggling track like status", error);
+      if (error instanceof Error) {
+        toast({
+          variant: "destructive",
+          title: "An error occurred",
+          description: error.message,
+        });
+      }
     }
   };
 
@@ -68,7 +109,7 @@ export default function LikeButton() {
       <Tooltip>
         <TooltipTrigger>
           <Button
-            variant={"ghost"}
+            variant="ghost"
             className="like-button w-fit justify-start p-0 hover:bg-transparent"
             onClick={toggleLike}
           >
@@ -76,13 +117,13 @@ export default function LikeButton() {
           </Button>
         </TooltipTrigger>
         <TooltipContent>
-          {!isLiked ? (
-            <span>Add to library</span>
-          ) : (
-            <span>Remove from Library</span>
-          )}
+          {!isLiked
+            ? "Add to Your Spotify Library"
+            : "Remove from Your Spotify Library"}
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
   );
-}
+};
+
+export default LikeButton;

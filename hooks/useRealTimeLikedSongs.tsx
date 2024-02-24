@@ -1,16 +1,16 @@
 import { supabase } from "@/utils/supabase/client";
 import { useEffect, useState } from "react";
 
-const useRealtimeVotes = () => {
-  const [totalVotes, setTotalVotes] = useState(0);
+const useRealTimeAddedToLibraryCount = () => {
+  const [totalAdeedToLibraryCount, setTotalAddedToLibraryCount] = useState(0);
 
-  async function fetchTotalVotes() {
+  async function fetchAddedToLibraryCount() {
     console.log("Fetching total votes:");
     try {
-      const { data, error } = await supabase.rpc("sum_vote_counts");
+      const { data, error } = await supabase.rpc("sum_added_to_library_count");
       if (error) throw error;
       console.log("settingTotalVotes with data:", data);
-      setTotalVotes(data);
+      setTotalAddedToLibraryCount(data);
       return data;
     } catch (error) {
       console.error("Error fetching total vote count:", error);
@@ -18,14 +18,14 @@ const useRealtimeVotes = () => {
   }
 
   useEffect(() => {
-    fetchTotalVotes();
+    fetchAddedToLibraryCount();
     const subscription = supabase
-      .channel("totalVotes")
+      .channel("addedToLibraryCount")
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "tracks" },
         (payload) => {
-          fetchTotalVotes();
+          fetchAddedToLibraryCount();
           {
             console.error(
               "Unexpected payload format or missing data:",
@@ -41,7 +41,7 @@ const useRealtimeVotes = () => {
     };
   }, []);
 
-  return { totalVotes };
+  return { totalAdeedToLibraryCount };
 };
 
-export default useRealtimeVotes;
+export default useRealTimeAddedToLibraryCount;

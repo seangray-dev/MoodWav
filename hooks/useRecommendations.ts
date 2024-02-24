@@ -11,12 +11,13 @@ interface SpotifyRecommendationsResponse {
   tracks: SpotifyTrack[];
 }
 
-const useMockData = true;
+const useMockData = false;
 
-const useRecommendations = async () => {
+const useRecommendations = () => {
   const [recommendations, setRecommendations] = useState<SpotifyTrack[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Define the function outside of useEffect so it's accessible in the hook's return value
   const fetchAndFilterRecommendations = async () => {
     setLoading(true);
     let fetchedData: SpotifyRecommendationsResponse;
@@ -41,19 +42,24 @@ const useRecommendations = async () => {
       }
     }
 
-    // Filter songs to include only those with a preview URL
     const filteredRecommendations = fetchedData.tracks.filter(
       (track) => track.preview_url,
     );
 
-    setRecommendations(filteredRecommendations);
+    // Append new recommendations to the existing list
+    setRecommendations((prevRecommendations) => [
+      ...prevRecommendations,
+      ...filteredRecommendations,
+    ]);
     setLoading(false);
   };
 
+  // Use the function inside useEffect
   useEffect(() => {
     fetchAndFilterRecommendations();
   }, []);
 
+  // Now fetchAndFilterRecommendations is accessible here
   return { recommendations, loading, fetchMore: fetchAndFilterRecommendations };
 };
 

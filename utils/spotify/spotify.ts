@@ -1,15 +1,17 @@
-import { determineUserMood } from '../mood_calculations/calculations';
+import { access } from "fs";
+import { shuffle } from "lodash";
+import { determineUserMood } from "../mood_calculations/calculations";
 import {
   SpotifyRecentlyPlayedResponse,
   SpotifyUserProfile,
   TrackDetail,
-} from './constants';
+} from "./constants";
 
 export const fetchSpotifyUserProfile = async (
-  accessToken: string
+  accessToken: string,
 ): Promise<SpotifyUserProfile | null> => {
   try {
-    const response = await fetch('https://api.spotify.com/v1/me', {
+    const response = await fetch("https://api.spotify.com/v1/me", {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -18,7 +20,7 @@ export const fetchSpotifyUserProfile = async (
     if (!response.ok) {
       // Handle non-200 responses here
       console.error(
-        `Error fetching Spotify user profile: ${response.statusText}`
+        `Error fetching Spotify user profile: ${response.statusText}`,
       );
       return null;
     }
@@ -26,17 +28,17 @@ export const fetchSpotifyUserProfile = async (
     const userProfile: SpotifyUserProfile = await response.json();
     return userProfile;
   } catch (error) {
-    console.error('Error fetching Spotify user profile:', error);
+    console.error("Error fetching Spotify user profile:", error);
     return null;
   }
 };
 
 export const fetchAudioFeaturesForTracks = async (
   trackIds: string[],
-  accessToken: string
+  accessToken: string,
 ) => {
-  const url = new URL('https://api.spotify.com/v1/audio-features');
-  url.search = new URLSearchParams({ ids: trackIds.join(',') }).toString();
+  const url = new URL("https://api.spotify.com/v1/audio-features");
+  url.search = new URLSearchParams({ ids: trackIds.join(",") }).toString();
 
   try {
     const response = await fetch(url.toString(), {
@@ -52,14 +54,14 @@ export const fetchAudioFeaturesForTracks = async (
     const data = await response.json();
     return data.audio_features;
   } catch (error) {
-    console.error('Error fetching audio features:', error);
+    console.error("Error fetching audio features:", error);
     return null;
   }
 };
 
 export const fetchUsersTopArtists = async (
   accessToken: string,
-  time_range = 'medium_term'
+  time_range = "medium_term",
 ) => {
   const url = `https://api.spotify.com/v1/me/top/artists?time_range=${time_range}`;
   try {
@@ -76,14 +78,14 @@ export const fetchUsersTopArtists = async (
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error('Error fetching top artists:', error);
+    console.error("Error fetching top artists:", error);
     return null;
   }
 };
 
 export const fetchUsersTopTracks = async (
   accessToken: string,
-  time_range = 'medium_term'
+  time_range = "medium_term",
 ) => {
   const url = `https://api.spotify.com/v1/me/top/tracks?time_range=${time_range}`;
   try {
@@ -101,14 +103,14 @@ export const fetchUsersTopTracks = async (
 
     return data;
   } catch (error) {
-    console.error('Error fetching top tracks:', error);
+    console.error("Error fetching top tracks:", error);
     return null;
   }
 };
 
 export const isUserFollowingArtist = async (
   accessToken: string,
-  ids: string
+  ids: string,
 ) => {
   const url = `https://api.spotify.com/v1/me/following/contains?type=artist&ids=${ids}`;
 
@@ -127,45 +129,169 @@ export const isUserFollowingArtist = async (
 
     return data;
   } catch (error) {
-    console.error('Error fetching top tracks:', error);
+    console.error("Error fetching top tracks:", error);
     return null;
   }
 };
 
-export const fetchRecommendations = async (accessToken: string) => {
-  console.log('fetchRandom', accessToken);
-  // Fetch users top artists and tracks
-  const topArtistsData = await fetchUsersTopArtists(accessToken, 'medium_term');
-  const topTracksData = await fetchUsersTopTracks(accessToken, 'medium_term');
+// export const fetchRecommendations = async (accessToken: string) => {
+//   console.log("fetchRandom", accessToken);
+//   // Fetch users top artists and tracks
+//   const topArtistsData = await fetchUsersTopArtists(accessToken, "medium_term");
+//   const topTracksData = await fetchUsersTopTracks(accessToken, "medium_term");
 
-  // Extract seed IDs (using up to 5 seeds in total)
-  // To do: shuffle seedArtists and seedTracks before getting recommendations instead of using top items. Or should we keep it as is?
-  const seedArtists = topArtistsData.items
+//   // Extract seed IDs (using up to 5 seeds in total)
+//   // To do: shuffle seedArtists and seedTracks before getting recommendations instead of using top items. Or should we keep it as is?
+//   const seedArtists = topArtistsData.items
+//     .slice(0, 2)
+//     .map((artist: { id: string }) => artist.id)
+//     .join(",");
+//   const seedTracks = topTracksData.items
+//     .slice(0, 3)
+//     .map((track: { id: string }) => track.id)
+//     .join(",");
+
+//   // Fetch recommendations based on seed artists and tracks
+//   const recommendationsUrl = `https://api.spotify.com/v1/recommendations?limit=100&seed_artists=${seedArtists}&seed_tracks=${seedTracks}`;
+//   const recommendationsResponse = await fetch(recommendationsUrl, {
+//     headers: {
+//       Authorization: `Bearer ${accessToken}`,
+//     },
+//   });
+
+//   if (!recommendationsResponse.ok) {
+//     throw new Error(
+//       `Error fetching recommendations: ${recommendationsResponse.statusText}`,
+//     );
+//   }
+
+//   const recommendationsData = await recommendationsResponse.json();
+
+//   console.log("recommendationsData", recommendationsData);
+
+//   return recommendationsData;
+// };
+
+export const fetchRecommendations = async (accessToken: string) => {
+  console.log("fetchRandom", accessToken);
+
+  const topArtistsData = await fetchUsersTopArtists(accessToken, "medium_term");
+  const topTracksData = await fetchUsersTopTracks(accessToken, "medium_term");
+
+  // Shuffle and slice seed arrays
+  const seedArtists = shuffle(topArtistsData.items)
     .slice(0, 2)
     .map((artist: { id: string }) => artist.id)
-    .join(',');
-  const seedTracks = topTracksData.items
+    .join(",");
+  const seedTracks = shuffle(topTracksData.items)
     .slice(0, 3)
     .map((track: { id: string }) => track.id)
-    .join(',');
+    .join(",");
 
-  // Fetch recommendations based on seed artists and tracks
+  console.log("Seed Artists:", seedArtists);
+  console.log("Seed Tracks:", seedTracks);
+
   const recommendationsUrl = `https://api.spotify.com/v1/recommendations?limit=100&seed_artists=${seedArtists}&seed_tracks=${seedTracks}`;
   const recommendationsResponse = await fetch(recommendationsUrl, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
+    headers: { Authorization: `Bearer ${accessToken}` },
   });
 
   if (!recommendationsResponse.ok) {
     throw new Error(
-      `Error fetching recommendations: ${recommendationsResponse.statusText}`
+      `Error fetching recommendations: ${recommendationsResponse.statusText}`,
     );
   }
 
   const recommendationsData = await recommendationsResponse.json();
-
-  console.log('recommendationsData', recommendationsData);
-
+  console.log("Recommendations Data:", recommendationsData);
   return recommendationsData;
+};
+
+export const saveTrackForCurrentUser = async (
+  accessToken: string,
+  id: string,
+) => {
+  const url = "https://api.spotify.com/v1/me/tracks";
+
+  try {
+    const response = await fetch(url + "?ids=" + id, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to save track. Please try again.");
+    }
+
+    if (response.ok) {
+      console.log("Tracks saved successfully");
+    } else {
+      console.error("Failed to save tracks", response.statusText);
+    }
+  } catch (error) {
+    console.error("Error saving tracks:", error);
+    throw new Error(
+      "An error occurred while saving the track. Please try again later.",
+    );
+  }
+};
+
+export const removeTrackForCurrentUser = async (
+  accessToken: string,
+  id: string,
+) => {
+  const url = "https://api.spotify.com/v1/me/tracks";
+
+  try {
+    const response = await fetch(url + "?ids=" + id, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to remove track. Please try again.");
+    }
+
+    if (response.ok) {
+      console.log("Tracks removed successfully");
+    } else {
+      console.error("Failed to remove tracks", response.statusText);
+    }
+  } catch (error) {
+    console.error("Error removing tracks:", error);
+    throw new Error(
+      "An error occurred while removing the track. Please try again later.",
+    );
+  }
+};
+
+export const checkIfTrackIsSaved = async (accessToken: string, id: string) => {
+  const url = "https://api.spotify.com/v1/me/tracks/contains";
+
+  try {
+    const response = await fetch(url + "?ids=" + id, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.ok) {
+      const isSavedArray = await response.json(); // This should be an array of booleans
+      return isSavedArray[0]; // Assuming you're only checking one track, return the first element
+    } else {
+      console.error("Failed to check if track is saved", response.statusText);
+      return false; // In case of an error, you might want to return false or handle differently
+    }
+  } catch (error) {
+    console.error("Error checking if track is saved:", error);
+    return false; // Handle errors as needed
+  }
 };

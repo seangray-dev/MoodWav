@@ -1,6 +1,6 @@
 import SongCards from "@/components/song-duels/SongCards";
 import Stats from "@/components/song-duels/Stats";
-import TotalFavourited from "@/components/song-duels/TotalFavourited";
+import TotalFavourited from "@/components/song-duels/TotalAddedToLibrary";
 import TotalVotes from "@/components/song-duels/TotalVotes";
 
 export default function SongDuelsPage() {
