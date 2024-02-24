@@ -12,7 +12,7 @@ const SpotifyButton = () => {
         provider: 'spotify',
         options: {
           scopes:
-            'user-read-recently-played user-top-read streaming user-read-playback-state user-modify-playback-state user-follow-read',
+            'user-read-recently-played user-top-read streaming user-read-playback-state user-modify-playback-state user-follow-read user-library-modify',
         },
       });
 

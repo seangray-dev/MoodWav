@@ -1,22 +1,31 @@
-import MoodWavLogo from '@/assets/images/moodwav-high-resolution-logo-transparent.png';
-import AlertMessage from '@/components/ui/AlertMessage';
-import { fetchRecentlyPlayedTracks, fetchUserMoodData } from '@/server/actions';
-import readUserSession from '@/server/read-user-session';
-import { fetchAccessToken } from '@/utils/supabase/fecthAccessToken';
+import MoodWavLogo from "@/assets/images/moodwav-high-resolution-logo-transparent.png";
+import AlertMessage from "@/components/ui/AlertMessage";
+import { fetchRecentlyPlayedTracks, fetchUserMoodData } from "@/server/actions";
+import readUserSession from "@/server/read-user-session";
+import { fetchAccessToken } from "@/utils/supabase/fecthAccessToken";
 import {
   HydrationBoundary,
   QueryClient,
   dehydrate,
-} from '@tanstack/react-query';
-import Image from 'next/image';
-import Link from 'next/link';
-import MoodScoreCard from '../../components/mood/MoodScoreCard';
-import RecentlyPlayed from '../../components/mood/RecentlyPlayed';
+} from "@tanstack/react-query";
+import Image from "next/image";
+import Link from "next/link";
+import MoodScoreCard from "../../components/mood/MoodScoreCard";
+import RecentlyPlayed from "../../components/mood/RecentlyPlayed";
 
 export default async function MoodPage() {
+  
+  // check to see if user is logged in
+  const { data } = await readUserSession();
+  if (!data.session) {
+    return (
+      <AlertMessage message="You must be logged in to use this feature." />
+    );
+  }
+
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
-    queryKey: ['recently-played', 'mood-data'],
+    queryKey: ["recently-played", "mood-data"],
     queryFn: async () => {
       const accessToken = await fetchAccessToken();
       return [
@@ -26,24 +35,16 @@ export default async function MoodPage() {
     },
   });
 
-  // check to see if user is logged in
-  const { data } = await readUserSession();
-  if (!data.session) {
-    return (
-      <AlertMessage message='You must be logged in to use this feature.' />
-    );
-  }
-
   return (
-    <div className='flex flex-1 flex-col place-content-center w-full'>
-      <Link className='mt-4 underline w-fit' href={'/mood/how-it-works'}>
+    <div className="flex w-full flex-1 flex-col place-content-center">
+      <Link className="mt-4 w-fit underline" href={"/mood/how-it-works"}>
         How it works
       </Link>
-      <div className=' px-2 mt-20'>
+      <div className=" mt-20 px-2">
         <Image
-          className='mb-10 mx-auto'
+          className="mx-auto mb-10"
           src={MoodWavLogo}
-          alt='moodwav logo'
+          alt="moodwav logo"
           width={300}
           height={200}
         />

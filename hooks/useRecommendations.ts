@@ -1,7 +1,7 @@
-import { fetchRecommendations } from '@/utils/spotify/spotify';
-import { supabase } from '@/utils/supabase/client';
-import { useEffect, useState } from 'react';
-import { data } from '../components/song-duels/data';
+import { fetchRecommendations } from "@/utils/spotify/spotify";
+import { supabase } from "@/utils/supabase/client";
+import { useEffect, useState } from "react";
+import { data } from "../components/song-duels/data";
 
 interface SpotifyTrack {
   preview_url: string | null;
@@ -13,7 +13,7 @@ interface SpotifyRecommendationsResponse {
 
 const useMockData = true;
 
-const useRecommendations = () => {
+const useRecommendations = async () => {
   const [recommendations, setRecommendations] = useState<SpotifyTrack[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -32,20 +32,20 @@ const useRecommendations = () => {
         if (accessToken) {
           fetchedData = await fetchRecommendations(accessToken);
         } else {
-          console.log('No access token available.');
+          console.log("No access token available.");
           fetchedData = { tracks: [] };
         }
       } catch (error) {
-        console.error('Error fetching recommendations:', error);
+        console.error("Error fetching recommendations:", error);
         fetchedData = { tracks: [] };
       }
     }
 
     // Filter songs to include only those with a preview URL
     const filteredRecommendations = fetchedData.tracks.filter(
-      (track) => track.preview_url
+      (track) => track.preview_url,
     );
-    
+
     setRecommendations(filteredRecommendations);
     setLoading(false);
   };

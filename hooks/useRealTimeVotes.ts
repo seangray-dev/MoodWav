@@ -1,44 +1,38 @@
-// hooks/useRealtimeVotes.ts
-import { supabase } from '@/utils/supabase/client';
-import { useEffect, useState } from 'react';
-
-interface TrackPayload {
-  new?: {
-    spotify_track_id: string;
-    vote_count: number;
-  };
-}
+import { supabase } from "@/utils/supabase/client";
+import { useEffect, useState } from "react";
 
 const useRealtimeVotes = () => {
-  const [voteCounts, setVoteCounts] = useState<Record<string, number>>({});
+  const [totalVotes, setTotalVotes] = useState(0);
+
+  async function fetchTotalVotes() {
+    console.log("Fetching total votes:");
+    try {
+      const { data, error } = await supabase.rpc("sum_vote_counts");
+      if (error) throw error;
+      console.log("settingTotalVotes with data:", data);
+      setTotalVotes(data);
+      return data;
+    } catch (error) {
+      console.error("Error fetching total vote count:", error);
+    }
+  }
 
   useEffect(() => {
+    fetchTotalVotes();
     const subscription = supabase
-      .channel('realtime:public:tracks')
+      .channel("realtime:public:tracks")
       .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'tracks' },
+        "postgres_changes",
+        { event: "*", schema: "public", table: "tracks" },
         (payload) => {
-          console.log('Change received!', payload);
-          const trackPayload = payload as unknown as TrackPayload;
-          const spotifyTrackId = trackPayload.new?.spotify_track_id;
-          const voteCount = trackPayload.new?.vote_count;
-
-          if (
-            typeof spotifyTrackId === 'string' &&
-            typeof voteCount === 'number'
-          ) {
-            setVoteCounts((prev) => ({
-              ...prev,
-              [spotifyTrackId]: voteCount,
-            }));
-          } else {
+          fetchTotalVotes();
+          {
             console.error(
-              'Unexpected payload format or missing data:',
-              payload
+              "Unexpected payload format or missing data:",
+              payload,
             );
           }
-        }
+        },
       )
       .subscribe();
 
@@ -47,7 +41,7 @@ const useRealtimeVotes = () => {
     };
   }, []);
 
-  return voteCounts;
+  return { totalVotes };
 };
 
 export default useRealtimeVotes;
