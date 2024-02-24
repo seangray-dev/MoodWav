@@ -3,7 +3,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
     "@formspark/use-formspark": "^0.1.39",
@@ -48,6 +49,7 @@
     "@types/react": "18.2.8",
     "@types/react-dom": "18.2.5",
     "encoding": "^0.1.13",
+    "eslint-config-next": "14.1.0",
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.11"
   }

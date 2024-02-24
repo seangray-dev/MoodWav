@@ -1,7 +1,7 @@
 import { Song } from "../spotify/constants";
 import { supabase } from "./client";
 
-export const insertSongsToDb = async (songs: Song[]) => {
+export const insertSongsToDb = async (songs: any[]) => {
   for (const song of songs) {
     const { data, error } = await supabase
       .from("tracks")

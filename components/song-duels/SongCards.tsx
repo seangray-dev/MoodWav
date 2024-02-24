@@ -16,7 +16,7 @@ import LikeButton from "./LikeButton";
 export default function SongCards() {
   const { recommendations, loading, fetchMore } = useRecommendations();
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [songPair, setSongPair] = useState<Song[]>([]);
+  const [songPair, setSongPair] = useState<any[]>([]);
   const [currentPlaying, setCurrentPlaying] = useState<string | null>(null);
   const audioPlayersRef = useRef<{ [key: string]: AudioPlayer | null }>({});
 
@@ -63,7 +63,7 @@ export default function SongCards() {
   const handlePlay = (songId: string) => {
     // If there's a song currently playing and it's not the one that was just played, pause it
     if (currentPlaying && currentPlaying !== songId) {
-      audioPlayersRef.current[currentPlaying].audio.current.pause();
+      audioPlayersRef?.current[currentPlaying]?.audio.current?.pause();
     }
     setCurrentPlaying(songId);
   };
