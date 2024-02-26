@@ -4,12 +4,14 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
 export default function ContactPage() {
+  const contactFormId = process.env.NEXT_PUBLIC_FORMSPARK_CONTACT_FORM_ID;
+
   return (
     <div className="prose dark:prose-invert w-full">
       <h1>Contact</h1>
       <form
         className="flex flex-col gap-4"
-        action="https://submit-form.com/u3TUi2Neq"
+        action={`https://submit-form.com/${contactFormId}`}
       >
         <div>
           <Label htmlFor="name">Name</Label>
