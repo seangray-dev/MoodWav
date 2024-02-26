@@ -11,7 +11,7 @@ interface SpotifyRecommendationsResponse {
   tracks: SpotifyTrack[];
 }
 
-const useMockData = false;
+const useMockData = true;
 
 const useRecommendations = () => {
   const [recommendations, setRecommendations] = useState<SpotifyTrack[]>([]);

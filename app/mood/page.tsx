@@ -1,4 +1,5 @@
-import MoodWavLogo from "@/assets/images/moodwav-high-resolution-logo-transparent.png";
+import MoodWavLogoBlack from "@/assets/images//moodwav-high-resolution-logo-black-transparent.png";
+import MoodWavLogoWhite from "@/assets/images/moodwav-high-resolution-logo-transparent.png";
 import AlertMessage from "@/components/ui/AlertMessage";
 import { fetchRecentlyPlayedTracks, fetchUserMoodData } from "@/server/actions";
 import readUserSession from "@/server/read-user-session";
@@ -14,7 +15,6 @@ import MoodScoreCard from "../../components/mood/MoodScoreCard";
 import RecentlyPlayed from "../../components/mood/RecentlyPlayed";
 
 export default async function MoodPage() {
-  
   // check to see if user is logged in
   const { data } = await readUserSession();
   if (!data.session) {
@@ -42,8 +42,15 @@ export default async function MoodPage() {
       </Link>
       <div className=" mt-20 px-2">
         <Image
-          className="mx-auto mb-10"
-          src={MoodWavLogo}
+          className="mx-auto mb-10 hidden dark:block"
+          src={MoodWavLogoWhite}
+          alt="moodwav logo"
+          width={300}
+          height={200}
+        />
+        <Image
+          className="mx-auto mb-10 dark:hidden"
+          src={MoodWavLogoBlack}
           alt="moodwav logo"
           width={300}
           height={200}

@@ -1,36 +1,32 @@
-import { useRouter } from 'next/navigation';
-import { Button } from '../ui/button';
-import SpotifyButton from './SpotifyButton';
+import { useRouter } from "next/navigation";
+import { Button } from "../ui/button";
+import SpotifyButton from "./SpotifyButton";
 
 const SpotifyMoodPrompt = () => {
   const router = useRouter();
 
   const handleRequestAccess = () => {
-    router.push('/request-access');
+    router.push("/request-access");
   };
 
   return (
-    <>
-      <h2 className='text-2xl md:text-4xl font-bold text-center mb-4'>
+    <section className="text-card-foreground">
+      <h2 className="mb-4 text-center text-2xl font-bold md:text-4xl">
         Discover Your Mood
       </h2>
-      <p className='text-center text-xl mb-6 max-w-[60ch]'>
+      <p className="mb-6 max-w-[60ch] text-center text-xl">
         Uncover the soundtrack of your emotions, explore your top artists and
         tracks, and engage in Song Duels to discover new songs tailored for you.
       </p>
-      <p className='text-center mb-6'>
+      <p className="mb-6 text-center">
         Currently access to MoodWav is by invitation only due to Spotify API
         restrictions.
       </p>
-      <div className='flex flex-col md:flex-row justify-center gap-2'>
+      <div className="flex flex-col justify-center gap-2 md:flex-row">
         <SpotifyButton />
-        <Button
-          className='bg-white text-black hover:bg-black hover:text-white duration-300 transition-all'
-          onClick={handleRequestAccess}>
-          Request Access
-        </Button>
+        <Button onClick={handleRequestAccess}>Request Access</Button>
       </div>
-    </>
+    </section>
   );
 };
 

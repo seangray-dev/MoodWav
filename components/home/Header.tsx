@@ -1,18 +1,27 @@
-import MoodWavLogo from '@/assets/images/moodwav-high-resolution-logo-transparent.png';
-import Image from 'next/image';
+import MoodWavLogoBlack from "@/assets/images/moodwav-high-resolution-logo-black-transparent.png";
+import MoodWavLogoWhite from "@/assets/images/moodwav-high-resolution-logo-transparent.png";
+import Image from "next/image";
 
 export default function Header() {
   return (
-    <header className='flex flex-col gap-16 items-center w-full mb-10'>
-      <div className='flex gap-4 justify-center items-center max-w-[300px] sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl'>
+    <header className="mb-10 flex w-full flex-col items-center gap-16">
+      <div className="flex max-w-[300px] items-center justify-center gap-4 sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl">
         <Image
-          src={MoodWavLogo}
-          alt={'mood wav logo'}
+          className="hidden dark:block"
+          src={MoodWavLogoWhite}
+          alt={"mood wav logo"}
+          width={300}
+          height={300}
+        />
+        <Image
+          className="dark:hidden"
+          src={MoodWavLogoBlack}
+          alt={"mood wav logo"}
           width={300}
           height={300}
         />
       </div>
-      <h1 className='sr-only'>MoodWav</h1>
+      <h1 className="sr-only">MoodWav</h1>
     </header>
   );
 }

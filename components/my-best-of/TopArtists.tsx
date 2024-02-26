@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   Select,
@@ -6,22 +6,22 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { SpotifyArtist } from '@/utils/spotify/constants';
+} from "@/components/ui/select";
+import { SpotifyArtist } from "@/utils/spotify/constants";
 import {
   fetchUsersTopArtists,
   isUserFollowingArtist,
-} from '@/utils/spotify/spotify';
-import { fetchAccessToken } from '@/utils/supabase/fecthAccessToken';
-import { useQuery } from '@tanstack/react-query';
-import { ExternalLinkIcon } from 'lucide-react';
-import Image from 'next/image';
-import { useEffect, useState } from 'react';
-import { NumericFormat } from 'react-number-format';
-import { Badge } from '../ui/badge';
-import { Card, CardContent } from '../ui/card';
-import { Label } from '../ui/label';
-import { TopArtistsSkeleton } from './Skeletons';
+} from "@/utils/spotify/spotify";
+import { fetchAccessToken } from "@/utils/supabase/fecthAccessToken";
+import { useQuery } from "@tanstack/react-query";
+import { ExternalLinkIcon } from "lucide-react";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { NumericFormat } from "react-number-format";
+import { Badge } from "../ui/badge";
+import { Card, CardContent } from "../ui/card";
+import { Label } from "../ui/label";
+import { TopArtistsSkeleton } from "./Skeletons";
 
 interface ArtistWithFollowingInfo extends SpotifyArtist {
   isFollowing: boolean;
@@ -32,9 +32,9 @@ export default function TopArtists() {
   const [artistsWithFollowingInfo, setArtistsWithFollowingInfo] = useState<
     ArtistWithFollowingInfo[]
   >([]);
-  const [timeRange, setTimeRange] = useState('medium_term');
+  const [timeRange, setTimeRange] = useState("medium_term");
   const { data, isLoading } = useQuery({
-    queryKey: ['top-artists', timeRange],
+    queryKey: ["top-artists", timeRange],
     queryFn: async () => {
       const accessToken = await fetchAccessToken();
       return fetchUsersTopArtists(accessToken, timeRange);
@@ -49,7 +49,7 @@ export default function TopArtists() {
 
   useEffect(() => {
     const checkFollowingStatus = async () => {
-      const artistIds = topArtists.map((artist) => artist.id).join(',');
+      const artistIds = topArtists.map((artist) => artist.id).join(",");
       const accessToken = await fetchAccessToken();
       const followingStatuses =
         (await isUserFollowingArtist(accessToken, artistIds)) || [];
@@ -73,72 +73,74 @@ export default function TopArtists() {
 
   return (
     <section>
-      <div className='flex justify-between items-center mb-6'>
-        <h2 className='text-xl md:text-2xl 2xl:text-3xl'>Top Artists</h2>
-        <div className='justify-end flex flex-col md:flex-row items-center gap-2'>
-          <Label htmlFor='time-range'>Time Range</Label>
-          <Select name='time-range' onValueChange={handleTimeRangeChange}>
-            <SelectTrigger className='max-w-[180px] bg-transparent border-white'>
+      <div className="mb-6 flex items-center justify-between text-card-foreground">
+        <h2 className="text-xl md:text-2xl 2xl:text-3xl">Top Artists</h2>
+        <div className="flex flex-col items-center justify-end gap-2 md:flex-row">
+          <Label htmlFor="time-range">Time Range</Label>
+          <Select name="time-range" onValueChange={handleTimeRangeChange}>
+            <SelectTrigger className="max-w-[180px] border-card-foreground bg-transparent">
               <SelectValue
-                defaultValue={'medium_term'}
-                placeholder='Last 6 months'
+                defaultValue={"medium_term"}
+                placeholder="Last 6 months"
               />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value='short_term'>Last 4 weeks</SelectItem>
-              <SelectItem value='medium_term'>Last 6 months</SelectItem>
-              <SelectItem value='long_term'>Several Years</SelectItem>
+              <SelectItem value="short_term">Last 4 weeks</SelectItem>
+              <SelectItem value="medium_term">Last 6 months</SelectItem>
+              <SelectItem value="long_term">Several Years</SelectItem>
             </SelectContent>
           </Select>
         </div>
       </div>
-      <div className='flex flex-col gap-3 md:grid md:grid-cols-2 2xl:grid-cols-3'>
+      <div className="flex flex-col gap-3 md:grid md:grid-cols-2 2xl:grid-cols-3">
         {isLoading ? (
           <TopArtistsSkeleton />
         ) : (
           artistsWithFollowingInfo.map((artist: any) => (
             <Card
               key={artist.id}
-              className='p-0 border-none flex items-center gap-4'>
-              <div className='flex-shrink-0'>
+              className="flex items-center gap-4 border-none bg-secondary p-0 dark:bg-card"
+            >
+              <div className="flex-shrink-0">
                 <Image
-                  className='w-24 h-24 2xl:w-36 2xl:h-36 object-cover'
-                  alt='artist image'
+                  className="h-24 w-24 object-cover 2xl:h-36 2xl:w-36"
+                  alt="artist image"
                   width={100}
                   height={100}
                   src={artist.images[0].url}
                 />
               </div>
-              <CardContent className='p-0 flex flex-col gap-2'>
-                <div className='group'>
+              <CardContent className="flex flex-col gap-2 p-0">
+                <div className="group">
                   <a
-                    className='underline font-bold text-sm flex gap-2 items-center group-hover:text-primary '
-                    target='_blank'
-                    href={artist.external_urls.spotify}>
+                    className="flex items-center gap-2 text-sm font-bold underline group-hover:text-primary "
+                    target="_blank"
+                    href={artist.external_urls.spotify}
+                  >
                     {artist.name}
                     <ExternalLinkIcon
                       size={16}
-                      className='group-hover:text-primary '
+                      className="group-hover:text-primary "
                     />
                   </a>
                 </div>
 
-                <div className='text-muted-foreground text-sm'>
+                <div className="text-sm text-muted-foreground">
                   <p>
-                    Followers:{' '}
+                    Followers:{" "}
                     <NumericFormat
-                      displayType='text'
-                      className='bg-transparent'
+                      displayType="text"
+                      className="bg-transparent"
                       value={artist.followers.total}
                       allowLeadingZeros
-                      thousandSeparator=','
+                      thousandSeparator=","
                     />
                   </p>
                 </div>
                 {artist.isFollowing ? (
-                  <Badge className='w-fit'>Following</Badge>
+                  <Badge className="w-fit">Following</Badge>
                 ) : (
-                  <Badge variant={'destructive'} className='w-fit'>
+                  <Badge variant={"destructive"} className="w-fit">
                     Not Following
                   </Badge>
                 )}

@@ -31,13 +31,13 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
-      <body className="moodring flex min-h-screen w-full flex-col items-center text-foreground text-white antialiased">
+      <body className="flex min-h-screen w-full flex-col items-center bg-white text-foreground text-white antialiased dark:bg-background">
         <ReactQueryProvider>
           <ThemeProvider attribute="class" defaultTheme="system">
             <nav className="container">
               <Nav />
             </nav>
-            <main className="container flex flex-1 flex-col items-center justify-center">
+            <main className="container flex flex-1 flex-col items-center justify-center py-10">
               {children}
             </main>
             <footer className="container">

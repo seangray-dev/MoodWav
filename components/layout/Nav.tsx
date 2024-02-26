@@ -1,6 +1,7 @@
 "use client";
 
-import MoodWavIcon from "@/assets/images/moodwav-icon-only-white.png";
+import MoodWavIconBlack from "@/assets/images/moodwav-icon-only-black.png";
+import MoodWavIconWhite from "@/assets/images/moodwav-icon-only-white.png";
 import {
   Menubar,
   MenubarContent,
@@ -31,6 +32,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
 import { ModeToggle } from "../ui/mode-toggle";
 
 const Nav = () => {
@@ -114,28 +116,41 @@ const Nav = () => {
   };
 
   return (
-    <div className="w-full border-b py-4">
+    <div className="w-full border-b border-b-card-foreground py-4">
       <div className="flex items-center justify-between">
         <Link href="/">
-          <Image src={MoodWavIcon} alt="MoodWav Logo" width={50} height={50} />
+          <Image
+            className="hidden dark:block"
+            src={MoodWavIconWhite}
+            alt="MoodWav Logo"
+            width={50}
+            height={50}
+          />
+          <Image
+            className="dark:hidden"
+            src={MoodWavIconBlack}
+            alt="MoodWav Logo"
+            width={50}
+            height={50}
+          />
         </Link>
 
         {/* Mobile Menu */}
         <div className="flex items-center md:hidden">
           <ModeToggle />
-          <Menubar className="border-none bg-transparent">
+          <Menubar className="border-none bg-transparent hover:bg-secondary">
             <MenubarMenu>
               <MenubarTrigger>
-                <MenuIcon></MenuIcon>
+                <MenuIcon className="cursor-pointer text-card-foreground" />
               </MenubarTrigger>
               <MenubarContent className="bg-card text-card-foreground md:hidden">
                 {navItems.map((item) => (
                   <MenubarItem key={item.path} className="hover:underline">
                     <Link href={item.path} legacyBehavior passHref>
-                      <a className="relative flex items-center gap-2">
+                      <a className="relative flex w-full items-center gap-3">
                         {item.title}
                         {item.isNew && (
-                          <Badge className="bg-card p-1 text-[10px] text-black hover:bg-card dark:text-foreground">
+                          <Badge className="bg-card-foreground p-1 text-[10px] text-black text-card hover:bg-card-foreground dark:text-card">
                             New!
                           </Badge>
                         )}
@@ -146,15 +161,19 @@ const Nav = () => {
                 {userProfile && (
                   <>
                     <MenubarSeparator />
-                    <MenubarItem className="flex items-center gap-2 hover:underline">
+                    <MenubarItem className="hover:underline">
                       <button
+                        className="flex w-full items-center gap-2"
                         onClick={async () => {
                           await signOut();
                         }}
                       >
                         Sign out
+                        <LogOutIcon
+                          size={16}
+                          className="text-card-foreground"
+                        />
                       </button>
-                      <LogOutIcon size={16} className="text-card-foreground" />
                     </MenubarItem>
                   </>
                 )}
@@ -169,10 +188,10 @@ const Nav = () => {
             {navItems.map((item) => (
               <NavigationMenuItem key={item.path}>
                 <Link href={item.path} legacyBehavior passHref>
-                  <NavigationMenuLink className="relative hover:underline">
+                  <NavigationMenuLink className="relative text-card-foreground hover:underline">
                     {item.title}
                     {item.isNew && (
-                      <Badge className="absolute -right-7 -top-5 rotate-[15deg] bg-card p-1 text-[10px] text-black hover:bg-card dark:text-foreground">
+                      <Badge className="absolute -right-7 -top-5 rotate-[15deg] bg-card-foreground p-1 text-[10px] text-card hover:bg-card">
                         New!
                       </Badge>
                     )}
@@ -186,14 +205,15 @@ const Nav = () => {
             {userProfile && (
               <>
                 <NavigationMenuItem className="text-right">
-                  <button
+                  <Button
+                    variant={"ghost"}
                     onClick={async () => {
                       await signOut();
                     }}
-                    className="hover:underline"
+                    className="text-card-foreground hover:underline"
                   >
                     Sign out
-                  </button>
+                  </Button>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                   <TooltipProvider>
