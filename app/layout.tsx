@@ -31,19 +31,21 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
-      <body className="flex min-h-screen w-full flex-col items-center bg-white text-foreground text-white antialiased dark:bg-background">
+      <body>
         <ReactQueryProvider>
           <ThemeProvider attribute="class" defaultTheme="system">
-            <nav className="container">
-              <Nav />
-            </nav>
-            <main className="container flex flex-1 flex-col items-center justify-center py-10">
-              {children}
-            </main>
-            <footer className="container">
-              <Footer />
-            </footer>
-            <Toaster />
+            <div className="flex min-h-screen w-full flex-col items-center bg-background text-foreground antialiased">
+              <nav className="container">
+                <Nav />
+              </nav>
+              <main className="container flex flex-1 flex-col items-center justify-center py-10">
+                {children}
+              </main>
+              <footer className="container">
+                <Footer />
+              </footer>
+              <Toaster />
+            </div>
           </ThemeProvider>
         </ReactQueryProvider>
       </body>
