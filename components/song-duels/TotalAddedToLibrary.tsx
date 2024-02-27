@@ -10,7 +10,7 @@ export default function TotalAddedToLibrary() {
       <h3 className="text-center font-bold capitalize">
         Songs added to users Liked Songs
       </h3>
-      <Badge className="mx-auto bg-card p-4 text-center text-xl font-medium text-card-foreground">
+      <Badge className="mx-auto bg-secondary p-4 text-center text-xl font-medium text-card-foreground dark:bg-card">
         <span className="mx-auto text-center tabular-nums">
           {totalAdeedToLibraryCount}
         </span>

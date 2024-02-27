@@ -1,9 +1,15 @@
 import SongCards from "@/components/song-duels/SongCards";
 import Stats from "@/components/song-duels/Stats";
-import TotalFavourited from "@/components/song-duels/TotalAddedToLibrary";
-import TotalVotes from "@/components/song-duels/TotalVotes";
+import AlertMessage from "@/components/ui/AlertMessage";
+import readUserSession from "@/server/read-user-session";
 
-export default function SongDuelsPage() {
+export default async function SongDuelsPage() {
+  const { data } = await readUserSession();
+  if (!data.session) {
+    return (
+      <AlertMessage message="You must be logged in to use this feature." />
+    );
+  }
   return (
     <div className="relative flex w-full flex-1 flex-col justify-between">
       <div className="flex flex-col gap-10">

@@ -38,7 +38,7 @@ export default function RootLayout({
               <nav className="container">
                 <Nav />
               </nav>
-              <main className="container flex flex-1 flex-col items-center justify-center py-10">
+              <main className="container flex flex-1 flex-col items-center justify-center">
                 {children}
               </main>
               <footer className="container">

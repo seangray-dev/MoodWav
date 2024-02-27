@@ -81,7 +81,7 @@ export default function SongCards() {
         {songPair.map((song) => (
           <Card
             key={song.id}
-            className="mx-auto flex max-w-[300px] flex-col items-center rounded-t-none border-none p-0 pb-4 text-sm md:text-base"
+            className="mx-auto flex max-w-[300px] flex-col items-center rounded-t-none border-none bg-secondary p-0 pb-4 text-sm dark:bg-card md:text-base"
           >
             <CardHeader className="h-full w-full p-0">
               <Image
