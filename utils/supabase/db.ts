@@ -29,7 +29,7 @@ export const insertSongsToDb = async (songs: any[]) => {
           vote_count: 0,
           song: song.name,
           artist: artists,
-          modified_at: new Date(),
+          modified_at: new Date().toISOString(),
           added_to_library_count: 0,
         },
       ]);
