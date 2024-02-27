@@ -1,16 +1,16 @@
-'use server';
+"use server";
 
-import { determineUserMood } from '@/utils/mood_calculations/calculations';
+import { determineUserMood } from "@/utils/mood_calculations/calculations";
 import {
   SpotifyRecentlyPlayedResponse,
   TrackDetail,
-} from '@/utils/spotify/constants';
-import { fetchAudioFeaturesForTracks } from '@/utils/spotify/spotify';
+} from "@/utils/spotify/constants";
+import { fetchAudioFeaturesForTracks } from "@/utils/spotify/spotify";
 
 export const fetchRecentlyPlayedTracks = async (
-  accessToken: string
+  accessToken: string,
 ): Promise<TrackDetail[] | null> => {
-  const url = 'https://api.spotify.com/v1/me/player/recently-played?limit=50';
+  const url = "https://api.spotify.com/v1/me/player/recently-played?limit=50";
 
   try {
     const response = await fetch(url, {
@@ -21,8 +21,8 @@ export const fetchRecentlyPlayedTracks = async (
 
     if (!response.ok) {
       console.error(
-        'Error fetching recently played tracks:',
-        response.statusText
+        "Error fetching recently played tracks:",
+        response.statusText,
       );
       return null;
     }
@@ -31,11 +31,11 @@ export const fetchRecentlyPlayedTracks = async (
     const trackIds = items.map((item) => item.track.id);
     const audioFeatures = await fetchAudioFeaturesForTracks(
       trackIds,
-      accessToken
+      accessToken,
     );
 
     if (!audioFeatures) {
-      throw new Error('Failed to fetch audio features for tracks');
+      throw new Error("Failed to fetch audio features for tracks");
     }
 
     // Calculate the mood for each track
@@ -52,21 +52,21 @@ export const fetchRecentlyPlayedTracks = async (
       return {
         id: item.track.id,
         name: item.track.name,
-        artistName: item.track.artists.map((artist) => artist.name).join(', '),
-        coverArt: item.track.album.images[0]?.url ?? '',
+        artistName: item.track.artists.map((artist) => artist.name).join(", "),
+        coverArt: item.track.album.images[0]?.url ?? "",
         mood: topMood,
       };
     });
 
     return tracksWithMoods;
   } catch (error) {
-    console.error('Error fetching recently played tracks:', error);
+    console.error("Error fetching recently played tracks:", error);
     return null;
   }
 };
 
 export const fetchUserMoodData = async (accessToken: string) => {
-  const url = 'https://api.spotify.com/v1/me/player/recently-played?limit=50';
+  const url = "https://api.spotify.com/v1/me/player/recently-played?limit=50";
 
   try {
     const response = await fetch(url, {
@@ -75,7 +75,7 @@ export const fetchUserMoodData = async (accessToken: string) => {
 
     if (!response.ok) {
       throw new Error(
-        `Error fetching recently played tracks: ${response.statusText}`
+        `Error fetching recently played tracks: ${response.statusText}`,
       );
     }
 
@@ -83,11 +83,11 @@ export const fetchUserMoodData = async (accessToken: string) => {
     const trackIds = items.map((item) => item.track.id);
     const audioFeatures = await fetchAudioFeaturesForTracks(
       trackIds,
-      accessToken
+      accessToken,
     );
 
     if (!audioFeatures) {
-      throw new Error('Failed to fetch audio features for tracks');
+      throw new Error("Failed to fetch audio features for tracks");
     }
 
     // Calculate the user's mood based on the audio features
@@ -96,7 +96,7 @@ export const fetchUserMoodData = async (accessToken: string) => {
     // Returns the highestMood, highestScore, and allMoods
     return moodData;
   } catch (error) {
-    console.error('Error in fetchUserMoodData:', error);
+    console.error("Error in fetchUserMoodData:", error);
     throw error; // Rethrow the error to be handled by the calling function
   }
 };
