@@ -5,16 +5,20 @@ import Image from "next/image";
 import { Button } from "../ui/button";
 import SpotifyLogo from "/assets/images/Spotify_Icon_RGB_Green.png";
 
-const SpotifyButton = () => {
-  async function signInWithSpotify() {
+const SpotifyButton = async () => {
+  const signInWithSpotify = async () => {
     try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
+      const response = await supabase.auth.signInWithOAuth({
         provider: "spotify",
         options: {
+          redirectTo: `${location.origin}/auth/callback`,
           scopes:
             "user-read-recently-played user-top-read streaming user-read-playback-state user-modify-playback-state user-follow-read user-library-modify user-library-read",
         },
       });
+
+      const { data, error } = response;
+      console.log(data);
 
       if (error) {
         throw error;
@@ -22,7 +26,7 @@ const SpotifyButton = () => {
     } catch (error) {
       console.error("Error logging in:", error);
     }
-  }
+  };
 
   return (
     <Button

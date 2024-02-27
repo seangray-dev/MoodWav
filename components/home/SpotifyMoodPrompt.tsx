@@ -1,14 +1,8 @@
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Button } from "../ui/button";
 import SpotifyButton from "./SpotifyButton";
 
 const SpotifyMoodPrompt = () => {
-  const router = useRouter();
-
-  const handleRequestAccess = () => {
-    router.push("/request-access");
-  };
-
   return (
     <section className="text-card-foreground">
       <h2 className="mb-4 text-center text-2xl font-bold md:text-4xl">
@@ -24,7 +18,9 @@ const SpotifyMoodPrompt = () => {
       </p>
       <div className="flex flex-col justify-center gap-2 md:flex-row">
         <SpotifyButton />
-        <Button onClick={handleRequestAccess}>Request Access</Button>
+        <Button>
+          <Link href={"/request-access"}>Request Access</Link>
+        </Button>
       </div>
     </section>
   );
