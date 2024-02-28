@@ -59,3 +59,20 @@ export const addedToLibraryCount = async (songId: string) => {
     console.error("Error updating song library date:", error);
   }
 };
+
+export const fetchTop10VotedSongs = async () => {
+  const { data, error } = await supabase
+    .from("tracks")
+    .select("*")
+    .order("vote_count", { ascending: false })
+    .limit(10);
+
+  console.log("fetchTop10Songs", data);
+
+  if (error) {
+    console.error("Error fetching top voted tracks:", error);
+    return;
+  } else {
+    return data;
+  }
+};

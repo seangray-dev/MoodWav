@@ -1,11 +1,5 @@
-import { access } from "fs";
 import { shuffle } from "lodash";
-import { determineUserMood } from "../mood_calculations/calculations";
-import {
-  SpotifyRecentlyPlayedResponse,
-  SpotifyUserProfile,
-  TrackDetail,
-} from "./constants";
+import { SpotifyUserProfile } from "./constants";
 
 export const fetchSpotifyUserProfile = async (
   accessToken: string,
@@ -134,44 +128,6 @@ export const isUserFollowingArtist = async (
   }
 };
 
-// export const fetchRecommendations = async (accessToken: string) => {
-//   console.log("fetchRandom", accessToken);
-//   // Fetch users top artists and tracks
-//   const topArtistsData = await fetchUsersTopArtists(accessToken, "medium_term");
-//   const topTracksData = await fetchUsersTopTracks(accessToken, "medium_term");
-
-//   // Extract seed IDs (using up to 5 seeds in total)
-//   // To do: shuffle seedArtists and seedTracks before getting recommendations instead of using top items. Or should we keep it as is?
-//   const seedArtists = topArtistsData.items
-//     .slice(0, 2)
-//     .map((artist: { id: string }) => artist.id)
-//     .join(",");
-//   const seedTracks = topTracksData.items
-//     .slice(0, 3)
-//     .map((track: { id: string }) => track.id)
-//     .join(",");
-
-//   // Fetch recommendations based on seed artists and tracks
-//   const recommendationsUrl = `https://api.spotify.com/v1/recommendations?limit=100&seed_artists=${seedArtists}&seed_tracks=${seedTracks}`;
-//   const recommendationsResponse = await fetch(recommendationsUrl, {
-//     headers: {
-//       Authorization: `Bearer ${accessToken}`,
-//     },
-//   });
-
-//   if (!recommendationsResponse.ok) {
-//     throw new Error(
-//       `Error fetching recommendations: ${recommendationsResponse.statusText}`,
-//     );
-//   }
-
-//   const recommendationsData = await recommendationsResponse.json();
-
-//   console.log("recommendationsData", recommendationsData);
-
-//   return recommendationsData;
-// };
-
 export const fetchRecommendations = async (accessToken: string) => {
   console.log("fetchRandom", accessToken);
 
@@ -293,5 +249,29 @@ export const checkIfTrackIsSaved = async (accessToken: string, id: string) => {
   } catch (error) {
     console.error("Error checking if track is saved:", error);
     return false; // Handle errors as needed
+  }
+};
+
+export const fetchTrackById = async (accessToken: string, id: string) => {
+  const url = `https://api.spotify.com/v1/me/tracks/${id}`;
+
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      console.error("Failed to fetch track", response.statusText);
+    }
+  } catch (error) {
+    console.error("Failed to fetch track", error);
+    throw new Error("Failed to fetch track");
   }
 };
