@@ -3,7 +3,7 @@ import TotalVotes from "./TotalVotes";
 
 export default function Stats() {
   return (
-    <div className="flex flex-col justify-evenly gap-10 border-x border-b bg-transparent md:flex-row">
+    <div className="flex flex-col justify-evenly border-x border-b bg-transparent md:flex-row md:gap-10">
       <TotalVotes />
       <TotalAddedToLibrary />
     </div>

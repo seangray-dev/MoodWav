@@ -1,16 +1,24 @@
 "use client";
 
+import SpotifyIcon from "@/assets/images/Spotify_Icon_RGB_Green.png";
 import { Card, CardHeader } from "@/components/ui/card";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import useRecommendations from "@/hooks/useRecommendations";
 import { Song } from "@/utils/spotify/constants";
 import { supabase } from "@/utils/supabase/client";
 import { insertSongsToDb } from "@/utils/supabase/db";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
 import Loader from "../layout/Loader";
 import { Button } from "../ui/button";
+import { Separator } from "../ui/separator";
 import LikeButton from "./LikeButton";
 
 export default function SongCards() {
@@ -33,8 +41,8 @@ export default function SongCards() {
 
     // Preemptively fetch more recommendations if nearing the end
     if (nextIndex >= recommendations.length - 2) {
-      console.log("Fetching more recommendations...");
-      await fetchMore(); // This should append new recommendations
+      // append new recommendations
+      await fetchMore();
     }
 
     // Wait for the fetchMore process to complete and then update the song pair and index
@@ -73,10 +81,7 @@ export default function SongCards() {
   }
 
   return (
-    <>
-      <div className="text-center">
-        {currentIndex} / {recommendations.length}
-      </div>
+    <section className="pb-10">
       <div className="flex flex-col justify-center gap-10 sm:flex-row md:gap-0">
         {songPair.map((song) => (
           <Card
@@ -94,16 +99,65 @@ export default function SongCards() {
             </CardHeader>
             <div className="flex flex-col gap-3 p-4">
               <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-sm font-bold">{song.name}</h2>
+                <div className="flex flex-col">
+                  <a
+                    href={`spotify:track:${song.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-primary hover:underline"
+                  >
+                    <h2 className="text-sm font-bold">{song.name}</h2>
+                  </a>
                   <p className="text-sm text-muted-foreground">
-                    {song.artists
-                      .map((artist: { name: string }) => artist.name)
-                      .join(", ")}
+                    {song.artists.map((artist: any, index: number) => (
+                      <React.Fragment key={artist.id}>
+                        {index > 0 && ", "}
+                        <a
+                          href={`spotify:artist:${artist.id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:text-primary hover:underline"
+                        >
+                          {artist.name}
+                        </a>
+                      </React.Fragment>
+                    ))}
                   </p>
+                  <a
+                    href={`spotify:album:${song.album.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-muted-foreground hover:text-primary hover:underline"
+                  >
+                    {song.album.name}
+                  </a>
                 </div>
-                <LikeButton song={song} />
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <a
+                        href={`spotify:track:${song.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Image
+                          width={24}
+                          height={24}
+                          alt="spotify logo"
+                          src={SpotifyIcon}
+                        />
+                      </a>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>
+                        Play <span className="font-bold">{song.name}</span> on
+                        Spotify
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
+              <Separator />
               {song.preview_url && (
                 <div className="mx-auto w-[250px]">
                   <AudioPlayer
@@ -119,16 +173,19 @@ export default function SongCards() {
                   />
                 </div>
               )}
-              <Button
-                className="w-full justify-center text-white"
-                onClick={() => handleVote(song)}
-              >
-                Vote
-              </Button>
+              <div className="flex items-center justify-between gap-4">
+                <Button
+                  className="flex-1 justify-center"
+                  onClick={() => handleVote(song)}
+                >
+                  Vote
+                </Button>
+                <LikeButton song={song} />
+              </div>
             </div>
           </Card>
         ))}
       </div>
-    </>
+    </section>
   );
 }

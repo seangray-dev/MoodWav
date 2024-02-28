@@ -162,7 +162,7 @@ const Nav = () => {
                   <>
                     <MenubarSeparator />
                     <MenubarItem className="hover:underline">
-                      <button
+                      <div
                         className="flex w-full items-center gap-2"
                         onClick={async () => {
                           await signOut();
@@ -173,7 +173,7 @@ const Nav = () => {
                           size={16}
                           className="text-card-foreground"
                         />
-                      </button>
+                      </div>
                     </MenubarItem>
                   </>
                 )}

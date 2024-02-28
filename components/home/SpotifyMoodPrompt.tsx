@@ -8,7 +8,7 @@ const SpotifyMoodPrompt = () => {
       <h2 className="mb-4 text-center text-2xl font-bold md:text-4xl">
         Discover Your Mood
       </h2>
-      <p className="mb-6 max-w-[60ch] text-center text-xl">
+      <p className="mb-6 max-w-[60ch] text-center text-lg md:text-xl">
         Uncover the soundtrack of your emotions, explore your top artists and
         tracks, and engage in Song Duels to discover new songs tailored for you.
       </p>
@@ -19,7 +19,7 @@ const SpotifyMoodPrompt = () => {
       <div className="flex flex-col justify-center gap-2 md:flex-row">
         <SpotifyButton />
         <Button>
-          <Link href={"/request-access"}>Request Access</Link>
+          <Link href={"/reques-access"}>Request Access</Link>
         </Button>
       </div>
     </section>

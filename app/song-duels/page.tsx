@@ -26,7 +26,12 @@ export default async function SongDuelsPage() {
               decide which one hits the right note for you.
             </p>
           </div>
-          <Link href={"/song-duels/leaderboard"}>Leaderboard</Link>
+          <Link
+            className="w-fit hover:text-primary hover:underline"
+            href={"/song-duels/leaderboard"}
+          >
+            View the Leaderboard
+          </Link>
         </header>
         <SongCards />
       </div>
