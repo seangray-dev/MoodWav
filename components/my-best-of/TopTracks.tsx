@@ -1,5 +1,5 @@
 "use client";
-
+import SpotifyIcon from "@/assets/images/Spotify_Icon_RGB_Green.png";
 import {
   Select,
   SelectContent,
@@ -9,12 +9,14 @@ import {
 } from "@/components/ui/select";
 import { fetchUsersTopTracks } from "@/utils/spotify/spotify";
 import { fetchAccessToken } from "@/utils/supabase/fecthAccessToken";
+import { TooltipProvider } from "@radix-ui/react-tooltip";
 import { useQuery } from "@tanstack/react-query";
 import { ExternalLinkIcon } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "../ui/card";
 import { Label } from "../ui/label";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { TopTracksSkeleton } from "./Skeletons";
 
 export default function TopTracks() {
@@ -84,33 +86,67 @@ export default function TopTracks() {
                   src={tracks.album.images[0].url}
                 />
               </div>
-              <CardContent className="flex flex-col gap-2 p-0">
-                <div className="group flex">
-                  <a
-                    className="flex flex-1 items-center gap-2 text-sm font-bold underline group-hover:text-primary"
-                    target="_blank"
-                    href={tracks.external_urls.spotify}
-                  >
-                    <span className="truncate">
-                      {truncateText(tracks.name, 25)}{" "}
-                    </span>
-                    <ExternalLinkIcon
-                      size={16}
-                      className="flex-shrink-0 group-hover:text-primary"
-                    />
-                  </a>
-                </div>
-                <div className="text-muted-foreground">
-                  <p className="text-sm">
-                    {tracks.artists.map((artist: any, index: number) => (
-                      <React.Fragment key={artist.id}>
-                        {artist.name}
-                        {index < tracks.artists.length - 1 ? ", " : ""}
-                      </React.Fragment>
-                    ))}
-                  </p>
-                </div>
-              </CardContent>
+              <div className="flex w-full items-center justify-between">
+                <CardContent className="flex flex-col gap-2 p-0">
+                  <div className="group flex">
+                    <a
+                      className="flex flex-1 items-center gap-2 text-sm font-bold underline group-hover:text-primary"
+                      target="_blank"
+                      href={`spotify:track:${tracks.id}`}
+                    >
+                      <span className="truncate">
+                        {truncateText(tracks.name, 25)}{" "}
+                      </span>
+                      <ExternalLinkIcon
+                        size={16}
+                        className="flex-shrink-0 group-hover:text-primary"
+                      />
+                    </a>
+                  </div>
+                  <div className="text-muted-foreground">
+                    <div className="text-sm">
+                      {tracks.artists.map((artist: any, index: number) => (
+                        <a
+                          className="hover:text-primary hover:underline"
+                          key={artist.id}
+                          href={`spotify:artist:${artist.id}`}
+                        >
+                          {artist.name}
+                          {index < tracks.artists.length - 1 ? ", " : ""}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <a
+                        href={`spotify:track:${tracks.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Image
+                          className="mr-6 h-6"
+                          width={24}
+                          height={24}
+                          src={SpotifyIcon}
+                          alt="spotify logo"
+                        />
+                      </a>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>
+                        Play{" "}
+                        <span className="font-bold underline">
+                          {tracks.name}
+                        </span>{" "}
+                        on Spotify
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
             </Card>
           ))
         )}

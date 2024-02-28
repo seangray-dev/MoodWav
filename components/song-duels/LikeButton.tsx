@@ -108,13 +108,12 @@ const LikeButton = ({ song }: any) => {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger>
-          <Button
-            variant="ghost"
+          <div
             className="like-button w-fit justify-start p-0 hover:bg-transparent"
             onClick={toggleLike}
           >
             {isLiked ? <Filled /> : <Outline />}
-          </Button>
+          </div>
         </TooltipTrigger>
         <TooltipContent>
           {!isLiked

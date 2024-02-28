@@ -1,5 +1,6 @@
 "use client";
 
+import SpotifyIcon from "@/assets/images/Spotify_Icon_RGB_Green.png";
 import {
   Select,
   SelectContent,
@@ -7,6 +8,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { SpotifyArtist } from "@/utils/spotify/constants";
 import {
   fetchUsersTopArtists,
@@ -110,41 +117,71 @@ export default function TopArtists() {
                   src={artist.images[0].url}
                 />
               </div>
-              <CardContent className="flex flex-col gap-2 p-0">
-                <div className="group">
-                  <a
-                    className="flex items-center gap-2 text-sm font-bold underline group-hover:text-primary "
-                    target="_blank"
-                    href={artist.external_urls.spotify}
-                  >
-                    {artist.name}
-                    <ExternalLinkIcon
-                      size={16}
-                      className="group-hover:text-primary "
-                    />
-                  </a>
-                </div>
+              <div className="flex flex-1 items-center justify-between">
+                <CardContent className="flex flex-col gap-2 p-0">
+                  <div className="group">
+                    <a
+                      className="flex items-center gap-2 text-sm font-bold underline group-hover:text-primary"
+                      target="_blank"
+                      href={`spotify:artist:${artist.id}`}
+                    >
+                      {artist.name}
+                      <ExternalLinkIcon
+                        size={16}
+                        className="group-hover:text-primary "
+                      />
+                    </a>
+                  </div>
 
-                <div className="text-sm text-muted-foreground">
-                  <p>
-                    Followers:{" "}
-                    <NumericFormat
-                      displayType="text"
-                      className="bg-transparent"
-                      value={artist.followers.total}
-                      allowLeadingZeros
-                      thousandSeparator=","
-                    />
-                  </p>
-                </div>
-                {artist.isFollowing ? (
-                  <Badge className="w-fit">Following</Badge>
-                ) : (
-                  <Badge variant={"destructive"} className="w-fit">
-                    Not Following
-                  </Badge>
-                )}
-              </CardContent>
+                  <div className="text-sm text-muted-foreground">
+                    <p>
+                      Followers:{" "}
+                      <NumericFormat
+                        displayType="text"
+                        className="bg-transparent"
+                        value={artist.followers.total}
+                        allowLeadingZeros
+                        thousandSeparator=","
+                      />
+                    </p>
+                  </div>
+                  {artist.isFollowing ? (
+                    <Badge className="w-fit">Following</Badge>
+                  ) : (
+                    <Badge variant={"destructive"} className="w-fit">
+                      Not Following
+                    </Badge>
+                  )}
+                </CardContent>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <a
+                        href={`spotify:artist:${artist.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Image
+                          className="mr-6 h-6"
+                          width={24}
+                          height={24}
+                          src={SpotifyIcon}
+                          alt="spotify logo"
+                        />
+                      </a>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>
+                        Open{" "}
+                        <span className="font-bold underline">
+                          {artist.name}
+                        </span>{" "}
+                        on Spotify
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
             </Card>
           ))
         )}

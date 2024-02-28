@@ -5,11 +5,11 @@ const useRealtimeVotes = () => {
   const [totalVotes, setTotalVotes] = useState(0);
 
   async function fetchTotalVotes() {
-    console.log("Fetching total votes:");
+    // console.log("Fetching total votes:");
     try {
       const { data, error } = await supabase.rpc("sum_vote_counts");
       if (error) throw error;
-      console.log("settingTotalVotes with data:", data);
+      // console.log("settingTotalVotes with data:", data);
       setTotalVotes(data);
       return data;
     } catch (error) {

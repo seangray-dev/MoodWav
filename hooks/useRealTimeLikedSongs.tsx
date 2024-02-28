@@ -5,11 +5,11 @@ const useRealTimeAddedToLibraryCount = () => {
   const [totalAdeedToLibraryCount, setTotalAddedToLibraryCount] = useState(0);
 
   async function fetchAddedToLibraryCount() {
-    console.log("Fetching total votes:");
+    // console.log("Fetching total votes:");
     try {
       const { data, error } = await supabase.rpc("sum_added_to_library_count");
       if (error) throw error;
-      console.log("settingTotalVotes with data:", data);
+      // console.log("settingTotalVotes with data:", data);
       setTotalAddedToLibraryCount(data);
       return data;
     } catch (error) {

@@ -15,7 +15,6 @@ import MoodScoreCard from "../../components/mood/MoodScoreCard";
 import RecentlyPlayed from "../../components/mood/RecentlyPlayed";
 
 export default async function MoodPage() {
-  // check to see if user is logged in
   const { data } = await readUserSession();
   if (!data.session) {
     return (
@@ -40,20 +39,20 @@ export default async function MoodPage() {
       <Link className="mt-4 w-fit underline" href={"/mood/how-it-works"}>
         How it works
       </Link>
-      <div className=" mt-20 px-2">
+      <div className="mt-20 px-2">
         <Image
-          className="mx-auto mb-10 hidden dark:block"
+          className="mx-auto mb-10 hidden h-[30px] w-[300px] dark:block"
           src={MoodWavLogoWhite}
           alt="moodwav logo"
           width={300}
-          height={200}
+          height={30}
         />
         <Image
-          className="mx-auto mb-10 dark:hidden"
+          className="mx-auto mb-10 h-[30px] w-[300px] dark:hidden"
           src={MoodWavLogoBlack}
           alt="moodwav logo"
           width={300}
-          height={200}
+          height={30}
         />
         <HydrationBoundary state={dehydrate(queryClient)}>
           <MoodScoreCard />

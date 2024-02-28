@@ -23,7 +23,7 @@ const useRecommendations = () => {
 
     if (useMockData) {
       fetchedData = data as SpotifyRecommendationsResponse;
-      console.log(fetchedData);
+      // console.log(fetchedData);
     } else {
       try {
         const { data: session } = await supabase.auth.getSession();
@@ -32,7 +32,7 @@ const useRecommendations = () => {
         if (accessToken) {
           fetchedData = await fetchRecommendations(accessToken);
         } else {
-          console.log("No access token available.");
+          console.error("No access token available.");
           fetchedData = { tracks: [] };
         }
       } catch (error) {

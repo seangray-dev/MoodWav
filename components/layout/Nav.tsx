@@ -120,18 +120,18 @@ const Nav = () => {
       <div className="flex items-center justify-between">
         <Link href="/">
           <Image
-            className="hidden dark:block"
+            className="hidden h-[15px] w-[50px] dark:block"
             src={MoodWavIconWhite}
             alt="MoodWav Logo"
             width={50}
-            height={50}
+            height={15}
           />
           <Image
-            className="dark:hidden"
+            className="h-[15px] w-[50px] dark:hidden"
             src={MoodWavIconBlack}
             alt="MoodWav Logo"
             width={50}
-            height={50}
+            height={15}
           />
         </Link>
 

@@ -43,18 +43,18 @@ const Footer = () => {
         <div className="flex flex-col items-center gap-2">
           <Link href="/">
             <Image
-              className="mx-auto hidden dark:block"
+              className="mx-auto hidden h-[20px] w-[200px] dark:block"
               src={MoodWavLogoWhite}
               alt="moodwav logo"
               width={200}
-              height={200}
+              height={20}
             />
             <Image
-              className="mx-auto dark:hidden"
+              className="mx-auto h-[20px] w-[200px] dark:hidden"
               src={MoodWavLogoBlack}
               alt="moodwav logo"
               width={200}
-              height={200}
+              height={20}
             />
           </Link>
           <p>

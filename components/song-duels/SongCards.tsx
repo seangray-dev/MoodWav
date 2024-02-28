@@ -55,7 +55,7 @@ export default function SongCards() {
   };
 
   const handleVote = async (song: Song) => {
-    console.log(`Voting for song with ID: ${song.id}`);
+    // console.log(`Voting for song with ID: ${song.id}`);
 
     const { data, error } = await supabase.rpc("increment_vote", {
       song_id: song.id,
@@ -90,9 +90,10 @@ export default function SongCards() {
           >
             <CardHeader className="h-full w-full p-0">
               <Image
+                priority
                 width={300}
                 height={300}
-                className="h-full w-full object-cover"
+                className="h-[300px] w-[300px] object-cover"
                 src={song.album.images[0]?.url || ""}
                 alt={`Cover art for ${song.name}`}
               />

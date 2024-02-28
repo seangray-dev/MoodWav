@@ -129,8 +129,6 @@ export const isUserFollowingArtist = async (
 };
 
 export const fetchRecommendations = async (accessToken: string) => {
-  console.log("fetchRandom", accessToken);
-
   const topArtistsData = await fetchUsersTopArtists(accessToken, "medium_term");
   const topTracksData = await fetchUsersTopTracks(accessToken, "medium_term");
 
@@ -144,9 +142,6 @@ export const fetchRecommendations = async (accessToken: string) => {
     .map((track: { id: string }) => track.id)
     .join(",");
 
-  console.log("Seed Artists:", seedArtists);
-  console.log("Seed Tracks:", seedTracks);
-
   const recommendationsUrl = `https://api.spotify.com/v1/recommendations?limit=100&seed_artists=${seedArtists}&seed_tracks=${seedTracks}`;
   const recommendationsResponse = await fetch(recommendationsUrl, {
     headers: { Authorization: `Bearer ${accessToken}` },
@@ -159,7 +154,6 @@ export const fetchRecommendations = async (accessToken: string) => {
   }
 
   const recommendationsData = await recommendationsResponse.json();
-  console.log("Recommendations Data:", recommendationsData);
   return recommendationsData;
 };
 
@@ -183,7 +177,7 @@ export const saveTrackForCurrentUser = async (
     }
 
     if (response.ok) {
-      console.log("Tracks saved successfully");
+      // console.log("Tracks saved successfully");
     } else {
       console.error("Failed to save tracks", response.statusText);
     }
@@ -215,7 +209,7 @@ export const removeTrackForCurrentUser = async (
     }
 
     if (response.ok) {
-      console.log("Tracks removed successfully");
+      // console.log("Tracks removed successfully");
     } else {
       console.error("Failed to remove tracks", response.statusText);
     }

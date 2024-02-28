@@ -1,4 +1,3 @@
-import { Song } from "../spotify/constants";
 import { supabase } from "./client";
 
 export const insertSongsToDb = async (songs: any[]) => {
@@ -14,9 +13,9 @@ export const insertSongsToDb = async (songs: any[]) => {
       continue;
     }
 
-    if (data) {
-      console.log("song exists:", data);
-    }
+    // if (data) {
+    //   console.log("song exists:", data);
+    // }
 
     const artists = song.artists
       .map((artist: { name: string }) => artist.name)
@@ -37,7 +36,7 @@ export const insertSongsToDb = async (songs: any[]) => {
       if (insertError) {
         console.error("Error inserting song:", insertError);
       } else {
-        console.log(`Song inserted: ${song.name}`);
+        // console.log(`Song inserted: ${song.name}`);
       }
     }
   }
@@ -54,7 +53,7 @@ export const addedToLibraryCount = async (songId: string) => {
 
     if (error) throw new Error(error.message);
 
-    console.log(`Updated library date for song ID: ${songId}`);
+    // console.log(`Updated library date for song ID: ${songId}`);
   } catch (error) {
     console.error("Error updating song library date:", error);
   }
@@ -66,8 +65,6 @@ export const fetchTop10VotedSongs = async () => {
     .select("*")
     .order("vote_count", { ascending: false })
     .limit(10);
-
-  console.log("fetchTop10Songs", data);
 
   if (error) {
     console.error("Error fetching top voted tracks:", error);

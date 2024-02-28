@@ -18,7 +18,6 @@ const SpotifyButton = async () => {
       });
 
       const { data, error } = response;
-      console.log(data);
 
       if (error) {
         throw error;
