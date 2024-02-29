@@ -15,7 +15,7 @@ export default async function SongDuelsPage() {
     <div className="relative flex w-full flex-1 flex-col justify-between">
       <div className="flex flex-col gap-10">
         <Stats />
-        <header className="mb-8 flex flex-col gap-4">
+        <header className="mb-8 flex flex-col justify-between gap-4 2xl:flex-row">
           <div className="flex flex-col gap-4">
             <h1 className="text-2xl font-bold md:text-4xl 2xl:text-6xl">
               Song Duels
@@ -27,7 +27,7 @@ export default async function SongDuelsPage() {
             </p>
           </div>
           <Link
-            className="w-fit hover:text-primary hover:underline"
+            className="h-fit w-fit hover:text-primary hover:underline"
             href={"/song-duels/leaderboard"}
           >
             View the Leaderboard

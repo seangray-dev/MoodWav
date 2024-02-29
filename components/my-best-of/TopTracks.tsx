@@ -54,7 +54,7 @@ export default function TopTracks() {
         <div className="flex flex-col items-center justify-end gap-2 md:flex-row">
           <Label htmlFor="time-range">Time Range</Label>
           <Select name="time-range" onValueChange={handleTimeRangeChange}>
-            <SelectTrigger className="max-w-[180px] border-card-foreground bg-transparent">
+            <SelectTrigger className="max-w-[180px] border-border bg-transparent">
               <SelectValue
                 defaultValue={"medium_term"}
                 placeholder="Last 6 months"

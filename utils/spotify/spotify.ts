@@ -247,7 +247,7 @@ export const checkIfTrackIsSaved = async (accessToken: string, id: string) => {
 };
 
 export const fetchTrackById = async (accessToken: string, id: string) => {
-  const url = `https://api.spotify.com/v1/me/tracks/${id}`;
+  const url = `https://api.spotify.com/v1/tracks/${id}`;
 
   try {
     const response = await fetch(url, {

@@ -19,7 +19,7 @@ const SpotifyMoodPrompt = () => {
       <div className="flex flex-col justify-center gap-2 md:flex-row">
         <SpotifyButton />
         <Button>
-          <Link href={"/reques-access"}>Request Access</Link>
+          <Link href={"/request-access"}>Request Access</Link>
         </Button>
       </div>
     </section>

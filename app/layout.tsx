@@ -34,7 +34,7 @@ export default function RootLayout({
       <body>
         <ReactQueryProvider>
           <ThemeProvider attribute="class" defaultTheme="system">
-            <div className="flex min-h-screen w-full flex-col items-center bg-background text-foreground antialiased">
+            <div className="moodring flex min-h-screen w-full flex-col items-center bg-background font-medium antialiased">
               <nav className="container">
                 <Nav />
               </nav>

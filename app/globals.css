@@ -80,7 +80,7 @@
 
 .moodring {
   background: linear-gradient(
-    270deg,
+    -45deg,
     hsl(283, 95%, 41%),
     hsl(238, 94%, 30%),
     hsl(174, 72%, 56%),
@@ -89,10 +89,10 @@
     hsl(51, 100%, 50%)
   );
   background-size: 1200% 1200%;
-  -webkit-animation: MoodRing 60s linear infinite;
-  -moz-animation: MoodRing 60s linear infinite;
-  -o-animation: MoodRing 60s linear infinite;
-  animation: MoodRing 60s linear infinite;
+  -webkit-animation: MoodRing 90s linear infinite;
+  -moz-animation: MoodRing 90s linear infinite;
+  -o-animation: MoodRing 90s linear infinite;
+  animation: MoodRing 90s linear infinite;
 }
 @-webkit-keyframes MoodRing {
   0% {

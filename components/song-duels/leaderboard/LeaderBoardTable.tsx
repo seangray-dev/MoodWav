@@ -1,5 +1,6 @@
 "use client";
 
+import SpotifyIcon from "@/assets/images/Spotify_Icon_RGB_Green.png";
 import {
   Table,
   TableBody,
@@ -15,7 +16,8 @@ import { fetchAccessToken } from "@/utils/supabase/fecthAccessToken";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import LeaderBoardSkeleton from "./LeaderBoardSkeleton";
 
 export default function LeaderBoardTable() {
   const [topVotedSongs, setTopVotedSongs] = useState([]);
@@ -26,7 +28,33 @@ export default function LeaderBoardTable() {
     },
   });
 
-  // need to get additional data from fetchTrackById to render image and have links
+  useEffect(() => {
+    const enrichSongData = async () => {
+      if (!data) return;
+      const accessToken = await fetchAccessToken();
+
+      const songsWithDetails = await Promise.all(
+        data.map(async (song) => {
+          const trackDetails = await fetchTrackById(
+            accessToken,
+            song.spotify_track_id,
+          );
+          return {
+            ...song,
+            trackDetails,
+          };
+        }),
+      );
+
+      setTopVotedSongs(songsWithDetails);
+    };
+
+    enrichSongData();
+  }, [data]);
+
+  if (!topVotedSongs || isLoading) {
+    return <LeaderBoardSkeleton />;
+  }
 
   return (
     <>
@@ -37,35 +65,63 @@ export default function LeaderBoardTable() {
           <TableRow>
             <TableHead>Track</TableHead>
             <TableHead>Artist</TableHead>
-            <TableHead className="text-right">Votes</TableHead>
+            <TableHead className="text-center">Votes</TableHead>
+            <TableHead className="truncate text-right">
+              Open in Spotify
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data?.map((song) => (
+          {topVotedSongs?.map((song: any) => (
             <TableRow key={song.id}>
               <TableCell className="font-medium">
-                {/* Use actual data for track name and link */}
                 <Link
-                  href={`link-to-track/${song.spotify_track_id}`}
-                  className="flex items-center gap-2"
+                  target="_blank"
+                  href={`spotify:track:${song.spotify_track_id}`}
+                  className="flex w-fit items-center gap-4 hover:text-primary hover:underline"
                 >
-                  {/* Placeholder for image, replace with actual image source if available */}
                   <Image
-                    width={20}
-                    height={20}
-                    src="/placeholder-image-url.jpg"
+                    width={50}
+                    height={50}
+                    src={song.trackDetails.album.images[0].url}
                     alt={song}
                   />
-                  <span>{song.song}</span>
+                  <span className="truncate">{song.song}</span>
                 </Link>
               </TableCell>
               <TableCell>
-                {/* Use actual data for artist name and link */}
-                <Link href={`link-to-artist/${song.artist}`}>
-                  {song.artist}
-                </Link>
+                {song.trackDetails.artists.map((artist: any, index: number) => (
+                  <React.Fragment key={artist.id}>
+                    {index > 0 && ", "}
+                    <Link
+                      href={`spotify:artist:${artist.id}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-primary hover:underline"
+                    >
+                      <span className="truncate">{artist.name}</span>
+                    </Link>
+                  </React.Fragment>
+                ))}
               </TableCell>
-              <TableCell className="text-right">{song.vote_count}</TableCell>
+              <TableCell className="text-center">{song.vote_count}</TableCell>
+              <TableCell>
+                <div className="flex justify-end">
+                  <Link
+                    href={`spotify:track:${song.spotify_track_id}`}
+                    className="flex flex-col items-center gap-2 text-right hover:text-primary hover:underline"
+                  >
+                    <Image
+                      src={SpotifyIcon}
+                      width={24}
+                      height={24}
+                      className="mx-auto"
+                      alt="spotify icon"
+                    />
+                    <span className="text-xs font-medium">Play on Spotify</span>
+                  </Link>
+                </div>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
