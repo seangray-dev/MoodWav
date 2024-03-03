@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import ReactQueryProvider from "@/providers/react-query";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { Montserrat } from "@next/font/google";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -44,6 +45,7 @@ export default function RootLayout({
               <footer className="container">
                 <Footer />
               </footer>
+              <SpeedInsights />
               <Toaster />
             </div>
           </ThemeProvider>
