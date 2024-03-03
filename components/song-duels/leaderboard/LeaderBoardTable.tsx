@@ -19,7 +19,7 @@ import React, { useEffect, useState } from "react";
 import LeaderBoardSkeleton from "./LeaderBoardSkeleton";
 
 export default function LeaderBoardTable() {
-  const [topVotedSongs, setTopVotedSongs] = useState([]);
+  const [topVotedSongs, setTopVotedSongs] = useState<any[]>([]);
   const { data, isLoading } = useQuery({
     queryKey: ["topVotedSongs"],
     queryFn: async () => {
