@@ -27,7 +27,7 @@ export default async function SongDuelsPage() {
             </p>
           </div>
           <Link
-            className="h-fit w-fit hover:text-primary hover:underline"
+            className="h-fit w-fit hover:underline"
             href={"/song-duels/leaderboard"}
           >
             View the Leaderboard

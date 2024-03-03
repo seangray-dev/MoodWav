@@ -1,4 +1,3 @@
-import MoodWavLogoBlack from "@/assets/images//moodwav-high-resolution-logo-black-transparent.png";
 import MoodWavLogoWhite from "@/assets/images/moodwav-high-resolution-logo-transparent.png";
 import AlertMessage from "@/components/ui/AlertMessage";
 import { fetchRecentlyPlayedTracks, fetchUserMoodData } from "@/server/actions";
@@ -41,15 +40,8 @@ export default async function MoodPage() {
       </Link>
       <div className="mt-20 px-2">
         <Image
-          className="mx-auto mb-10 hidden h-[30px] w-[300px] dark:block"
+          className="mx-auto mb-10 h-[30px] w-[300px]"
           src={MoodWavLogoWhite}
-          alt="moodwav logo"
-          width={300}
-          height={30}
-        />
-        <Image
-          className="mx-auto mb-10 h-[30px] w-[300px] dark:hidden"
-          src={MoodWavLogoBlack}
           alt="moodwav logo"
           width={300}
           height={30}

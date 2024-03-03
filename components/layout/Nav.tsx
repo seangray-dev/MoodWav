@@ -116,19 +116,12 @@ const Nav = () => {
   };
 
   return (
-    <div className="w-full border-b border-b-card-foreground py-4">
+    <div className="w-full border-b border-b-white py-4">
       <div className="flex items-center justify-between">
         <Link href="/">
           <Image
-            className="hidden h-[15px] w-[50px] dark:block"
+            className="h-[15px] w-[50px]"
             src={MoodWavIconWhite}
-            alt="MoodWav Logo"
-            width={50}
-            height={15}
-          />
-          <Image
-            className="h-[15px] w-[50px] dark:hidden"
-            src={MoodWavIconBlack}
             alt="MoodWav Logo"
             width={50}
             height={15}
@@ -188,10 +181,10 @@ const Nav = () => {
             {navItems.map((item) => (
               <NavigationMenuItem key={item.path}>
                 <Link href={item.path} legacyBehavior passHref>
-                  <NavigationMenuLink className="relative text-card-foreground hover:underline">
+                  <NavigationMenuLink className="relative hover:underline">
                     {item.title}
                     {item.isNew && (
-                      <Badge className="absolute -right-7 -top-5 rotate-[15deg] bg-card-foreground p-1 text-[10px] text-card hover:bg-card">
+                      <Badge className="absolute -right-7 -top-5 rotate-[15deg] bg-card p-1 text-[10px] text-card-foreground hover:bg-card">
                         New!
                       </Badge>
                     )}
@@ -210,7 +203,7 @@ const Nav = () => {
                     onClick={async () => {
                       await signOut();
                     }}
-                    className="text-card-foreground hover:underline"
+                    className="hover:underline"
                   >
                     Sign out
                   </Button>

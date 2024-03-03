@@ -6,7 +6,7 @@ import { Badge } from "../ui/badge";
 export default function TotalVotes() {
   const { totalVotes } = useRealtimeVotes();
   return (
-    <div className="flex h-full w-full flex-col gap-2 border-b py-3 text-lg md:border-b-0 md:border-r">
+    <div className="flex h-full w-full flex-col gap-2 border-b border-white py-3 text-lg md:border-b-0 md:border-r">
       <h3 className="text-center font-bold capitalize">
         Total amount of votes made
       </h3>

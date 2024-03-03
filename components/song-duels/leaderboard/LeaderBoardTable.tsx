@@ -4,7 +4,6 @@ import SpotifyIcon from "@/assets/images/Spotify_Icon_RGB_Green.png";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -58,9 +57,8 @@ export default function LeaderBoardTable() {
 
   return (
     <>
-      <h2 className="prose dark:prose-invert py-4">Top 10 Voted On Songs</h2>
-      <Table>
-        <TableCaption>A list of top voted songs.</TableCaption>
+      <h2 className="py-4 text-white">Top 10 Voted On Songs</h2>
+      <Table className="bg-card text-card-foreground">
         <TableHeader>
           <TableRow>
             <TableHead>Track</TableHead>

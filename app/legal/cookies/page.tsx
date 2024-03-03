@@ -1,6 +1,6 @@
 export default function CookiesPage() {
   return (
-    <section className="prose dark:prose-invert">
+    <section className="prose prose-invert prose-a:text-white prose-p:text-white py-10">
       <h1>Use of Cookies</h1>
       <h2>Spotify Access Tokens</h2>
       <p>

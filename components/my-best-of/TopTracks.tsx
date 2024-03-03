@@ -49,12 +49,12 @@ export default function TopTracks() {
 
   return (
     <section>
-      <div className="mb-6 flex items-center justify-between text-card-foreground">
+      <div className="mb-6 flex items-center justify-between">
         <h2 className="text-xl md:text-2xl 2xl:text-3xl">Top Tracks</h2>
         <div className="flex flex-col items-center justify-end gap-2 md:flex-row">
           <Label htmlFor="time-range">Time Range</Label>
           <Select name="time-range" onValueChange={handleTimeRangeChange}>
-            <SelectTrigger className="max-w-[180px] border-border bg-transparent">
+            <SelectTrigger className="max-w-[180px] border-white bg-transparent">
               <SelectValue
                 defaultValue={"medium_term"}
                 placeholder="Last 6 months"

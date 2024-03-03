@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function TermsOfUsePage() {
   return (
-    <section className="prose dark:prose-invert">
+    <section className="prose prose-invert prose-a:text-white prose-p:text-white py-10">
       <h1>Terms of Use</h1>
       <p>
         Welcome to MoodWav! Our service is designed to enhance your Spotify
@@ -68,7 +68,7 @@ export default function TermsOfUsePage() {
         For any questions regarding these Terms, please get in touch{" "}
         <Link
           href={"/contact"}
-          className="font-light text-card-foreground hover:text-primary hover:underline"
+          className="font-light hover:text-primary hover:underline"
         >
           here
         </Link>

@@ -4,7 +4,7 @@ import SpotifyButton from "./SpotifyButton";
 
 const SpotifyMoodPrompt = () => {
   return (
-    <section className="text-card-foreground">
+    <section className="text-white">
       <h2 className="mb-4 text-center text-2xl font-bold md:text-4xl">
         Discover Your Mood
       </h2>

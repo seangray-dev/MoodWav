@@ -19,7 +19,7 @@ export default async function LeaderBoardPage() {
   return (
     <section className="w-full flex-1 pb-10">
       <Stats />
-      <div className="prose dark:prose-invert pt-10">
+      <div className="prose prose-invert pt-10">
         <h1>Leaderboard</h1>
       </div>
       <HydrationBoundary state={dehydrate(queryClient)}>

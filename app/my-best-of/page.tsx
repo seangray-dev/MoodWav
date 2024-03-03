@@ -36,7 +36,7 @@ export default async function BestOfPage() {
 
   return (
     <div className="w-full py-10">
-      <h1 className="mb-10 text-2xl font-bold text-card-foreground md:text-4xl 2xl:text-6xl">
+      <h1 className="mb-10 text-2xl font-bold md:text-4xl 2xl:text-6xl">
         My Best Of Spotify
       </h1>
       <div className="flex flex-col gap-20">

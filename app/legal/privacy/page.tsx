@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function PrivacyPage() {
   return (
-    <section className="prose dark:prose-invert">
+    <section className="prose prose-invert prose-a:text-white prose-li:text-white prose-li:list-disc prose-p:text-white py-10">
       <h1>Privacy Policy</h1>
       <p>
         We are committed to protecting your privacy and ensuring you have a
@@ -24,15 +24,17 @@ export default function PrivacyPage() {
         Our service allows you to connect and sign in using Spotify. This
         integration is designed to enhance your experience by allowing you to:
       </p>
-      <ul>
+      <ul className="marker:text-white">
         <li>View your recently played tracks</li>
         <li>Access your top tracks and artists</li>
         <li>View artists you follow</li>
         <li>Modify your library</li>
       </ul>
-      When you choose to connect your Spotify account, we request specific
-      permissions (scopes) to access these features. The scopes include:
-      <ul>
+      <p>
+        When you choose to connect your Spotify account, we request specific
+        permissions (scopes) to access these features. The scopes include:
+      </p>
+      <ul className="marker:text-white">
         <li>user-read-recently-played</li>
         <li>user-top-read</li>
         <li>streaming</li>

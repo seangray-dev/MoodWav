@@ -58,7 +58,7 @@ export default function RecentlyPlayed() {
               setSelectedMood(value === "all" ? null : value)
             }
           >
-            <SelectTrigger className="w-[180px] border-border bg-transparent">
+            <SelectTrigger className="w-[180px] border-white bg-transparent">
               <SelectValue placeholder="Filter by mood" />
             </SelectTrigger>
             <SelectContent className="bg-card text-card-foreground">
