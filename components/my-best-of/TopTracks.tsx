@@ -73,6 +73,7 @@ export default function TopTracks() {
             >
               <div className="flex-shrink-0">
                 <Image
+                  unoptimized
                   className="h-20 w-20 object-cover 2xl:h-36 2xl:w-36"
                   alt="tracks image"
                   width={100}

@@ -79,6 +79,7 @@ export default function LeaderBoardTable() {
                   className="flex w-fit items-center gap-4 hover:text-primary hover:underline"
                 >
                   <Image
+                    unoptimized
                     width={50}
                     height={50}
                     src={song.trackDetails.album.images[0].url}

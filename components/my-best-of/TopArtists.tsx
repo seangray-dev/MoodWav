@@ -97,6 +97,7 @@ export default function TopArtists() {
             >
               <div className="flex-shrink-0">
                 <Image
+                  unoptimized
                   className="h-24 w-24 object-cover 2xl:h-36 2xl:w-36"
                   alt="artist image"
                   width={100}

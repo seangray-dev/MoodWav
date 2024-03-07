@@ -90,6 +90,7 @@ export default function SongCards() {
           >
             <CardHeader className="h-full w-full p-0">
               <Image
+                unoptimized
                 priority
                 width={300}
                 height={300}
