@@ -30,15 +30,8 @@ import { Card, CardContent } from "../ui/card";
 import { Label } from "../ui/label";
 import { TopArtistsSkeleton } from "./Skeletons";
 
-interface ArtistWithFollowingInfo extends SpotifyArtist {
-  isFollowing: boolean;
-}
-
 export default function TopArtists() {
   const [topArtists, setTopArtists] = useState<SpotifyArtist[]>([]);
-  const [artistsWithFollowingInfo, setArtistsWithFollowingInfo] = useState<
-    ArtistWithFollowingInfo[]
-  >([]);
   const [timeRange, setTimeRange] = useState("medium_term");
   const { data, isLoading } = useQuery({
     queryKey: ["top-artists", timeRange],
@@ -49,30 +42,24 @@ export default function TopArtists() {
   });
 
   useEffect(() => {
-    if (data) {
-      setTopArtists(data.items);
+    if (data && data.items) {
+      const updateArtistsWithFollowingStatus = async () => {
+        const artistIds = data.items.map((artist: any) => artist.id).join(",");
+        const accessToken = await fetchAccessToken();
+        const followingStatuses =
+          (await isUserFollowingArtist(accessToken, artistIds)) || [];
+
+        const updatedArtists = data.items.map((artist: any, index: number) => ({
+          ...artist,
+          isFollowing: followingStatuses[index],
+        }));
+
+        setTopArtists(updatedArtists);
+      };
+
+      updateArtistsWithFollowingStatus();
     }
   }, [data]);
-
-  useEffect(() => {
-    const checkFollowingStatus = async () => {
-      const artistIds = topArtists.map((artist) => artist.id).join(",");
-      const accessToken = await fetchAccessToken();
-      const followingStatuses =
-        (await isUserFollowingArtist(accessToken, artistIds)) || [];
-
-      const updatedArtists = topArtists.map((artist, index) => ({
-        ...artist,
-        isFollowing: followingStatuses[index],
-      }));
-
-      setArtistsWithFollowingInfo(updatedArtists);
-    };
-
-    if (topArtists && topArtists.length > 0) {
-      checkFollowingStatus();
-    }
-  }, [topArtists]);
 
   const handleTimeRangeChange = (value: string) => {
     setTimeRange(value);
@@ -103,7 +90,7 @@ export default function TopArtists() {
         {isLoading ? (
           <TopArtistsSkeleton />
         ) : (
-          artistsWithFollowingInfo.map((artist: any) => (
+          topArtists.map((artist: any) => (
             <Card
               key={artist.id}
               className="flex items-center gap-4 border-none bg-secondary p-0 dark:bg-card"

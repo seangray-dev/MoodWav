@@ -1,4 +1,5 @@
 "use client";
+
 import SpotifyIcon from "@/assets/images/Spotify_Icon_RGB_Green.png";
 import {
   Select,
@@ -13,14 +14,13 @@ import { TooltipProvider } from "@radix-ui/react-tooltip";
 import { useQuery } from "@tanstack/react-query";
 import { ExternalLinkIcon } from "lucide-react";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { Card, CardContent } from "../ui/card";
 import { Label } from "../ui/label";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { TopTracksSkeleton } from "./Skeletons";
 
 export default function TopTracks() {
-  const [topTracks, setTopTracks] = useState([]);
   const [timeRange, setTimeRange] = useState("medium_term");
   const { data, isLoading } = useQuery({
     queryKey: ["top-tracks", timeRange],
@@ -29,12 +29,6 @@ export default function TopTracks() {
       return fetchUsersTopTracks(accessToken, timeRange);
     },
   });
-
-  useEffect(() => {
-    if (data) {
-      setTopTracks(data.items);
-    }
-  }, [data]);
 
   const handleTimeRangeChange = (value: string) => {
     setTimeRange(value);
@@ -72,7 +66,7 @@ export default function TopTracks() {
         {isLoading ? (
           <TopTracksSkeleton />
         ) : (
-          topTracks.map((tracks: any) => (
+          data.items.map((tracks: any) => (
             <Card
               key={tracks.id}
               className="flex items-center gap-4 border-none bg-secondary p-0 dark:bg-card"
