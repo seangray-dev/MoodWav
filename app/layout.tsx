@@ -46,10 +46,10 @@ export default function RootLayout({
               <footer className="container">
                 <Footer />
               </footer>
-              <SpeedInsights />
-              <Analytics />
-              <Toaster />
             </div>
+            <SpeedInsights />
+            <Analytics />
+            <Toaster />
           </ThemeProvider>
         </ReactQueryProvider>
       </body>

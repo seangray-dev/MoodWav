@@ -131,10 +131,10 @@ const Nav = () => {
         {/* Mobile Menu */}
         <div className="flex items-center md:hidden">
           <ModeToggle />
-          <Menubar className="border-none bg-transparent hover:bg-secondary">
+          <Menubar className="border-none bg-transparent">
             <MenubarMenu>
               <MenubarTrigger>
-                <MenuIcon className="cursor-pointer text-card-foreground" />
+                <MenuIcon className="cursor-pointer text-white" />
               </MenubarTrigger>
               <MenubarContent className="bg-card text-card-foreground md:hidden">
                 {navItems.map((item) => (
