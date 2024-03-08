@@ -25,6 +25,7 @@ import { ExternalLinkIcon } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { NumericFormat } from "react-number-format";
+import { MusicCard } from "../ui/MusicCard";
 import { Badge } from "../ui/badge";
 import { Card, CardContent } from "../ui/card";
 import { Label } from "../ui/label";
@@ -86,94 +87,17 @@ export default function TopArtists() {
           </Select>
         </div>
       </div>
-      <div className="flex flex-col gap-3 md:grid md:grid-cols-2 2xl:grid-cols-3">
+      <ul className="flex flex-col gap-4 md:grid md:grid-cols-2 lg:grid-cols-3">
         {isLoading ? (
           <TopArtistsSkeleton />
         ) : (
-          topArtists.map((artist: any) => (
-            <Card
-              key={artist.id}
-              className="flex items-center gap-4 border-none bg-secondary p-0 dark:bg-card"
-            >
-              <div className="flex-shrink-0">
-                <Image
-                  unoptimized
-                  className="h-24 w-24 object-cover 2xl:h-36 2xl:w-36"
-                  alt="artist image"
-                  width={100}
-                  height={100}
-                  src={artist.images[0].url}
-                />
-              </div>
-              <div className="flex flex-1 items-center justify-between">
-                <CardContent className="flex flex-col gap-2 p-0">
-                  <div className="group">
-                    <a
-                      className="flex items-center gap-2 text-sm font-bold underline group-hover:text-primary"
-                      target="_blank"
-                      href={`spotify:artist:${artist.id}`}
-                    >
-                      {artist.name}
-                      <ExternalLinkIcon
-                        size={16}
-                        className="group-hover:text-primary "
-                      />
-                    </a>
-                  </div>
-
-                  <div className="text-sm text-muted-foreground">
-                    <p>
-                      Followers:{" "}
-                      <NumericFormat
-                        displayType="text"
-                        className="bg-transparent"
-                        value={artist.followers.total}
-                        allowLeadingZeros
-                        thousandSeparator=","
-                      />
-                    </p>
-                  </div>
-                  {artist.isFollowing ? (
-                    <Badge className="w-fit">Following</Badge>
-                  ) : (
-                    <Badge variant={"destructive"} className="w-fit">
-                      Not Following
-                    </Badge>
-                  )}
-                </CardContent>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <a
-                        href={`spotify:artist:${artist.id}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <Image
-                          className="mr-6 h-6"
-                          width={24}
-                          height={24}
-                          src={SpotifyIcon}
-                          alt="spotify logo"
-                        />
-                      </a>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>
-                        Open{" "}
-                        <span className="font-bold underline">
-                          {artist.name}
-                        </span>{" "}
-                        on Spotify
-                      </p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-            </Card>
+          topArtists.map((artist: any, idx: number) => (
+            <li key={idx} className="w-full">
+              <MusicCard type="artist" item={artist} />
+            </li>
           ))
         )}
-      </div>
+      </ul>
     </section>
   );
 }

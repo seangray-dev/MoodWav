@@ -13,8 +13,16 @@ import {
 import { fetchRecentlyPlayedTracks } from "@/server/actions";
 import { fetchAccessToken } from "@/utils/supabase/fecthAccessToken";
 import { useQuery } from "@tanstack/react-query";
-import { Filter } from "lucide-react";
+import { ExternalLinkIcon, Filter } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
+import { MusicCard } from "../ui/MusicCard";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
 import { RecentTracksSkeleton } from "./Skeletons";
 
 export default function RecentlyPlayed() {
@@ -80,19 +88,7 @@ export default function RecentlyPlayed() {
         ) : filteredTracks && filteredTracks.length > 0 ? (
           filteredTracks.map((track, idx) => (
             <li key={idx} className="w-full">
-              <Card className="flex w-full items-center gap-6 border-none bg-card text-card-foreground drop-shadow-2xl">
-                <img
-                  className="w-1/4"
-                  src={track.coverArt || SpotifyIcon.src}
-                  alt={track.name}
-                />
-                <div className="flex flex-col gap-2 overflow-hidden">
-                  <p className="truncate font-bold">{track.name}</p>
-                  <p className="truncate text-muted-foreground">
-                    {track.artistName}
-                  </p>
-                </div>
-              </Card>
+              <MusicCard type="track" item={track} />
             </li>
           ))
         ) : (
