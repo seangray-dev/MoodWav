@@ -1,15 +1,11 @@
 "use server";
 
 import { determineUserMood } from "@/utils/mood_calculations/calculations";
-import {
-  SpotifyRecentlyPlayedResponse,
-  TrackDetail,
-} from "@/utils/spotify/constants";
+import { SpotifyRecentlyPlayedResponse } from "@/utils/spotify/constants";
 import { fetchAudioFeaturesForTracks } from "@/utils/spotify/spotify";
+import { RecentlyPlayedTracks } from "@/utils/spotify/types";
 
-export const fetchRecentlyPlayedTracks = async (
-  accessToken: string,
-): Promise<TrackDetail[] | null> => {
+export const fetchRecentlyPlayedTracks = async (accessToken: string) => {
   const url = "https://api.spotify.com/v1/me/player/recently-played?limit=50";
 
   try {
@@ -27,7 +23,7 @@ export const fetchRecentlyPlayedTracks = async (
       return null;
     }
 
-    const { items }: SpotifyRecentlyPlayedResponse = await response.json();
+    const { items }: RecentlyPlayedTracks = await response.json();
     const trackIds = items.map((item) => item.track.id);
     const audioFeatures = await fetchAudioFeaturesForTracks(
       trackIds,
@@ -52,7 +48,7 @@ export const fetchRecentlyPlayedTracks = async (
       return {
         id: item.track.id,
         name: item.track.name,
-        artistName: item.track.artists.map((artist) => artist.name).join(", "),
+        artists: item.track.artists,
         coverArt: item.track.album.images[0]?.url ?? "",
         mood: topMood,
       };
