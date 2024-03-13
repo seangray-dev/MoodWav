@@ -55,8 +55,6 @@ export default function SongCards() {
   };
 
   const handleVote = async (song: Song) => {
-    // console.log(`Voting for song with ID: ${song.id}`);
-
     const { data, error } = await supabase.rpc("increment_vote", {
       song_id: song.id,
     });

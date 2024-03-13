@@ -31,7 +31,7 @@ export const MusicCard = ({ type, item }: any) => {
       />
       <div className="flex flex-1 flex-col gap-2 overflow-hidden">
         <a
-          className="flex flex-1 items-center gap-2 text-sm font-bold underline hover:text-primary"
+          className="flex w-fit flex-1 items-center gap-2 text-sm font-bold underline hover:text-primary"
           target="_blank"
           href={spotifyUrl}
         >
@@ -46,7 +46,7 @@ export const MusicCard = ({ type, item }: any) => {
         <div className="flex flex-col gap-2 text-muted-foreground">
           <div className="truncate text-sm">
             {type === "track" &&
-              item.artists.map((artist, index) => (
+              item.artists.map((artist: any, index: any) => (
                 <a
                   key={artist.id}
                   className="hover:text-primary hover:underline"
