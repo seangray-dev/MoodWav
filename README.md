@@ -1,5 +1,5 @@
 <a href="https://moodwav.app">
-  <img alt="MoodWav" src="https://moodwav.app/opengraph-image.png">
+  <img alt="MoodWav" src="https://moodwav.com/opengraph-image.png">
   <h1 align="center">MoodWav</h1>
 </a>
 
