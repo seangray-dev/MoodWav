@@ -25,7 +25,7 @@ import {
 import { navItems } from "@/data/navigation";
 import { SpotifyUserProfile } from "@/utils/spotify/constants";
 import { fetchSpotifyUserProfile } from "@/utils/spotify/spotify";
-import { supabase } from "@/utils/supabase/client";
+// import { supabase } from "@/utils/supabase/client";
 import { LogOutIcon, MenuIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -43,77 +43,77 @@ const Nav = () => {
   );
 
   // Functions
-  useEffect(() => {
-    const fetchProfileData = async () => {
-      // Retrieve the current session
-      const { data: session, error } = await supabase.auth.getSession();
+  // useEffect(() => {
+  //   const fetchProfileData = async () => {
+  //     // Retrieve the current session
+  //     const { data: session, error } = await supabase.auth.getSession();
 
-      if (error) {
-        console.error("Error retrieving user session:", error);
-        return;
-      }
+  //     if (error) {
+  //       console.error("Error retrieving user session:", error);
+  //       return;
+  //     }
 
-      if (!session.session?.provider_token) {
-        console.error("No provider token available in session");
-        return;
-      }
+  //     if (!session.session?.provider_token) {
+  //       console.error("No provider token available in session");
+  //       return;
+  //     }
 
-      const accessToken = session.session?.provider_token;
-      try {
-        const profile = await fetchSpotifyUserProfile(accessToken);
-        setUserProfile(profile);
-      } catch (error) {
-        console.error("Error fetching Spotify user profile:", error);
-      }
-    };
+  //     const accessToken = session.session?.provider_token;
+  //     try {
+  //       const profile = await fetchSpotifyUserProfile(accessToken);
+  //       setUserProfile(profile);
+  //     } catch (error) {
+  //       console.error("Error fetching Spotify user profile:", error);
+  //     }
+  //   };
 
-    fetchProfileData();
-  }, []);
+  //   fetchProfileData();
+  // }, []);
 
-  useEffect(() => {
-    const { data: subscription } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (event === "SIGNED_OUT") {
-          setUserProfile(null);
-          router.push("/");
-        } else if (event === "SIGNED_IN" && session) {
-          const accessToken = session.provider_token;
-          if (accessToken) {
-            const profile = await fetchSpotifyUserProfile(accessToken);
-            setUserProfile(profile);
-          }
-        }
-      },
-    );
+  // useEffect(() => {
+  //   const { data: subscription } = supabase.auth.onAuthStateChange(
+  //     async (event, session) => {
+  //       if (event === "SIGNED_OUT") {
+  //         setUserProfile(null);
+  //         router.push("/");
+  //       } else if (event === "SIGNED_IN" && session) {
+  //         const accessToken = session.provider_token;
+  //         if (accessToken) {
+  //           const profile = await fetchSpotifyUserProfile(accessToken);
+  //           setUserProfile(profile);
+  //         }
+  //       }
+  //     },
+  //   );
 
-    return () => {
-      subscription.subscription.unsubscribe();
-    };
-  }, []);
+  //   return () => {
+  //     subscription.subscription.unsubscribe();
+  //   };
+  // }, []);
 
-  const signOut = async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
+  // const signOut = async () => {
+  //   try {
+  //     const { error } = await supabase.auth.signOut();
+  //     if (error) throw error;
 
-      setUserProfile(null);
+  //     setUserProfile(null);
 
-      // Log the user out spotify account
-      const url = "https://accounts.spotify.com/en/logout";
-      const spotifyLogoutWindow = window.open(
-        url,
-        "Spotify Logout",
-        "width=700,height=500,top=40,left=40",
-      );
-      setTimeout(() => {
-        if (spotifyLogoutWindow) {
-          spotifyLogoutWindow.close();
-        }
-      }, 2000);
-    } catch (error) {
-      console.error("Error during sign out:", error);
-    }
-  };
+  //     // Log the user out spotify account
+  //     const url = "https://accounts.spotify.com/en/logout";
+  //     const spotifyLogoutWindow = window.open(
+  //       url,
+  //       "Spotify Logout",
+  //       "width=700,height=500,top=40,left=40",
+  //     );
+  //     setTimeout(() => {
+  //       if (spotifyLogoutWindow) {
+  //         spotifyLogoutWindow.close();
+  //       }
+  //     }, 2000);
+  //   } catch (error) {
+  //     console.error("Error during sign out:", error);
+  //   }
+  // };
 
   return (
     <div className="w-full border-b border-b-white py-4">
@@ -158,7 +158,7 @@ const Nav = () => {
                       <div
                         className="flex w-full items-center gap-2"
                         onClick={async () => {
-                          await signOut();
+                          // await signOut();
                         }}
                       >
                         Sign out
@@ -201,7 +201,7 @@ const Nav = () => {
                   <Button
                     variant={"ghost"}
                     onClick={async () => {
-                      await signOut();
+                      // await signOut();
                     }}
                     className="hover:underline"
                   >
